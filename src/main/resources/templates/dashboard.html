@@ -140,6 +140,33 @@
         
         .ag-row {
             padding: 4px 0;
+            position: relative;
+        }
+        
+        .ag-row::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            z-index: 1;
+        }
+        
+        .ag-row.severity-critical::before {
+            background-color: #dc3545;
+        }
+        
+        .ag-row.severity-high::before {
+            background-color: #fd7e14;
+        }
+        
+        .ag-row.severity-medium::before {
+            background-color: #ffc107;
+        }
+        
+        .ag-row.severity-low::before {
+            background-color: #28a745;
         }
         
         .severity-critical {
@@ -187,12 +214,14 @@
             display: flex;
             align-items: center;
             font-size: 0.875rem;
+            font-weight: normal;
         }
         
         .ticket-title {
             font-size: 0.875rem;
             color: #495057;
             margin-bottom: 4px;
+            font-weight: normal;
         }
         
         .ticket-description {
@@ -204,6 +233,7 @@
         .metadata-value {
             font-size: 0.875rem;
             color: #495057;
+            font-weight: normal;
         }
         
         .metadata-label {
@@ -453,6 +483,13 @@
     <script th:inline="javascript">
         // Get tickets data from Thymeleaf
         const ticketsData = /*[[${tickets}]]*/ [];
+        console.log('Tickets data loaded:', ticketsData.length, 'tickets');
+        if (ticketsData.length > 0) {
+            console.log('Sample ticket data:', ticketsData[0]);
+        }
+        
+        // Global filter state
+        let currentFilters = [];
         
         // ag-Grid configuration
         const gridOptions = {
@@ -460,7 +497,8 @@
                 {
                     headerName: 'Ticket Id',
                     field: 'ticketId',
-                    width: 180,
+                    width: 120,
+                    filter: true,
                     cellRenderer: function(params) {
                         const partner = params.data.partnerName;
                         let logoUrl = '';
@@ -500,7 +538,8 @@
                 {
                     headerName: 'Title & Description',
                     field: 'title',
-                    width: 350,
+                    width: 400,
+                    filter: true,
                     cellRenderer: function(params) {
                         return `<div>
                                     <div class="ticket-title">${params.data.title}</div>
@@ -509,79 +548,72 @@
                     }
                 },
                 {
-                    headerName: 'Ticket Type',
+                    headerName: 'Type & Severity',
                     field: 'ticketType',
-                    width: 100,
+                    width: 140,
+                    filter: true,
                     cellRenderer: function(params) {
-                        const type = params.data.ticketType;
-                        return `<div class="type-badge">${type}</div>`;
+                        const ticket = params.data;
+                        return `<div>
+                                    <div><span class="type-badge">${ticket.ticketType}</span></div>
+                                    <div class="severity-${ticket.severity.toLowerCase()}">${ticket.severity}</div>
+                                </div>`;
                     }
                 },
                 {
-                    headerName: 'Ticket Severity',
+                    headerName: 'Severity',
                     field: 'severity',
                     width: 100,
+                    filter: true,
+                    hide: true, // Hide this column but keep it for filtering
                     cellRenderer: function(params) {
-                        const severity = params.data.severity;
-                        return `<div class="severity-${severity.toLowerCase()}">${severity}</div>`;
+                        return `<div class="severity-${params.value.toLowerCase()}">${params.value}</div>`;
                     }
                 },
                 {
-                    headerName: 'Partner Name',
+                    headerName: 'Partner & Account',
                     field: 'partnerName',
-                    width: 100,
+                    width: 180,
+                    filter: true,
                     cellRenderer: function(params) {
-                        return `<div class="metadata-value">${params.value}</div>`;
+                        const ticket = params.data;
+                        return `<div>
+                                    <div class="metadata-value">${ticket.partnerName}</div>
+                                    <div class="metadata-label">${ticket.accountName}</div>
+                                </div>`;
                     }
                 },
                 {
-                    headerName: 'Account Name',
-                    field: 'accountName',
-                    width: 120,
-                    cellRenderer: function(params) {
-                        return `<div class="metadata-value">${params.value}</div>`;
-                    }
-                },
-                {
-                    headerName: 'Solution Name',
-                    field: 'solutionName',
-                    width: 120,
-                    cellRenderer: function(params) {
-                        return `<div class="metadata-value">${params.value || '-'}</div>`;
-                    }
-                },
-                {
-                    headerName: 'Support Group Name',
+                    headerName: 'Assignee & Group',
                     field: 'supportGroupName',
-                    width: 130,
+                    width: 200,
+                    filter: true,
                     cellRenderer: function(params) {
-                        return `<div class="metadata-value">${params.value || '-'}</div>`;
+                        const ticket = params.data;
+                        return `<div>
+                                    <div class="metadata-value">${ticket.assigneeName || '-'}</div>
+                                    <div class="metadata-label">${ticket.supportGroupName || '-'}</div>
+                                </div>`;
                     }
                 },
                 {
-                    headerName: 'Assignee Name',
-                    field: 'assigneeName',
-                    width: 110,
+                    headerName: 'Solution & Impact',
+                    field: 'solutionName',
+                    width: 180,
+                    filter: true,
                     cellRenderer: function(params) {
-                        return `<div class="metadata-value">${params.value || '-'}</div>`;
+                        const ticket = params.data;
+                        return `<div>
+                                    <div class="metadata-value">${ticket.solutionName || '-'}</div>
+                                    <div class="metadata-label">${ticket.customersImpacted > 0 ? ticket.customersImpacted + ' customers' : 'No impact'}</div>
+                                </div>`;
                     }
                 },
                 {
-                    headerName: 'Customers Impacted',
-                    field: 'customersImpacted',
-                    width: 80,
-                    cellRenderer: function(params) {
-                        if (params.value > 0) {
-                            return `<div class="metadata-value">${params.value}</div>`;
-                        } else {
-                            return `<div class="text-muted">-</div>`;
-                        }
-                    }
-                },
-                {
-                    headerName: 'Created At',
+                    headerName: 'Created',
                     field: 'createdAt',
                     width: 100,
+                    filter: true,
                     cellRenderer: function(params) {
                         const date = new Date(params.value);
                         const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
@@ -605,12 +637,30 @@
                 floatingFilter: false,
                 headerClass: 'ag-header-cell'
             },
+            isExternalFilterPresent: function() {
+                return currentFilters.length > 0;
+            },
+            doesExternalFilterPass: function(node) {
+                if (currentFilters.length === 0) return true;
+                
+                const data = node.data;
+                return currentFilters.every(filter => {
+                    const fieldValue = data[filter.field];
+                    return fieldValue === filter.value;
+                });
+            },
             onGridReady: function(params) {
+                console.log('Grid ready, API available:', !!params.api);
                 // Don't auto-size columns to fit, let them use their defined widths
                 updateTicketCount();
+                applyRowStyling();
             },
             onFilterChanged: function(params) {
+                console.log('Filter changed, displayed rows:', params.api.getDisplayedRowCount());
                 updateTicketCount();
+            },
+            getRowClass: function(params) {
+                return 'severity-' + params.data.severity.toLowerCase();
             }
         };
 
@@ -627,90 +677,88 @@
             const rowCount = gridOptions.api.getDisplayedRowCount();
             document.getElementById('ticketCount').textContent = `${rowCount} tickets`;
         }
+        
+        function applyRowStyling() {
+            // This function ensures row styling is applied after grid is ready
+            gridOptions.api.redrawRows();
+        }
 
         function setupFilterEventListeners() {
             // Global search
             document.getElementById('globalSearch').addEventListener('input', function(e) {
+                console.log('Global search value:', e.target.value);
                 gridOptions.api.setQuickFilter(e.target.value);
                 updateTicketCount();
             });
 
             // Filter checkboxes
             const filterCheckboxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]');
+            console.log('Found filter checkboxes:', filterCheckboxes.length);
             filterCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', applyFilters);
+                checkbox.addEventListener('change', function() {
+                    console.log('Checkbox changed:', checkbox.id, checkbox.checked, checkbox.value);
+                    applyFilters();
+                });
             });
         }
 
         function applyFilters() {
-            const filters = {};
+            // Debug: Check if grid is ready
+            if (!gridOptions.api) {
+                console.error('Grid API not ready');
+                return;
+            }
             
             // Collect all checked filter values
             const checkedBoxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]:checked');
             console.log('Checked boxes:', checkedBoxes.length);
             
+            // Build filter conditions
+            const filterConditions = [];
+            
             checkedBoxes.forEach(checkbox => {
-                const filterType = checkbox.id.split('-')[0]; // severity, type, partner, group
+                const filterType = checkbox.id.split('-')[0]; // severity, type, partner, group, account, solution
                 const filterValue = checkbox.value;
                 console.log('Filter:', filterType, '=', filterValue);
                 
-                if (!filters[filterType]) {
-                    filters[filterType] = [];
+                // Map filter types to field names
+                let fieldName = '';
+                switch(filterType) {
+                    case 'severity':
+                        fieldName = 'severity';
+                        break;
+                    case 'type':
+                        fieldName = 'ticketType';
+                        break;
+                    case 'partner':
+                        fieldName = 'partnerName';
+                        break;
+                    case 'group':
+                        fieldName = 'supportGroupName';
+                        break;
+                    case 'account':
+                        fieldName = 'accountName';
+                        break;
+                    case 'solution':
+                        fieldName = 'solutionName';
+                        break;
                 }
-                filters[filterType].push(filterValue);
+                
+                if (fieldName) {
+                    filterConditions.push({
+                        field: fieldName,
+                        value: filterValue
+                    });
+                }
             });
-
-            // Apply filters to grid
-            gridOptions.api.setFilterModel(null); // Clear existing filters
             
-            if (Object.keys(filters).length > 0) {
-                const filterModel = {};
-                
-                if (filters.severity && filters.severity.length > 0) {
-                    filterModel.severity = {
-                        type: 'set',
-                        values: filters.severity
-                    };
-                }
-                
-                if (filters.type && filters.type.length > 0) {
-                    filterModel.ticketType = {
-                        type: 'set',
-                        values: filters.type
-                    };
-                }
-                
-                if (filters.partner && filters.partner.length > 0) {
-                    filterModel.partnerName = {
-                        type: 'set',
-                        values: filters.partner
-                    };
-                }
-                
-                if (filters.group && filters.group.length > 0) {
-                    filterModel.supportGroupName = {
-                        type: 'set',
-                        values: filters.group
-                    };
-                }
-                
-                if (filters.account && filters.account.length > 0) {
-                    filterModel.accountName = {
-                        type: 'set',
-                        values: filters.account
-                    };
-                }
-                
-                if (filters.solution && filters.solution.length > 0) {
-                    filterModel.solutionName = {
-                        type: 'set',
-                        values: filters.solution
-                    };
-                }
-                
-                console.log('Applying filter model:', filterModel);
-                gridOptions.api.setFilterModel(filterModel);
-            }
+            console.log('Filter conditions:', filterConditions);
+            
+            // Update global filter state
+            currentFilters = filterConditions;
+            
+            // Apply external filter
+            gridOptions.api.onFilterChanged();
             
             updateTicketCount();
         }
@@ -722,6 +770,10 @@
             
             // Clear global search
             document.getElementById('globalSearch').value = '';
+            
+            // Clear external filters
+            currentFilters = [];
+            gridOptions.api.onFilterChanged();
             
             // Clear grid filters
             gridOptions.api.setFilterModel(null);
