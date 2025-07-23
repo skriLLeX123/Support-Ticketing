@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Details - Support Ticket System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .ticket-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+        .severity-badge {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+        .info-card {
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+        }
+        .contact-card {
+            border-left: 4px solid #28a745;
+            background-color: #f8f9fa;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #007bff;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 1.2rem;
+            width: 2px;
+            height: calc(100% + 0.5rem);
+            background-color: #dee2e6;
+        }
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-ticket-alt me-2"></i>Support Ticket System
+            </a>
+            <div class="d-flex">
+                <a href="/" class="btn btn-outline-light me-2">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ticket Header -->
+    <div class="ticket-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2" th:text="${ticket.title}">Ticket Title</h1>
+                    <p class="mb-0 opacity-75" th:text="${ticket.description}">Ticket Description</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="mb-2">
+                        <span class="badge severity-badge" 
+                              th:class="${ticket.severity == 'CRITICAL' ? 'bg-danger' : 
+                                        ticket.severity == 'HIGH' ? 'bg-warning' : 
+                                        ticket.severity == 'MEDIUM' ? 'bg-info' : 'bg-success'}" 
+                              th:text="${ticket.severity}">Severity</span>
+                    </div>
+                    <div class="mb-2">
+                        <span class="badge bg-primary" th:text="${ticket.ticketType}">Type</span>
+                    </div>
+                    <div th:if="${ticket.customersImpacted > 0}">
+                        <span class="badge bg-dark" th:text="${ticket.customersImpacted + ' customers impacted'}">Impact</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Ticket Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Ticket Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Ticket ID:</label>
+                                    <p class="text-muted" th:text="${ticket.ticketId}">UUID</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Solution:</label>
+                                    <p class="text-muted" th:text="${ticket.solution.name}">Solution Name</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Partner:</label>
+                                    <p class="text-muted" th:text="${ticket.partnerName}">Partner Name</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Account:</label>
+                                    <p class="text-muted" th:text="${ticket.accountName}">Account Name</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Created:</label>
+                                    <p class="text-muted" th:text="${#temporals.format(ticket.createdAt, 'MMM dd, yyyy HH:mm')}">Date</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Last Updated:</label>
+                                    <p class="text-muted" th:text="${#temporals.format(ticket.lastUpdated, 'MMM dd, yyyy HH:mm')}">Date</p>
+                                </div>
+                                <div class="mb-3" th:if="${ticket.supportGroup != null}">
+                                    <label class="form-label fw-bold">Support Group:</label>
+                                    <p class="text-muted" th:text="${ticket.supportGroup.name}">Support Group</p>
+                                </div>
+                                <div class="mb-3" th:if="${ticket.assignee != null}">
+                                    <label class="form-label fw-bold">Assignee:</label>
+                                    <p class="text-muted" th:text="${ticket.assignee.name}">Assignee</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-align-left me-2"></i>Description</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0" th:text="${ticket.description}">Detailed description of the ticket...</p>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-history me-2"></i>Timeline</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline-item">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>Ticket Created</strong>
+                                    <p class="text-muted mb-0" th:text="${ticket.title}">Ticket title</p>
+                                </div>
+                                <small class="text-muted" th:text="${#temporals.format(ticket.createdAt, 'MMM dd, yyyy HH:mm')}">Date</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item" th:if="${ticket.assignee != null}">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>Assigned to</strong>
+                                    <p class="text-muted mb-0" th:text="${ticket.assignee.name}">Assignee name</p>
+                                </div>
+                                <small class="text-muted" th:text="${#temporals.format(ticket.lastUpdated, 'MMM dd, yyyy HH:mm')}">Date</small>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>Last Updated</strong>
+                                    <p class="text-muted mb-0">Ticket information modified</p>
+                                </div>
+                                <small class="text-muted" th:text="${#temporals.format(ticket.lastUpdated, 'MMM dd, yyyy HH:mm')}">Date</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Contact Information -->
+                <div class="card mb-4" th:if="${ticket.assignee != null}">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-user me-2"></i>Assignee Contact</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Name:</label>
+                            <p class="text-muted mb-0" th:text="${ticket.assignee.name}">Assignee Name</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Email:</label>
+                            <p class="text-muted mb-0">
+                                <a th:href="'mailto:' + ${ticket.assignee.email}" th:text="${ticket.assignee.email}">email@example.com</a>
+                            </p>
+                        </div>
+                        <div class="mb-3" th:if="${ticket.assignee.phone != null}">
+                            <label class="form-label fw-bold">Phone:</label>
+                            <p class="text-muted mb-0">
+                                <a th:href="'tel:' + ${ticket.assignee.phone}" th:text="${ticket.assignee.phone}">+1-555-0101</a>
+                            </p>
+                        </div>
+                        <div th:if="${ticket.assignee.supportGroup != null}">
+                            <label class="form-label fw-bold">Support Group:</label>
+                            <p class="text-muted mb-0" th:text="${ticket.assignee.supportGroup.name}">Support Group</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solution Details -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Solution Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Solution Name:</label>
+                            <p class="text-muted mb-0" th:text="${ticket.solution.name}">Solution Name</p>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Description:</label>
+                            <p class="text-muted mb-0" th:text="${ticket.solution.description}">Solution description</p>
+                        </div>
+                        <div>
+                            <label class="form-label fw-bold">Created:</label>
+                            <p class="text-muted mb-0" th:text="${#temporals.format(ticket.solution.createdAt, 'MMM dd, yyyy')}">Date</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" onclick="editTicket()">
+                                <i class="fas fa-edit me-2"></i>Edit Ticket
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="printTicket()">
+                                <i class="fas fa-print me-2"></i>Print Details
+                            </button>
+                            <button class="btn btn-outline-info" onclick="shareTicket()">
+                                <i class="fas fa-share me-2"></i>Share Ticket
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function editTicket() {
+            // TODO: Implement edit functionality
+            alert('Edit functionality will be implemented here');
+        }
+
+        function printTicket() {
+            window.print();
+        }
+
+        function shareTicket() {
+            // TODO: Implement share functionality
+            alert('Share functionality will be implemented here');
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,16 @@
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/repository/SupportMemberRepository.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/entity/TicketType.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/entity/SupportGroup.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/SupportTicketSystemApplication.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/entity/SupportTicket.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/controller/SupportTicketController.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/service/SupportTicketService.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/entity/SupportMember.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/controller/WebController.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/repository/SolutionRepository.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/repository/SupportGroupRepository.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/dto/SupportTicketDTO.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/config/DataInitializer.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/repository/SupportTicketRepository.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/entity/Solution.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/entity/Severity.java

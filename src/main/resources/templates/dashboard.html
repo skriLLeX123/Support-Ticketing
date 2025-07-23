@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Ticket Dashboard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- ag-Grid CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.1/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.1/styles/ag-theme-alpine.css">
+    
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .search-box {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+        }
+        
+        .search-box::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .filter-sidebar {
+            background: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+            min-height: calc(100vh - 200px);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        
+        .filter-sidebar .card-body {
+            padding: 0.75rem;
+        }
+        
+        .filter-sidebar .filter-section {
+            margin-bottom: 1rem;
+        }
+        
+        .filter-sidebar .filter-header {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .filter-sidebar .filter-checkbox {
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .filter-sidebar .filter-checkbox input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        .filter-sidebar .filter-checkbox label {
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+        
+        .filter-section {
+            border-bottom: 1px solid #dee2e6;
+            padding: 15px 0;
+        }
+        
+        .filter-section:last-child {
+            border-bottom: none;
+        }
+        
+        .filter-checkbox {
+            margin-bottom: 8px;
+        }
+        
+        .filter-checkbox input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        .filter-checkbox label {
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .filter-header {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .clear-filters {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-decoration: none;
+        }
+        
+        .clear-filters:hover {
+            color: #495057;
+        }
+        
+        /* ag-Grid custom styling */
+        .ag-theme-alpine {
+            height: 600px;
+            width: 100%;
+        }
+        
+        .severity-critical {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .severity-high {
+            color: #fd7e14;
+            font-weight: 600;
+        }
+        
+        .severity-medium {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .severity-low {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .type-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            background-color: #e9ecef;
+            color: #495057;
+            border: 1px solid #ced4da;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        
+        .partner-logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        .ticket-id-cell {
+            display: flex;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+        
+        .ticket-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 4px;
+        }
+        
+        .ticket-description {
+            font-size: 0.875rem;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+        
+        .metadata-value {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .metadata-label {
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-ticket-alt me-2"></i>
+                Support Ticket System
+            </a>
+            <div class="d-flex">
+                <input type="text" class="form-control search-box me-2" id="globalSearch" placeholder="Search tickets...">
+                <button class="btn btn-outline-light" type="button" onclick="clearAllFilters()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Filter Sidebar -->
+            <div class="col-md-3">
+                <div class="card filter-sidebar">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="fas fa-filter me-2"></i>
+                            Filters
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <!-- Severity Filter -->
+                        <div class="filter-section">
+                            <div class="filter-header">Severity</div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="severity-critical" value="CRITICAL">
+                                <label for="severity-critical">Critical</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="severity-high" value="HIGH">
+                                <label for="severity-high">High</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="severity-medium" value="MEDIUM">
+                                <label for="severity-medium">Medium</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="severity-low" value="LOW">
+                                <label for="severity-low">Low</label>
+                            </div>
+                        </div>
+
+                        <!-- Ticket Type Filter -->
+                        <div class="filter-section">
+                            <div class="filter-header">Ticket Type</div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="type-technical" value="TECHNICAL">
+                                <label for="type-technical">Technical</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="type-general" value="GENERAL">
+                                <label for="type-general">General</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="type-file-transfer" value="FILE_TRANSFER">
+                                <label for="type-file-transfer">File Transfer</label>
+                            </div>
+                        </div>
+
+                        <!-- Partner Filter -->
+                        <div class="filter-section">
+                            <div class="filter-header">Partner</div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="partner-amazon" value="Amazon">
+                                <label for="partner-amazon">Amazon</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="partner-doordash" value="DoorDash">
+                                <label for="partner-doordash">DoorDash</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="partner-apple" value="Apple">
+                                <label for="partner-apple">Apple</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="partner-amex" value="Amex">
+                                <label for="partner-amex">Amex</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="partner-disney" value="Disney">
+                                <label for="partner-disney">Disney</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="partner-hulu" value="Hulu">
+                                <label for="partner-hulu">Hulu</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="partner-netflix" value="Netflix">
+                                <label for="partner-netflix">Netflix</label>
+                            </div>
+                        </div>
+
+                        <!-- Support Group Filter -->
+                        <div class="filter-section">
+                            <div class="filter-header">Support Group</div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="group-tier1" value="Tier 1 Support">
+                                <label for="group-tier1">Tier 1 Support</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="group-tier2" value="Tier 2 Support">
+                                <label for="group-tier2">Tier 2 Support</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="group-escalation" value="Escalation Team">
+                                <label for="group-escalation">Escalation Team</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Support Tickets
+                        </h5>
+                        <div class="d-flex align-items-center">
+                            <span class="text-muted me-3" id="ticketCount">0 tickets</span>
+                            <button class="btn btn-sm btn-outline-primary" onclick="exportToCSV()">
+                                <i class="fas fa-download me-1"></i>
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="ticketGrid" class="ag-theme-alpine"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- ag-Grid JS -->
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.1/dist/ag-grid-community.min.js"></script>
+    
+    <script th:inline="javascript">
+        // Get tickets data from Thymeleaf
+        const ticketsData = /*[[${tickets}]]*/ [];
+        
+        // ag-Grid configuration
+        const gridOptions = {
+            columnDefs: [
+                {
+                    headerName: 'Ticket ID',
+                    field: 'ticketId',
+                    width: 150,
+                    cellRenderer: function(params) {
+                        const partner = params.data.partnerName;
+                        let logoUrl = '';
+                        let ticketId = '';
+                        
+                        if (partner === 'Amazon') {
+                            logoUrl = 'https://logo.clearbit.com/amazon.com';
+                            ticketId = 'AMZT000001';
+                        } else if (partner === 'DoorDash') {
+                            logoUrl = 'https://logo.clearbit.com/doordash.com';
+                            ticketId = 'DORG000001';
+                        } else if (partner === 'Apple') {
+                            logoUrl = 'https://logo.clearbit.com/apple.com';
+                            ticketId = 'APPF000001';
+                        } else if (partner === 'Amex') {
+                            logoUrl = 'https://logo.clearbit.com/americanexpress.com';
+                            ticketId = 'AMXT000001';
+                        } else if (partner === 'Disney') {
+                            logoUrl = 'https://logo.clearbit.com/disney.com';
+                            ticketId = 'DISG000001';
+                        } else if (partner === 'Hulu') {
+                            logoUrl = 'https://logo.clearbit.com/hulu.com';
+                            ticketId = 'HULF000001';
+                        } else if (partner === 'Netflix') {
+                            logoUrl = 'https://logo.clearbit.com/netflix.com';
+                            ticketId = 'NETT000001';
+                        } else {
+                            ticketId = 'XXXG000001';
+                        }
+                        
+                        return `<div class="ticket-id-cell">
+                                    <img src="${logoUrl}" class="partner-logo" onerror="this.style.display='none'">
+                                    <span>${ticketId}</span>
+                                </div>`;
+                    }
+                },
+                {
+                    headerName: 'Title & Description',
+                    field: 'title',
+                    width: 300,
+                    cellRenderer: function(params) {
+                        return `<div>
+                                    <div class="ticket-title">${params.data.title}</div>
+                                    <div class="ticket-description">${params.data.description}</div>
+                                </div>`;
+                    }
+                },
+                {
+                    headerName: 'Type',
+                    field: 'ticketType',
+                    width: 120,
+                    cellRenderer: function(params) {
+                        const type = params.data.ticketType;
+                        return `<div class="type-badge">${type}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Severity',
+                    field: 'severity',
+                    width: 120,
+                    cellRenderer: function(params) {
+                        const severity = params.data.severity;
+                        return `<div class="severity-${severity.toLowerCase()}">${severity}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Partner',
+                    field: 'partnerName',
+                    width: 120,
+                    cellRenderer: function(params) {
+                        return `<div class="metadata-value">${params.value}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Account',
+                    field: 'accountName',
+                    width: 150,
+                    cellRenderer: function(params) {
+                        return `<div class="metadata-value">${params.value}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Solution',
+                    field: 'solutionName',
+                    width: 150,
+                    cellRenderer: function(params) {
+                        return `<div class="metadata-value">${params.value || '-'}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Support Group',
+                    field: 'supportGroupName',
+                    width: 150,
+                    cellRenderer: function(params) {
+                        return `<div class="metadata-value">${params.value || '-'}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Assignee',
+                    field: 'assigneeName',
+                    width: 120,
+                    cellRenderer: function(params) {
+                        return `<div class="metadata-value">${params.value || '-'}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Impact',
+                    field: 'customersImpacted',
+                    width: 100,
+                    cellRenderer: function(params) {
+                        if (params.value > 0) {
+                            return `<div class="metadata-value">${params.value}</div>`;
+                        } else {
+                            return `<div class="text-muted">-</div>`;
+                        }
+                    }
+                },
+                {
+                    headerName: 'Created',
+                    field: 'createdAt',
+                    width: 120,
+                    cellRenderer: function(params) {
+                        const date = new Date(params.value);
+                        const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
+                        const timeStr = date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                        
+                        return `<div>
+                                    <div class="metadata-value">${dateStr}</div>
+                                    <div class="metadata-label">${timeStr}</div>
+                                </div>`;
+                    }
+                }
+            ],
+            rowData: ticketsData,
+            pagination: true,
+            paginationPageSize: 10,
+            domLayout: 'autoHeight',
+            defaultColDef: {
+                sortable: true,
+                filter: true,
+                resizable: true,
+                floatingFilter: false
+            },
+            onGridReady: function(params) {
+                params.api.sizeColumnsToFit();
+                updateTicketCount();
+            },
+            onFilterChanged: function(params) {
+                updateTicketCount();
+            }
+        };
+
+        // Initialize the grid
+        document.addEventListener('DOMContentLoaded', function() {
+            const gridDiv = document.querySelector('#ticketGrid');
+            new agGrid.Grid(gridDiv, gridOptions);
+            
+            // Set up filter event listeners
+            setupFilterEventListeners();
+        });
+
+        function updateTicketCount() {
+            const rowCount = gridOptions.api.getDisplayedRowCount();
+            document.getElementById('ticketCount').textContent = `${rowCount} tickets`;
+        }
+
+        function setupFilterEventListeners() {
+            // Global search
+            document.getElementById('globalSearch').addEventListener('input', function(e) {
+                gridOptions.api.setQuickFilter(e.target.value);
+                updateTicketCount();
+            });
+
+            // Filter checkboxes
+            const filterCheckboxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]');
+            filterCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', applyFilters);
+            });
+        }
+
+        function applyFilters() {
+            const filters = {};
+            
+            // Collect all checked filter values
+            const checkedBoxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]:checked');
+            checkedBoxes.forEach(checkbox => {
+                const filterType = checkbox.id.split('-')[0]; // severity, type, partner, group
+                const filterValue = checkbox.value;
+                
+                if (!filters[filterType]) {
+                    filters[filterType] = [];
+                }
+                filters[filterType].push(filterValue);
+            });
+
+            // Apply filters to grid
+            gridOptions.api.setFilterModel(null); // Clear existing filters
+            
+            if (Object.keys(filters).length > 0) {
+                const filterModel = {};
+                
+                if (filters.severity && filters.severity.length > 0) {
+                    filterModel.severity = {
+                        type: 'set',
+                        values: filters.severity
+                    };
+                }
+                
+                if (filters.type && filters.type.length > 0) {
+                    filterModel.ticketType = {
+                        type: 'set',
+                        values: filters.type
+                    };
+                }
+                
+                if (filters.partner && filters.partner.length > 0) {
+                    filterModel.partnerName = {
+                        type: 'set',
+                        values: filters.partner
+                    };
+                }
+                
+                if (filters.group && filters.group.length > 0) {
+                    filterModel.supportGroupName = {
+                        type: 'set',
+                        values: filters.group
+                    };
+                }
+                
+                console.log('Applying filter model:', filterModel);
+                gridOptions.api.setFilterModel(filterModel);
+            }
+            
+            updateTicketCount();
+        }
+
+        function clearAllFilters() {
+            // Clear checkboxes
+            const checkboxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+            
+            // Clear global search
+            document.getElementById('globalSearch').value = '';
+            
+            // Clear grid filters
+            gridOptions.api.setFilterModel(null);
+            gridOptions.api.setQuickFilter('');
+        }
+
+        function exportToCSV() {
+            gridOptions.api.exportDataAsCsv({
+                fileName: 'support-tickets.csv'
+            });
+        }
+    </script>
+</body>
+</html> 
