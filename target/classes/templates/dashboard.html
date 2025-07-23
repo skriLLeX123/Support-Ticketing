@@ -37,10 +37,11 @@
             top: 20px;
             max-height: calc(100vh - 40px);
             overflow-y: auto;
+            font-size: 0.85rem;
         }
         
         .filter-sidebar .card-body {
-            padding: 0.75rem;
+            padding: 0.5rem;
         }
         
         .filter-sidebar .filter-section {
@@ -54,8 +55,8 @@
         }
         
         .filter-sidebar .filter-checkbox {
-            font-size: 0.8rem;
-            margin-bottom: 0.25rem;
+            font-size: 0.75rem;
+            margin-bottom: 0.2rem;
         }
         
         .filter-sidebar .filter-checkbox input[type="checkbox"] {
@@ -110,6 +111,35 @@
         .ag-theme-alpine {
             height: 600px;
             width: 100%;
+            border: none !important;
+        }
+        
+        #ticketGrid {
+            border: none !important;
+        }
+        
+        .card-body.p-0 {
+            border: none !important;
+        }
+        
+        .card {
+            border: none !important;
+        }
+        
+        .ag-header-cell {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .ag-header-cell-text {
+            font-size: 0.875rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .ag-row {
+            padding: 4px 0;
         }
         
         .severity-critical {
@@ -156,12 +186,11 @@
         .ticket-id-cell {
             display: flex;
             align-items: center;
-            font-family: 'Courier New', monospace;
-            font-weight: 600;
+            font-size: 0.875rem;
         }
         
         .ticket-title {
-            font-weight: 600;
+            font-size: 0.875rem;
             color: #495057;
             margin-bottom: 4px;
         }
@@ -173,7 +202,7 @@
         }
         
         .metadata-value {
-            font-weight: 500;
+            font-size: 0.875rem;
             color: #495057;
         }
         
@@ -205,7 +234,7 @@
     <div class="container-fluid mt-4">
         <div class="row">
             <!-- Filter Sidebar -->
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card filter-sidebar">
                     <div class="card-header">
                         <h6 class="mb-0">
@@ -289,16 +318,102 @@
                         <div class="filter-section">
                             <div class="filter-header">Support Group</div>
                             <div class="filter-checkbox">
-                                <input type="checkbox" id="group-tier1" value="Tier 1 Support">
-                                <label for="group-tier1">Tier 1 Support</label>
+                                <input type="checkbox" id="group-technical" value="Technical Support">
+                                <label for="group-technical">Technical Support</label>
                             </div>
                             <div class="filter-checkbox">
-                                <input type="checkbox" id="group-tier2" value="Tier 2 Support">
-                                <label for="group-tier2">Tier 2 Support</label>
+                                <input type="checkbox" id="group-customer" value="Customer Service">
+                                <label for="group-customer">Customer Service</label>
                             </div>
                             <div class="filter-checkbox">
-                                <input type="checkbox" id="group-escalation" value="Escalation Team">
-                                <label for="group-escalation">Escalation Team</label>
+                                <input type="checkbox" id="group-infrastructure" value="Infrastructure Team">
+                                <label for="group-infrastructure">Infrastructure Team</label>
+                            </div>
+                        </div>
+
+                        <!-- Account Filter -->
+                        <div class="filter-section">
+                            <div class="filter-header">Account</div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-amazon-prod" value="Amazon-Prod">
+                                <label for="account-amazon-prod">Amazon-Prod</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-amazon-dev" value="Amazon-Dev">
+                                <label for="account-amazon-dev">Amazon-Dev</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-doordash-api" value="DoorDash-API">
+                                <label for="account-doordash-api">DoorDash-API</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-doordash-prod" value="DoorDash-Prod">
+                                <label for="account-doordash-prod">DoorDash-Prod</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-apple-main" value="Apple-Main">
+                                <label for="account-apple-main">Apple-Main</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-apple-demo" value="Apple-Demo">
+                                <label for="account-apple-demo">Apple-Demo</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-amex-prod" value="Amex-Prod">
+                                <label for="account-amex-prod">Amex-Prod</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-amex-app" value="Amex-App">
+                                <label for="account-amex-app">Amex-App</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-disney-stream" value="Disney-Stream">
+                                <label for="account-disney-stream">Disney-Stream</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-disney-pay" value="Disney-Pay">
+                                <label for="account-disney-pay">Disney-Pay</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-hulu-content" value="Hulu-Content">
+                                <label for="account-hulu-content">Hulu-Content</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-hulu-subs" value="Hulu-Subs">
+                                <label for="account-hulu-subs">Hulu-Subs</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-netflix-ai" value="Netflix-AI">
+                                <label for="account-netflix-ai">Netflix-AI</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="account-netflix-mobile" value="Netflix-Mobile">
+                                <label for="account-netflix-mobile">Netflix-Mobile</label>
+                            </div>
+                        </div>
+
+                        <!-- Solution Filter -->
+                        <div class="filter-section">
+                            <div class="filter-header">Solution</div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="solution-database" value="Database">
+                                <label for="solution-database">Database</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="solution-file-upload" value="Upload">
+                                <label for="solution-file-upload">Upload</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="solution-api-integration" value="API">
+                                <label for="solution-api-integration">API</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="solution-authentication" value="Authentication">
+                                <label for="solution-authentication">Authentication</label>
+                            </div>
+                            <div class="filter-checkbox">
+                                <input type="checkbox" id="solution-performance" value="Performance">
+                                <label for="solution-performance">Performance</label>
                             </div>
                         </div>
                     </div>
@@ -306,7 +421,7 @@
             </div>
 
             <!-- Main Content -->
-            <div class="col-md-9">
+            <div class="col-md-10">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
@@ -343,9 +458,9 @@
         const gridOptions = {
             columnDefs: [
                 {
-                    headerName: 'Ticket ID',
+                    headerName: 'Ticket Id',
                     field: 'ticketId',
-                    width: 150,
+                    width: 180,
                     cellRenderer: function(params) {
                         const partner = params.data.partnerName;
                         let logoUrl = '';
@@ -385,7 +500,7 @@
                 {
                     headerName: 'Title & Description',
                     field: 'title',
-                    width: 300,
+                    width: 350,
                     cellRenderer: function(params) {
                         return `<div>
                                     <div class="ticket-title">${params.data.title}</div>
@@ -394,67 +509,67 @@
                     }
                 },
                 {
-                    headerName: 'Type',
+                    headerName: 'Ticket Type',
                     field: 'ticketType',
-                    width: 120,
+                    width: 100,
                     cellRenderer: function(params) {
                         const type = params.data.ticketType;
                         return `<div class="type-badge">${type}</div>`;
                     }
                 },
                 {
-                    headerName: 'Severity',
+                    headerName: 'Ticket Severity',
                     field: 'severity',
-                    width: 120,
+                    width: 100,
                     cellRenderer: function(params) {
                         const severity = params.data.severity;
                         return `<div class="severity-${severity.toLowerCase()}">${severity}</div>`;
                     }
                 },
                 {
-                    headerName: 'Partner',
+                    headerName: 'Partner Name',
                     field: 'partnerName',
-                    width: 120,
-                    cellRenderer: function(params) {
-                        return `<div class="metadata-value">${params.value}</div>`;
-                    }
-                },
-                {
-                    headerName: 'Account',
-                    field: 'accountName',
-                    width: 150,
-                    cellRenderer: function(params) {
-                        return `<div class="metadata-value">${params.value}</div>`;
-                    }
-                },
-                {
-                    headerName: 'Solution',
-                    field: 'solutionName',
-                    width: 150,
-                    cellRenderer: function(params) {
-                        return `<div class="metadata-value">${params.value || '-'}</div>`;
-                    }
-                },
-                {
-                    headerName: 'Support Group',
-                    field: 'supportGroupName',
-                    width: 150,
-                    cellRenderer: function(params) {
-                        return `<div class="metadata-value">${params.value || '-'}</div>`;
-                    }
-                },
-                {
-                    headerName: 'Assignee',
-                    field: 'assigneeName',
-                    width: 120,
-                    cellRenderer: function(params) {
-                        return `<div class="metadata-value">${params.value || '-'}</div>`;
-                    }
-                },
-                {
-                    headerName: 'Impact',
-                    field: 'customersImpacted',
                     width: 100,
+                    cellRenderer: function(params) {
+                        return `<div class="metadata-value">${params.value}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Account Name',
+                    field: 'accountName',
+                    width: 120,
+                    cellRenderer: function(params) {
+                        return `<div class="metadata-value">${params.value}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Solution Name',
+                    field: 'solutionName',
+                    width: 120,
+                    cellRenderer: function(params) {
+                        return `<div class="metadata-value">${params.value || '-'}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Support Group Name',
+                    field: 'supportGroupName',
+                    width: 130,
+                    cellRenderer: function(params) {
+                        return `<div class="metadata-value">${params.value || '-'}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Assignee Name',
+                    field: 'assigneeName',
+                    width: 110,
+                    cellRenderer: function(params) {
+                        return `<div class="metadata-value">${params.value || '-'}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Customers Impacted',
+                    field: 'customersImpacted',
+                    width: 80,
                     cellRenderer: function(params) {
                         if (params.value > 0) {
                             return `<div class="metadata-value">${params.value}</div>`;
@@ -464,9 +579,9 @@
                     }
                 },
                 {
-                    headerName: 'Created',
+                    headerName: 'Created At',
                     field: 'createdAt',
-                    width: 120,
+                    width: 100,
                     cellRenderer: function(params) {
                         const date = new Date(params.value);
                         const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
@@ -487,10 +602,11 @@
                 sortable: true,
                 filter: true,
                 resizable: true,
-                floatingFilter: false
+                floatingFilter: false,
+                headerClass: 'ag-header-cell'
             },
             onGridReady: function(params) {
-                params.api.sizeColumnsToFit();
+                // Don't auto-size columns to fit, let them use their defined widths
                 updateTicketCount();
             },
             onFilterChanged: function(params) {
@@ -531,9 +647,12 @@
             
             // Collect all checked filter values
             const checkedBoxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]:checked');
+            console.log('Checked boxes:', checkedBoxes.length);
+            
             checkedBoxes.forEach(checkbox => {
                 const filterType = checkbox.id.split('-')[0]; // severity, type, partner, group
                 const filterValue = checkbox.value;
+                console.log('Filter:', filterType, '=', filterValue);
                 
                 if (!filters[filterType]) {
                     filters[filterType] = [];
@@ -572,6 +691,20 @@
                     filterModel.supportGroupName = {
                         type: 'set',
                         values: filters.group
+                    };
+                }
+                
+                if (filters.account && filters.account.length > 0) {
+                    filterModel.accountName = {
+                        type: 'set',
+                        values: filters.account
+                    };
+                }
+                
+                if (filters.solution && filters.solution.length > 0) {
+                    filterModel.solutionName = {
+                        type: 'set',
+                        values: filters.solution
                     };
                 }
                 

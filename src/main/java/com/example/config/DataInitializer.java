@@ -35,11 +35,11 @@ public class DataInitializer implements CommandLineRunner {
 
     private void initializeSampleData() {
         // Create sample solutions
-        Solution solution1 = new Solution("Database Connection Issue", "Resolve database connectivity problems");
-        Solution solution2 = new Solution("File Upload Problem", "Fix file upload functionality");
-        Solution solution3 = new Solution("API Integration Error", "Resolve API integration issues");
-        Solution solution4 = new Solution("User Authentication Issue", "Fix user login and authentication");
-        Solution solution5 = new Solution("Performance Optimization", "Improve system performance");
+        Solution solution1 = new Solution("Database", "Resolve database connectivity problems and connection pool issues");
+        Solution solution2 = new Solution("Upload", "Fix file upload functionality for files larger than 10MB with proper validation");
+        Solution solution3 = new Solution("API", "Resolve API integration issues and implement proper rate limiting strategies");
+        Solution solution4 = new Solution("Authentication", "Fix user login and authentication with enhanced security measures");
+        Solution solution5 = new Solution("Performance", "Improve system performance through comprehensive monitoring and optimization");
 
         List<Solution> solutions = Arrays.asList(solution1, solution2, solution3, solution4, solution5);
         solutions.forEach(solutionRepository::save);
