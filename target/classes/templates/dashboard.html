@@ -98,6 +98,145 @@
             font-weight: 400;
             transition: color 0.2s ease;
         }
+
+        /* Export Modal Styles */
+        .modal-xl {
+            max-width: 70vw;
+            width: 70vw;
+        }
+
+        @media (max-width: 1200px) {
+            .modal-xl {
+                max-width: 75vw;
+                width: 75vw;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .modal-xl {
+                max-width: 90vw;
+                width: 90vw;
+            }
+            
+            .export-modal .col-md-5,
+            .export-modal .col-md-7 {
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+
+        .export-modal .card {
+            border: 1px solid #e1e8ed;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 100%;
+        }
+
+        .export-modal .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e1e8ed;
+            padding: 12px 16px;
+        }
+
+        .export-modal .card-header h6 {
+            color: #0f1111;
+            font-weight: 600;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .export-modal .card-body {
+            padding: 16px 8px 16px 16px;
+            overflow-x: hidden;
+            word-wrap: break-word;
+        }
+
+        .export-modal .form-label {
+            font-weight: 600;
+            color: #0f1111;
+            margin-bottom: 16px;
+            font-size: 14px;
+            padding-left: 4px;
+        }
+
+        .export-modal .form-check-label {
+            font-size: 14px;
+            color: #0f1111;
+            cursor: pointer;
+            margin-left: 8px;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        .export-modal .form-select {
+            font-size: 14px;
+            border-color: #d1d5db;
+            padding: 8px 12px;
+        }
+
+        .export-modal .form-select:focus {
+            border-color: #117ACA;
+            box-shadow: 0 0 0 0.2rem rgba(17, 122, 202, 0.25);
+        }
+
+        .export-modal .btn-sm {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        .export-modal .column-selection {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0px;
+        }
+
+        .export-modal .form-check {
+            margin-bottom: 8px;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+
+        .export-modal .form-check:hover {
+            background-color: #f8f9fa;
+        }
+
+        .export-modal .form-check-input {
+            margin-right: 0;
+            margin-top: 0;
+        }
+
+        .export-modal .form-check-input:checked {
+            background-color: #117ACA;
+            border-color: #117ACA;
+        }
+
+
+
+        .export-modal .modal-body {
+            padding: 16px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .export-modal .modal-footer {
+            padding: 12px 16px;
+            border-top: 1px solid #e1e8ed;
+        }
+
+        .export-modal .row {
+            margin: 0;
+        }
+
+        .export-modal .col-md-5 {
+            padding: 0 8px;
+        }
+
+        .export-modal .col-md-7 {
+            padding: 0 2px 0 8px;
+        }
         
         .filter-sidebar .filter-checkbox:hover label {
             color: #117ACA;
@@ -189,6 +328,10 @@
             border-bottom: 2px solid #dee2e6;
             font-weight: 600;
             color: #495057;
+            border-radius: 8px 8px 0 0;
+            padding: 8px 12px;
+            background-color: #f8f9fa;
+            margin: 0 2px;
         }
         
         .ag-header-cell-text {
@@ -529,7 +672,7 @@
                     <div class="card-header d-flex justify-content-end align-items-center">
                         <div class="d-flex align-items-center">
                             <span class="text-muted me-3" id="ticketCount">0 tickets</span>
-                            <button class="btn btn-sm btn-outline-primary" onclick="exportToCSV()">
+                            <button class="btn btn-sm btn-outline-primary" onclick="openExportModal()">
                                 <i class="fas fa-download me-1"></i>
                                 Export
                             </button>
@@ -538,6 +681,224 @@
                     <div class="card-body p-0">
                         <div id="ticketGrid" class="ag-theme-alpine"></div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportModalLabel">
+                        <i class="fas fa-download me-2"></i>
+                        Export Support Tickets
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body export-modal">
+                    <div class="row">
+                        <!-- Left Partition - Date Range & Filters -->
+                        <div class="col-md-5">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-calendar-alt me-2"></i>
+                                        Date Range & Filters
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Date Range Selection -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Date Range</label>
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="dateRange" id="lastWeek" value="lastWeek" checked>
+                                                <label class="form-check-label" for="lastWeek">
+                                                    Last Week
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="dateRange" id="lastMonth" value="lastMonth">
+                                                <label class="form-check-label" for="lastMonth">
+                                                    Last Month
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="dateRange" id="lastQuarter" value="lastQuarter">
+                                                <label class="form-check-label" for="lastQuarter">
+                                                    Last Quarter (3 months)
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="dateRange" id="lastYear" value="lastYear">
+                                                <label class="form-check-label" for="lastYear">
+                                                    Last Year
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="dateRange" id="customRange" value="customRange">
+                                                <label class="form-check-label" for="customRange">
+                                                    Custom Range
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Custom Date Range -->
+                                        <div id="customDateRange" class="row" style="display: none;">
+                                            <div class="col-6">
+                                                <label class="form-label">From Date</label>
+                                                <input type="date" class="form-control" id="fromDate">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">To Date</label>
+                                                <input type="date" class="form-control" id="toDate">
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <hr class="my-4">
+
+                                    <!-- Export Format -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Export Format</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exportFormat" id="formatCSV" value="csv" checked>
+                                            <label class="form-check-label" for="formatCSV">
+                                                CSV (Comma Separated Values)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exportFormat" id="formatExcel" value="excel">
+                                            <label class="form-check-label" for="formatExcel">
+                                                Excel (.xlsx)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exportFormat" id="formatJSON" value="json">
+                                            <label class="form-check-label" for="formatJSON">
+                                                JSON
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Partition - Column Selection -->
+                        <div class="col-md-7">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-columns me-2"></i>
+                                        Column Selection
+                                    </h6>
+                                    <div>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllColumns()">
+                                            Select All
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary ms-1" onclick="deselectAllColumns()">
+                                            Deselect All
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body column-selection">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-ticketId" value="ticketId" checked>
+                                                <label class="form-check-label" for="col-ticketId">
+                                                    Ticket ID
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-title" value="title" checked>
+                                                <label class="form-check-label" for="col-title">
+                                                    Title
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-description" value="description" checked>
+                                                <label class="form-check-label" for="col-description">
+                                                    Description
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-ticketType" value="ticketType" checked>
+                                                <label class="form-check-label" for="col-ticketType">
+                                                    Ticket Type
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-severity" value="severity" checked>
+                                                <label class="form-check-label" for="col-severity">
+                                                    Severity
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-partnerName" value="partnerName" checked>
+                                                <label class="form-check-label" for="col-partnerName">
+                                                    Partner
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-accountName" value="accountName" checked>
+                                                <label class="form-check-label" for="col-accountName">
+                                                    Account
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-assigneeName" value="assigneeName" checked>
+                                                <label class="form-check-label" for="col-assigneeName">
+                                                    Assignee
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-supportGroupName" value="supportGroupName" checked>
+                                                <label class="form-check-label" for="col-supportGroupName">
+                                                    Support Group
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-solutionName" value="solutionName" checked>
+                                                <label class="form-check-label" for="col-solutionName">
+                                                    Solution
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-customersImpacted" value="customersImpacted" checked>
+                                                <label class="form-check-label" for="col-customersImpacted">
+                                                    Customers Impacted
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-createdAt" value="createdAt" checked>
+                                                <label class="form-check-label" for="col-createdAt">
+                                                    Created Date
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="col-lastUpdated" value="lastUpdated" checked>
+                                                <label class="form-check-label" for="col-lastUpdated">
+                                                    Last Updated
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="executeExport()">
+                        <i class="fas fa-download me-1"></i>
+                        Export Data
+                    </button>
                 </div>
             </div>
         </div>
@@ -568,6 +929,30 @@
                     field: 'ticketId',
                     width: 120,
                     filter: true,
+                    valueGetter: function(params) {
+                        const partner = params.data.partnerName;
+                        let ticketId = '';
+                        
+                        if (partner === 'Amazon') {
+                            ticketId = 'AMZT000001';
+                        } else if (partner === 'DoorDash') {
+                            ticketId = 'DORG000001';
+                        } else if (partner === 'Apple') {
+                            ticketId = 'APPF000001';
+                        } else if (partner === 'Amex') {
+                            ticketId = 'AMXT000001';
+                        } else if (partner === 'Disney') {
+                            ticketId = 'DISG000001';
+                        } else if (partner === 'Hulu') {
+                            ticketId = 'HULF000001';
+                        } else if (partner === 'Netflix') {
+                            ticketId = 'NETT000001';
+                        } else {
+                            ticketId = 'XXXG000001';
+                        }
+                        
+                        return ticketId;
+                    },
                     cellRenderer: function(params) {
                         const partner = params.data.partnerName;
                         let logoUrl = '';
@@ -875,10 +1260,278 @@
             gridOptions.api.setQuickFilter('');
         }
 
-        function exportToCSV() {
-            gridOptions.api.exportDataAsCsv({
-                fileName: 'support-tickets.csv'
+        // Export Modal Functions
+        function openExportModal() {
+            const modal = new bootstrap.Modal(document.getElementById('exportModal'));
+            modal.show();
+            
+            // Set default date range
+            setDefaultDateRange();
+            
+            // Set up event listeners
+            setupExportModalListeners();
+        }
+
+        function setDefaultDateRange() {
+            const today = new Date();
+            const lastWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            document.getElementById('fromDate').value = lastWeek.toISOString().split('T')[0];
+            document.getElementById('toDate').value = today.toISOString().split('T')[0];
+        }
+
+        function setupExportModalListeners() {
+            // Date range radio button listeners
+            const dateRangeRadios = document.querySelectorAll('input[name="dateRange"]');
+            dateRangeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const customRangeDiv = document.getElementById('customDateRange');
+                    if (this.value === 'customRange') {
+                        customRangeDiv.style.display = 'block';
+                    } else {
+                        customRangeDiv.style.display = 'none';
+                    }
+                });
             });
+
+            // Custom date range validation
+            document.getElementById('fromDate').addEventListener('change', validateDateRange);
+            document.getElementById('toDate').addEventListener('change', validateDateRange);
+        }
+
+        function validateDateRange() {
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            const today = new Date().toISOString().split('T')[0];
+
+            if (fromDate && toDate && fromDate > toDate) {
+                alert('From date cannot be after To date');
+                return false;
+            }
+
+            if (toDate && toDate > today) {
+                alert('To date cannot be in the future');
+                return false;
+            }
+
+            return true;
+        }
+
+        function selectAllColumns() {
+            const checkboxes = document.querySelectorAll('#exportModal input[type="checkbox"][id^="col-"]');
+            checkboxes.forEach(checkbox => checkbox.checked = true);
+        }
+
+        function deselectAllColumns() {
+            const checkboxes = document.querySelectorAll('#exportModal input[type="checkbox"][id^="col-"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+        }
+
+        function getDateRange() {
+            const selectedRange = document.querySelector('input[name="dateRange"]:checked').value;
+            const today = new Date();
+            let fromDate, toDate;
+
+            switch(selectedRange) {
+                case 'lastWeek':
+                    fromDate = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    toDate = today;
+                    break;
+                case 'lastMonth':
+                    fromDate = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+                    toDate = today;
+                    break;
+                case 'lastQuarter':
+                    fromDate = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
+                    toDate = today;
+                    break;
+                case 'lastYear':
+                    fromDate = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+                    toDate = today;
+                    break;
+                case 'customRange':
+                    fromDate = new Date(document.getElementById('fromDate').value);
+                    toDate = new Date(document.getElementById('toDate').value);
+                    break;
+            }
+
+            return { fromDate, toDate };
+        }
+
+        function getSelectedColumns() {
+            const checkboxes = document.querySelectorAll('#exportModal input[type="checkbox"][id^="col-"]:checked');
+            return Array.from(checkboxes).map(checkbox => checkbox.value);
+        }
+
+        function getExportFilters() {
+            return {
+                severity: '',
+                ticketType: '',
+                partnerName: '',
+                impactLevel: ''
+            };
+        }
+
+        function getExportFormat() {
+            return document.querySelector('input[name="exportFormat"]:checked').value;
+        }
+
+        function filterDataForExport(data) {
+            const { fromDate, toDate } = getDateRange();
+
+            return data.filter(ticket => {
+                // Date range filter only
+                const ticketDate = new Date(ticket.createdAt);
+                return ticketDate >= fromDate && ticketDate <= toDate;
+            });
+        }
+
+        function formatTicketId(ticket) {
+            const partner = ticket.partnerName;
+            if (partner === 'Amazon') return 'AMZT000001';
+            if (partner === 'DoorDash') return 'DORG000001';
+            if (partner === 'Apple') return 'APPF000001';
+            if (partner === 'Amex') return 'AMXT000001';
+            if (partner === 'Disney') return 'DISG000001';
+            if (partner === 'Hulu') return 'HULF000001';
+            if (partner === 'Netflix') return 'NETT000001';
+            return 'XXXG000001';
+        }
+
+        function executeExport() {
+            if (!validateDateRange()) {
+                return;
+            }
+
+            const selectedColumns = getSelectedColumns();
+            if (selectedColumns.length === 0) {
+                alert('Please select at least one column to export');
+                return;
+            }
+
+            const exportFormat = getExportFormat();
+            const filteredData = filterDataForExport(ticketsData);
+
+            if (filteredData.length === 0) {
+                alert('No data found for the selected criteria');
+                return;
+            }
+
+            // Transform data for export
+            const exportData = filteredData.map(ticket => {
+                const exportRow = {};
+                
+                selectedColumns.forEach(col => {
+                    switch(col) {
+                        case 'ticketId':
+                            exportRow['Ticket ID'] = formatTicketId(ticket);
+                            break;
+                        case 'title':
+                            exportRow['Title'] = ticket.title;
+                            break;
+                        case 'description':
+                            exportRow['Description'] = ticket.description;
+                            break;
+                        case 'ticketType':
+                            exportRow['Ticket Type'] = ticket.ticketType;
+                            break;
+                        case 'severity':
+                            exportRow['Severity'] = ticket.severity;
+                            break;
+                        case 'partnerName':
+                            exportRow['Partner'] = ticket.partnerName;
+                            break;
+                        case 'accountName':
+                            exportRow['Account'] = ticket.accountName;
+                            break;
+                        case 'assigneeName':
+                            exportRow['Assignee'] = ticket.assigneeName || '-';
+                            break;
+                        case 'supportGroupName':
+                            exportRow['Support Group'] = ticket.supportGroupName || '-';
+                            break;
+                        case 'solutionName':
+                            exportRow['Solution'] = ticket.solutionName || '-';
+                            break;
+                        case 'customersImpacted':
+                            exportRow['Customers Impacted'] = ticket.customersImpacted || 0;
+                            break;
+                        case 'createdAt':
+                            exportRow['Created Date'] = new Date(ticket.createdAt).toLocaleString();
+                            break;
+                        case 'lastUpdated':
+                            exportRow['Last Updated'] = new Date(ticket.lastUpdated).toLocaleString();
+                            break;
+                    }
+                });
+                
+                return exportRow;
+            });
+
+            // Generate filename
+            const { fromDate, toDate } = getDateRange();
+            const dateStr = `${fromDate.toISOString().split('T')[0]}_to_${toDate.toISOString().split('T')[0]}`;
+            const filename = `support_tickets_${dateStr}`;
+
+            // Export based on format
+            switch(exportFormat) {
+                case 'csv':
+                    exportToCSV(exportData, filename);
+                    break;
+                case 'excel':
+                    exportToExcel(exportData, filename);
+                    break;
+                case 'json':
+                    exportToJSON(exportData, filename);
+                    break;
+            }
+
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('exportModal'));
+            modal.hide();
+        }
+
+        function exportToCSV(data, filename) {
+            if (data.length === 0) return;
+
+            const headers = Object.keys(data[0]);
+            const csvContent = [
+                headers.join(','),
+                ...data.map(row => headers.map(header => {
+                    const value = row[header];
+                    return typeof value === 'string' && value.includes(',') ? `"${value}"` : value;
+                }).join(','))
+            ].join('\n');
+
+            downloadFile(csvContent, `${filename}.csv`, 'text/csv');
+        }
+
+        function exportToExcel(data, filename) {
+            // For Excel export, we'll use a simple CSV format that Excel can open
+            // In a production environment, you might want to use a library like SheetJS
+            exportToCSV(data, filename);
+        }
+
+        function exportToJSON(data, filename) {
+            const jsonContent = JSON.stringify(data, null, 2);
+            downloadFile(jsonContent, `${filename}.json`, 'application/json');
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Legacy function for backward compatibility
+        function exportToCSV() {
+            openExportModal();
         }
     </script>
 </body>
