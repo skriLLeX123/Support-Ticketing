@@ -72,11 +72,24 @@
         </div>
     </nav>
 
+    <!-- Breadcrumb -->
+    <div class="container mt-3">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${ticket.title}">Ticket Details</li>
+            </ol>
+        </nav>
+    </div>
+
     <!-- Ticket Header -->
     <div class="ticket-header">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-8">
+                    <div class="mb-2">
+                        <small class="text-light opacity-75" th:text="${ticket.ticketId}">Ticket ID</small>
+                    </div>
                     <h1 class="mb-2" th:text="${ticket.title}">Ticket Title</h1>
                     <p class="mb-0 opacity-75" th:text="${ticket.description}">Ticket Description</p>
                 </div>
