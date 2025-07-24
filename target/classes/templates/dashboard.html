@@ -238,6 +238,116 @@
             padding: 0 2px 0 8px;
         }
         
+        /* Filter Slide Panel Styles */
+        .filter-slide-panel {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100vh;
+            background: #ffffff;
+            border-left: 1px solid #e1e8ed;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1050;
+            transition: right 0.3s ease-in-out;
+            overflow-y: auto;
+        }
+
+        .filter-slide-panel.active {
+            right: 0;
+        }
+
+        .filter-panel-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e1e8ed;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .filter-panel-header h6 {
+            color: #0f1111;
+            font-weight: 600;
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .filter-panel-body {
+            padding: 16px;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .filter-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .filter-header {
+            font-weight: 700;
+            color: #0f1111;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-checkbox {
+            margin-bottom: 6px;
+            padding: 3px 0;
+        }
+
+        .filter-checkbox input[type="checkbox"] {
+            margin-right: 8px;
+            accent-color: #117ACA;
+        }
+
+        .filter-checkbox label {
+            font-size: 13px;
+            color: #0f1111;
+            cursor: pointer;
+            margin-bottom: 0;
+            font-weight: 400;
+            transition: color 0.2s ease;
+        }
+
+        .filter-checkbox:hover label {
+            color: #117ACA;
+        }
+
+        .filter-actions {
+            margin-top: 20px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        /* Overlay for slide panel */
+        .filter-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+
+        .filter-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
         .filter-sidebar .filter-checkbox:hover label {
             color: #117ACA;
         }
@@ -479,199 +589,16 @@
 
     <div class="container-fluid mt-4">
         <div class="row">
-            <!-- Filter Sidebar -->
-            <div class="col-md-2">
-                <div class="card filter-sidebar">
-                    <div class="card-header">
-                        <h6 class="mb-0">
-                            <i class="fas fa-filter me-2"></i>
-                            Filters
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <!-- Severity Filter -->
-                        <div class="filter-section">
-                            <div class="filter-header">Severity</div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="severity-critical" value="CRITICAL">
-                                <label for="severity-critical">Critical</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="severity-high" value="HIGH">
-                                <label for="severity-high">High</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="severity-medium" value="MEDIUM">
-                                <label for="severity-medium">Medium</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="severity-low" value="LOW">
-                                <label for="severity-low">Low</label>
-                            </div>
-                        </div>
-
-                        <!-- Ticket Type Filter -->
-                        <div class="filter-section">
-                            <div class="filter-header">Ticket Type</div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="type-technical" value="TECHNICAL">
-                                <label for="type-technical">Technical</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="type-general" value="GENERAL">
-                                <label for="type-general">General</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="type-file-transfer" value="FILE_TRANSFER">
-                                <label for="type-file-transfer">File Transfer</label>
-                            </div>
-                        </div>
-
-                        <!-- Partner Filter -->
-                        <div class="filter-section">
-                            <div class="filter-header">Partner</div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="partner-amazon" value="Amazon">
-                                <label for="partner-amazon">Amazon</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="partner-doordash" value="DoorDash">
-                                <label for="partner-doordash">DoorDash</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="partner-apple" value="Apple">
-                                <label for="partner-apple">Apple</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="partner-amex" value="Amex">
-                                <label for="partner-amex">Amex</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="partner-disney" value="Disney">
-                                <label for="partner-disney">Disney</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="partner-hulu" value="Hulu">
-                                <label for="partner-hulu">Hulu</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="partner-netflix" value="Netflix">
-                                <label for="partner-netflix">Netflix</label>
-                            </div>
-                        </div>
-
-                        <!-- Support Group Filter -->
-                        <div class="filter-section">
-                            <div class="filter-header">Support Group</div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="group-technical" value="Technical Support">
-                                <label for="group-technical">Technical Support</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="group-customer" value="Customer Service">
-                                <label for="group-customer">Customer Service</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="group-infrastructure" value="Infrastructure Team">
-                                <label for="group-infrastructure">Infrastructure Team</label>
-                            </div>
-                        </div>
-
-                        <!-- Account Filter -->
-                        <div class="filter-section">
-                            <div class="filter-header">Account</div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-amazon-prod" value="Amazon-Prod">
-                                <label for="account-amazon-prod">Amazon-Prod</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-amazon-dev" value="Amazon-Dev">
-                                <label for="account-amazon-dev">Amazon-Dev</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-doordash-api" value="DoorDash-API">
-                                <label for="account-doordash-api">DoorDash-API</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-doordash-prod" value="DoorDash-Prod">
-                                <label for="account-doordash-prod">DoorDash-Prod</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-apple-main" value="Apple-Main">
-                                <label for="account-apple-main">Apple-Main</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-apple-demo" value="Apple-Demo">
-                                <label for="account-apple-demo">Apple-Demo</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-amex-prod" value="Amex-Prod">
-                                <label for="account-amex-prod">Amex-Prod</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-amex-app" value="Amex-App">
-                                <label for="account-amex-app">Amex-App</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-disney-stream" value="Disney-Stream">
-                                <label for="account-disney-stream">Disney-Stream</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-disney-pay" value="Disney-Pay">
-                                <label for="account-disney-pay">Disney-Pay</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-hulu-content" value="Hulu-Content">
-                                <label for="account-hulu-content">Hulu-Content</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-hulu-subs" value="Hulu-Subs">
-                                <label for="account-hulu-subs">Hulu-Subs</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-netflix-ai" value="Netflix-AI">
-                                <label for="account-netflix-ai">Netflix-AI</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="account-netflix-mobile" value="Netflix-Mobile">
-                                <label for="account-netflix-mobile">Netflix-Mobile</label>
-                            </div>
-                        </div>
-
-                        <!-- Solution Filter -->
-                        <div class="filter-section">
-                            <div class="filter-header">Solution</div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="solution-database" value="Database">
-                                <label for="solution-database">Database</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="solution-file-upload" value="Upload">
-                                <label for="solution-file-upload">Upload</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="solution-api-integration" value="API">
-                                <label for="solution-api-integration">API</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="solution-authentication" value="Authentication">
-                                <label for="solution-authentication">Authentication</label>
-                            </div>
-                            <div class="filter-checkbox">
-                                <input type="checkbox" id="solution-performance" value="Performance">
-                                <label for="solution-performance">Performance</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Main Content -->
-            <div class="col-md-10">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-end align-items-center">
                         <div class="d-flex align-items-center">
                             <span class="text-muted me-3" id="ticketCount">0 tickets</span>
+                            <button class="btn btn-sm btn-outline-secondary me-2" onclick="toggleFilterPanel()">
+                                <i class="fas fa-filter me-1"></i>
+                                Filter
+                            </button>
                             <button class="btn btn-sm btn-outline-primary" onclick="openExportModal()">
                                 <i class="fas fa-download me-1"></i>
                                 Export
@@ -682,6 +609,146 @@
                         <div id="ticketGrid" class="ag-theme-alpine"></div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Overlay -->
+    <div class="filter-overlay" id="filterOverlay" onclick="toggleFilterPanel()"></div>
+    
+    <!-- Filter Slide Panel -->
+    <div class="filter-slide-panel" id="filterPanel">
+        <div class="filter-panel-header">
+            <h6 class="mb-0">
+                <i class="fas fa-filter me-2"></i>
+                Filters
+            </h6>
+            <button type="button" class="btn-close" onclick="toggleFilterPanel()" aria-label="Close"></button>
+        </div>
+        <div class="filter-panel-body">
+            <!-- Severity Filter -->
+            <div class="filter-section">
+                <h6 class="filter-header">Severity</h6>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="severity-low" value="LOW">
+                    <label for="severity-low">Low</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="severity-medium" value="MEDIUM">
+                    <label for="severity-medium">Medium</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="severity-high" value="HIGH">
+                    <label for="severity-high">High</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="severity-critical" value="CRITICAL">
+                    <label for="severity-critical">Critical</label>
+                </div>
+            </div>
+
+            <!-- Ticket Type Filter -->
+            <div class="filter-section">
+                <h6 class="filter-header">Ticket Type</h6>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="type-general" value="GENERAL">
+                    <label for="type-general">General</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="type-technical" value="TECHNICAL">
+                    <label for="type-technical">Technical</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="type-file-transfer" value="FILE_TRANSFER">
+                    <label for="type-file-transfer">File Transfer</label>
+                </div>
+            </div>
+
+            <!-- Partner Filter -->
+            <div class="filter-section">
+                <h6 class="filter-header">Partner</h6>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="partner-amazon" value="Amazon">
+                    <label for="partner-amazon">Amazon</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="partner-doordash" value="DoorDash">
+                    <label for="partner-doordash">DoorDash</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="partner-apple" value="Apple">
+                    <label for="partner-apple">Apple</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="partner-amex" value="Amex">
+                    <label for="partner-amex">Amex</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="partner-disney" value="Disney">
+                    <label for="partner-disney">Disney</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="partner-hulu" value="Hulu">
+                    <label for="partner-hulu">Hulu</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="partner-netflix" value="Netflix">
+                    <label for="partner-netflix">Netflix</label>
+                </div>
+            </div>
+
+            <!-- Support Group Filter -->
+            <div class="filter-section">
+                <h6 class="filter-header">Support Group</h6>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="group-technical" value="Technical Support">
+                    <label for="group-technical">Technical Support</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="group-customer" value="Customer Service">
+                    <label for="group-customer">Customer Service</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="group-infrastructure" value="Infrastructure Team">
+                    <label for="group-infrastructure">Infrastructure Team</label>
+                </div>
+            </div>
+
+            <!-- Solution Filter -->
+            <div class="filter-section">
+                <h6 class="filter-header">Solution</h6>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="solution-database" value="Database">
+                    <label for="solution-database">Database</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="solution-upload" value="Upload">
+                    <label for="solution-upload">Upload</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="solution-api" value="API">
+                    <label for="solution-api">API</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="solution-authentication" value="Authentication">
+                    <label for="solution-authentication">Authentication</label>
+                </div>
+                <div class="filter-checkbox">
+                    <input type="checkbox" id="solution-performance" value="Performance">
+                    <label for="solution-performance">Performance</label>
+                </div>
+            </div>
+
+            <!-- Filter Actions -->
+            <div class="filter-actions">
+                <button type="button" class="btn btn-primary btn-sm w-100 mb-2" onclick="applyFilters()">
+                    <i class="fas fa-check me-1"></i>
+                    Apply Selected Filters
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-sm w-100" onclick="clearFilters()">
+                    <i class="fas fa-times me-1"></i>
+                    Clear All Filters
+                </button>
             </div>
         </div>
     </div>
@@ -1147,8 +1214,10 @@
             const gridDiv = document.querySelector('#ticketGrid');
             new agGrid.Grid(gridDiv, gridOptions);
             
-            // Set up filter event listeners
-            setupFilterEventListeners();
+            // Set up filter event listeners with a small delay to ensure DOM is ready
+            setTimeout(() => {
+                setupFilterEventListeners();
+            }, 100);
         });
 
         function updateTicketCount() {
@@ -1171,57 +1240,37 @@
                 updateTicketCount();
             });
 
-            // Filter checkboxes
-            const filterCheckboxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]');
+            // Filter checkboxes - use the panel selector for consistency
+            const filterCheckboxes = document.querySelectorAll('#filterPanel input[type="checkbox"]');
             console.log('Found filter checkboxes:', filterCheckboxes.length);
             filterCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    console.log('Checkbox changed:', checkbox.id, checkbox.checked, checkbox.value);
-                    applyFilters();
-                });
+                // Remove any existing listeners to prevent duplicates
+                checkbox.removeEventListener('change', applyFiltersOnChange);
+                checkbox.addEventListener('change', applyFiltersOnChange);
+                console.log('Added event listener to:', checkbox.id);
             });
         }
 
         function applyFilters() {
-            // Debug: Check if grid is ready
-            if (!gridOptions.api) {
-                console.error('Grid API not ready');
-                return;
-            }
-            
-            // Collect all checked filter values
-            const checkedBoxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]:checked');
-            console.log('Checked boxes:', checkedBoxes.length);
-            
-            // Build filter conditions grouped by field
+            // Use the same logic as applyFiltersOnChange for consistency
+            const checkboxes = document.querySelectorAll('#filterPanel input[type="checkbox"]:checked');
             const filterGroups = {};
             
-            checkedBoxes.forEach(checkbox => {
-                const filterType = checkbox.id.split('-')[0]; // severity, type, partner, group, account, solution
+            checkboxes.forEach(checkbox => {
                 const filterValue = checkbox.value;
-                console.log('Filter:', filterType, '=', filterValue);
+                let fieldName = null;
                 
-                // Map filter types to field names
-                let fieldName = '';
-                switch(filterType) {
-                    case 'severity':
-                        fieldName = 'severity';
-                        break;
-                    case 'type':
-                        fieldName = 'ticketType';
-                        break;
-                    case 'partner':
-                        fieldName = 'partnerName';
-                        break;
-                    case 'group':
-                        fieldName = 'supportGroupName';
-                        break;
-                    case 'account':
-                        fieldName = 'accountName';
-                        break;
-                    case 'solution':
-                        fieldName = 'solutionName';
-                        break;
+                // Determine field name based on checkbox ID prefix
+                if (checkbox.id.startsWith('severity-')) {
+                    fieldName = 'severity';
+                } else if (checkbox.id.startsWith('type-')) {
+                    fieldName = 'ticketType';
+                } else if (checkbox.id.startsWith('partner-')) {
+                    fieldName = 'partnerName';
+                } else if (checkbox.id.startsWith('group-')) {
+                    fieldName = 'supportGroupName';
+                } else if (checkbox.id.startsWith('solution-')) {
+                    fieldName = 'solutionName';
                 }
                 
                 if (fieldName) {
@@ -1233,14 +1282,20 @@
             });
             
             console.log('Filter groups:', filterGroups);
+            console.log('Current filters before update (applyFilters):', currentFilters);
             
             // Update global filter state with grouped filters
             currentFilters = filterGroups;
+            console.log('Current filters after update (applyFilters):', currentFilters);
             
             // Apply external filter
             gridOptions.api.onFilterChanged();
             
+            // Update ticket count
             updateTicketCount();
+            
+            // Show a brief success message
+            showFilterAppliedMessage();
         }
 
         function clearAllFilters() {
@@ -1532,6 +1587,160 @@
         // Legacy function for backward compatibility
         function exportToCSV() {
             openExportModal();
+        }
+
+        // Filter Panel Functions
+        function toggleFilterPanel() {
+            const panel = document.getElementById('filterPanel');
+            const overlay = document.getElementById('filterOverlay');
+            
+            if (panel.classList.contains('active')) {
+                panel.classList.remove('active');
+                overlay.classList.remove('active');
+            } else {
+                panel.classList.add('active');
+                overlay.classList.add('active');
+            }
+        }
+
+
+
+        function applyFiltersOnChange() {
+            // Apply filters immediately when checkbox changes
+            const checkboxes = document.querySelectorAll('#filterPanel input[type="checkbox"]:checked');
+            const filterGroups = {};
+            
+            checkboxes.forEach(checkbox => {
+                const filterValue = checkbox.value;
+                let fieldName = null;
+                
+                // Determine field name based on checkbox ID prefix
+                if (checkbox.id.startsWith('severity-')) {
+                    fieldName = 'severity';
+                } else if (checkbox.id.startsWith('type-')) {
+                    fieldName = 'ticketType';
+                } else if (checkbox.id.startsWith('partner-')) {
+                    fieldName = 'partnerName';
+                } else if (checkbox.id.startsWith('group-')) {
+                    fieldName = 'supportGroupName';
+                } else if (checkbox.id.startsWith('solution-')) {
+                    fieldName = 'solutionName';
+                }
+                
+                if (fieldName) {
+                    if (!filterGroups[fieldName]) {
+                        filterGroups[fieldName] = [];
+                    }
+                    filterGroups[fieldName].push(filterValue);
+                }
+            });
+            
+            console.log('Filter groups:', filterGroups);
+            
+            // Update global filter state with grouped filters
+            currentFilters = filterGroups;
+            
+            // Apply external filter
+            gridOptions.api.onFilterChanged();
+            
+            // Update ticket count
+            updateTicketCount();
+        }
+
+        function applyFilters() {
+            // Use the same logic as applyFiltersOnChange for consistency
+            const checkboxes = document.querySelectorAll('#filterPanel input[type="checkbox"]:checked');
+            const filterGroups = {};
+            
+            checkboxes.forEach(checkbox => {
+                const filterValue = checkbox.value;
+                let fieldName = null;
+                
+                // Determine field name based on checkbox ID prefix
+                if (checkbox.id.startsWith('severity-')) {
+                    fieldName = 'severity';
+                } else if (checkbox.id.startsWith('type-')) {
+                    fieldName = 'ticketType';
+                } else if (checkbox.id.startsWith('partner-')) {
+                    fieldName = 'partnerName';
+                } else if (checkbox.id.startsWith('group-')) {
+                    fieldName = 'supportGroupName';
+                } else if (checkbox.id.startsWith('solution-')) {
+                    fieldName = 'solutionName';
+                }
+                
+                if (fieldName) {
+                    if (!filterGroups[fieldName]) {
+                        filterGroups[fieldName] = [];
+                    }
+                    filterGroups[fieldName].push(filterValue);
+                }
+            });
+            
+            console.log('Filter groups:', filterGroups);
+            
+            // Update global filter state with grouped filters
+            currentFilters = filterGroups;
+            
+            // Apply external filter
+            gridOptions.api.onFilterChanged();
+            
+            // Update ticket count
+            updateTicketCount();
+            
+            // Show a brief success message
+            showFilterAppliedMessage();
+        }
+
+        function showFilterAppliedMessage() {
+            // Create a temporary success message
+            const message = document.createElement('div');
+            message.className = 'alert alert-success alert-dismissible fade show position-fixed';
+            message.style.cssText = 'top: 20px; right: 20px; z-index: 1060; min-width: 200px;';
+            message.innerHTML = `
+                <i class="fas fa-check me-2"></i>
+                Filters applied successfully
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(message);
+            
+            // Remove the message after 3 seconds
+            setTimeout(() => {
+                if (message.parentNode) {
+                    message.parentNode.removeChild(message);
+                }
+            }, 3000);
+        }
+
+        function clearFilters() {
+            // Uncheck all filter checkboxes
+            const checkboxes = document.querySelectorAll('#filterPanel input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+            
+            // Clear external filters
+            currentFilters = [];
+            gridOptions.api.onFilterChanged();
+            
+            // Clear grid filters
+            if (gridOptions && gridOptions.api) {
+                gridOptions.api.setFilterModel(null);
+                gridOptions.api.setQuickFilter('');
+            }
+            
+            // Update ticket count
+            updateTicketCount();
+        }
+
+        function getCheckedValues(prefix) {
+            const checkboxes = document.querySelectorAll(`#filterPanel input[type="checkbox"][id^="${prefix}-"]:checked`);
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        function updateTicketCount() {
+            if (gridOptions && gridOptions.api) {
+                const rowCount = gridOptions.api.getDisplayedRowCount();
+                document.getElementById('ticketCount').textContent = `${rowCount} tickets`;
+            }
         }
     </script>
 </body>
