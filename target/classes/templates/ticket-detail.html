@@ -288,6 +288,9 @@
             list-style: none;
             padding: 0;
             margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .attachment-item {
@@ -296,17 +299,25 @@
             padding: 0.6rem;
             background-color: var(--light-gray);
             border-radius: 6px;
-            margin-bottom: 0.4rem;
             border-left: 3px solid var(--warning-color);
+            min-width: 200px;
+            flex: 0 1 auto;
         }
 
         .attachment-icon {
             margin-right: 0.75rem;
-            color: var(--warning-color);
+            color: #495057;
+            font-size: 1.1rem;
+        }
+
+        .attachment-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-right: 0.5rem;
         }
 
         .attachment-name {
-            flex: 1;
             font-weight: normal;
             color: #0f1111;
             font-size: 0.7875rem;
@@ -315,6 +326,25 @@
         .attachment-size {
             color: #6c757d;
             font-size: 0.72rem;
+        }
+
+        .attachment-tag {
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .attachment-tag.internal {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .attachment-tag.external {
+            background-color: #fff3e0;
+            color: #f57c00;
         }
 
         .btn.btn-xs {
@@ -474,7 +504,7 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="/">
                 <i class="fas fa-ticket-alt me-2"></i>Support Ticket System
@@ -520,18 +550,27 @@
                         <ul class="attachment-list">
                             <li class="attachment-item">
                                 <i class="fas fa-file-pdf attachment-icon"></i>
-                                <span class="attachment-name">Error_Log_Report.pdf</span>
-                                <span class="attachment-size">2.3 MB</span>
+                                <div class="attachment-info">
+                                    <span class="attachment-name">Error_Log_Report.pdf</span>
+                                    <span class="attachment-size">2.3 MB</span>
+                                </div>
+                                <span class="attachment-tag internal">Internal</span>
                             </li>
                             <li class="attachment-item">
                                 <i class="fas fa-file-image attachment-icon"></i>
-                                <span class="attachment-name">Screenshot_Error.png</span>
-                                <span class="attachment-size">1.1 MB</span>
+                                <div class="attachment-info">
+                                    <span class="attachment-name">Screenshot_Error.png</span>
+                                    <span class="attachment-size">1.1 MB</span>
+                                </div>
+                                <span class="attachment-tag external">External</span>
                             </li>
                             <li class="attachment-item">
                                 <i class="fas fa-file-text attachment-icon"></i>
-                                <span class="attachment-name">Customer_Details.txt</span>
-                                <span class="attachment-size">45 KB</span>
+                                <div class="attachment-info">
+                                    <span class="attachment-name">Customer_Details.txt</span>
+                                    <span class="attachment-size">45 KB</span>
+                                </div>
+                                <span class="attachment-tag internal">Internal</span>
                             </li>
                         </ul>
                     </div>
