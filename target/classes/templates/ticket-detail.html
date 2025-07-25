@@ -7,298 +7,957 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .ticket-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem 0;
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-gray: #ecf0f1;
+            --border-color: #bdc3c7;
+            --text-muted: #7f8c8d;
         }
-        .severity-badge {
-            font-size: 0.9rem;
-            padding: 0.5rem 1rem;
-        }
-        .info-card {
-            border-left: 4px solid #007bff;
+
+        body {
             background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.4;
+            font-size: 0.7875rem;
+            color: #0f1111;
         }
-        .contact-card {
-            border-left: 4px solid #28a745;
-            background-color: #f8f9fa;
-        }
-        .timeline-item {
-            position: relative;
-            padding-left: 2rem;
-            margin-bottom: 1rem;
-        }
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0.5rem;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: #007bff;
-        }
-        .timeline-item::after {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 1.2rem;
-            width: 2px;
-            height: calc(100% + 0.5rem);
-            background-color: #dee2e6;
-        }
-        .timeline-item:last-child::after {
-            display: none;
-        }
+
         .navbar-brand {
             font-weight: bold;
+            font-size: 1.35rem;
+            letter-spacing: 0.5px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0.75rem 0;
+            margin-bottom: 0;
+        }
+
+        .breadcrumb-item a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-muted);
+        }
+
+
+
+        .severity-badge {
+            font-size: 0.4375rem;
+            padding: 0.25rem 0.5rem;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .type-badge {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            font-weight: normal;
+            background-color: #e9ecef;
+            color: #495057;
+            border: none;
+        }
+
+        .impact-badge {
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            font-weight: normal;
+            background-color: #e9ecef;
+            color: #495057;
+            border: none;
+        }
+
+        .card {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            background: white;
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #e1e8ed;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            color: #0f1111;
+            font-size: 0.7875rem;
+        }
+
+        .card-header i {
+            color: var(--accent-color);
+            margin-right: 0.75rem;
+        }
+
+        .card-body {
+            padding: 1rem;
+            font-size: 0.7875rem;
+            background-color: white;
+        }
+
+        .description-content {
+            background-color: var(--light-gray);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: var(--secondary-color);
+        }
+
+        /* Tab Navigation */
+        .nav-tabs {
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 1.5rem;
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: #6c757d;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 0;
+            transition: all 0.3s ease;
+            font-size: 0.70875rem !important;
+            background-color: transparent;
+            margin-right: 0;
+            position: relative;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: #495057;
+            background-color: #f8f9fa;
+            border-bottom: 3px solid #dee2e6;
+            font-size: 0.70875rem !important;
+            transform: none !important;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #117ACA;
+            background-color: transparent;
+            border-bottom: 3px solid #117ACA;
+            font-size: 0.70875rem !important;
+            transform: none !important;
+            font-weight: 500;
+            padding: 8px 12px;
+        }
+
+        /* Comments Section */
+        .comment-section {
+            margin-bottom: 2rem;
+        }
+
+        .comment-form {
+            background-color: var(--light-gray);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .comment-form textarea {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .comment-item {
+            background-color: white;
+            padding: 0.5rem 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-author {
+            font-weight: normal;
+            color: #0f1111;
+        }
+
+        .comment-date {
+            color: #6c757d;
+            font-size: 0.63rem;
+            margin-left: 0.5rem;
+        }
+
+        .comment-content {
+            color: #6c757d;
+            line-height: 1.4;
+            font-size: 0.7875rem;
+        }
+
+        /* Right Column Containers */
+        .right-column .card {
+            margin-bottom: 1rem;
+        }
+
+        .right-column .card-header {
+            padding: 0.75rem 1rem;
+            font-size: 0.81rem;
+        }
+
+        .right-column .card-body {
+            padding: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #0f1111;
+            font-size: 0.7875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 0.6rem;
+            font-size: 0.7875rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #117ACA;
+            box-shadow: 0 0 0 0.2rem rgba(17, 122, 202, 0.25);
+        }
+
+        .info-item {
+            padding: 0.6rem;
+            background-color: var(--light-gray);
+            border-radius: 6px;
+            margin-bottom: 0.6rem;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .info-label {
+            font-size: 0.7875rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-weight: normal;
+            color: #6c757d;
+            font-size: 0.7875rem;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .contact-item {
+            padding: 0.6rem;
+            background-color: var(--light-gray);
+            border-radius: 6px;
+            margin-bottom: 0.4rem;
+            border-left: 3px solid var(--success-color);
+        }
+
+        .contact-email {
+            color: #117ACA;
+            text-decoration: none;
+            font-weight: normal;
+        }
+
+        .contact-email:hover {
+            text-decoration: underline;
+        }
+
+        .attachment-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem;
+            background-color: var(--light-gray);
+            border-radius: 6px;
+            margin-bottom: 0.4rem;
+            border-left: 3px solid var(--warning-color);
+        }
+
+        .attachment-icon {
+            margin-right: 0.75rem;
+            color: var(--warning-color);
+        }
+
+        .attachment-name {
+            flex: 1;
+            font-weight: normal;
+            color: #0f1111;
+            font-size: 0.7875rem;
+        }
+
+        .attachment-size {
+            color: #6c757d;
+            font-size: 0.72rem;
+        }
+
+        .btn.btn-xs {
+            padding: 0.375rem 0.75rem !important;
+            font-size: 0.7rem !important;
+            line-height: 1.2 !important;
+            border-radius: 4px !important;
+        }
+
+        .btn-export-blue {
+            background-color: #117ACA !important;
+            border-color: #117ACA !important;
+            color: white !important;
+        }
+
+        .btn-export-blue:hover {
+            background-color: #0d6efd !important;
+            border-color: #0d6efd !important;
+            color: white !important;
+        }
+
+        .detail-item {
+            margin-bottom: 0;
+            padding: 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0;
+            padding: 0.5rem 0;
+        }
+
+        .detail-content {
+            flex: 1;
+            text-align: left;
+        }
+
+        .detail-key {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.75rem;
+            text-align: left;
+            margin-bottom: 0.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            color: #6c757d;
+            font-size: 0.75rem;
+            text-align: left;
+            font-weight: 300;
+            text-transform: capitalize;
+        }
+
+        .edit-btn {
+            color: #6c757d;
+            padding: 0 !important;
+            font-size: 0.6rem;
+            margin-left: 0.1rem;
+            display: inline-block;
+        }
+
+        .edit-btn:hover {
+            color: #117ACA;
+        }
+
+        .edit-dropdown {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+        }
+
+        .title-description-section {
+            margin-bottom: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .ticket-title {
             font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f1111;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .title-content {
+            font-size: 0.81rem;
+            line-height: 1.4;
+            color: #0f1111;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+        }
+
+        .description-content {
+            font-size: 0.7875rem;
+            line-height: 1.5;
+            color: #6c757d !important;
+            background: none;
+            padding: 0;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-color) 0%, #2980b9 100%);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid var(--border-color);
+            color: var(--secondary-color);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .ticket-header {
+                padding: 1.5rem 0;
+            }
+
+            .ticket-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);">
         <div class="container">
             <a class="navbar-brand" href="/">
                 <i class="fas fa-ticket-alt me-2"></i>Support Ticket System
             </a>
             <div class="d-flex">
-                <a href="/" class="btn btn-outline-light me-2">
-                    <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                <a href="/" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                 </a>
             </div>
         </div>
     </nav>
 
-    <!-- Breadcrumb -->
-    <div class="container mt-3">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page" th:text="${ticket.title}">Ticket Details</li>
-            </ol>
-        </nav>
-    </div>
 
-    <!-- Ticket Header -->
-    <div class="ticket-header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <div class="mb-2">
-                        <small class="text-light opacity-75" th:text="${ticket.ticketId}">Ticket ID</small>
-                    </div>
-                    <h1 class="mb-2" th:text="${ticket.title}">Ticket Title</h1>
-                    <p class="mb-0 opacity-75" th:text="${ticket.description}">Ticket Description</p>
-                </div>
-                <div class="col-md-4 text-end">
-                    <div class="mb-2">
-                        <span class="badge severity-badge" 
-                              th:class="${ticket.severity == 'CRITICAL' ? 'bg-danger' : 
-                                        ticket.severity == 'HIGH' ? 'bg-warning' : 
-                                        ticket.severity == 'MEDIUM' ? 'bg-info' : 'bg-success'}" 
-                              th:text="${ticket.severity}">Severity</span>
-                    </div>
-                    <div class="mb-2">
-                        <span class="badge bg-primary" th:text="${ticket.ticketType}">Type</span>
-                    </div>
-                    <div th:if="${ticket.customersImpacted > 0}">
-                        <span class="badge bg-dark" th:text="${ticket.customersImpacted + ' customers impacted'}">Impact</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="container mt-4">
+
+
+    <div class="container" style="margin-top: 2rem;">
         <div class="row">
-            <!-- Main Content -->
-            <div class="col-lg-8">
-                <!-- Ticket Information -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Ticket Information</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Ticket ID:</label>
-                                    <p class="text-muted" th:text="${ticket.ticketId}">UUID</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Solution:</label>
-                                    <p class="text-muted" th:text="${ticket.solution.name}">Solution Name</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Partner:</label>
-                                    <p class="text-muted" th:text="${ticket.partnerName}">Partner Name</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Account:</label>
-                                    <p class="text-muted" th:text="${ticket.accountName}">Account Name</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Created:</label>
-                                    <p class="text-muted" th:text="${#temporals.format(ticket.createdAt, 'MMM dd, yyyy HH:mm')}">Date</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Last Updated:</label>
-                                    <p class="text-muted" th:text="${#temporals.format(ticket.lastUpdated, 'MMM dd, yyyy HH:mm')}">Date</p>
-                                </div>
-                                <div class="mb-3" th:if="${ticket.supportGroup != null}">
-                                    <label class="form-label fw-bold">Support Group:</label>
-                                    <p class="text-muted" th:text="${ticket.supportGroup.name}">Support Group</p>
-                                </div>
-                                <div class="mb-3" th:if="${ticket.assignee != null}">
-                                    <label class="form-label fw-bold">Assignee:</label>
-                                    <p class="text-muted" th:text="${ticket.assignee.name}">Assignee</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Description -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-align-left me-2"></i>Description</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-0" th:text="${ticket.description}">Detailed description of the ticket...</p>
-                    </div>
-                </div>
-
-                <!-- Timeline -->
+            <!-- Left Column (75.5%) -->
+            <div class="col-lg-9">
+                <!-- Title and Description Container -->
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-history me-2"></i>Timeline</h5>
+                        <i class="fas fa-align-left"></i>Title and Description
                     </div>
                     <div class="card-body">
-                        <div class="timeline-item">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <strong>Ticket Created</strong>
-                                    <p class="text-muted mb-0" th:text="${ticket.title}">Ticket title</p>
-                                </div>
-                                <small class="text-muted" th:text="${#temporals.format(ticket.createdAt, 'MMM dd, yyyy HH:mm')}">Date</small>
-                            </div>
+                        <div class="title-content" th:text="${ticket.title}">Ticket Title</div>
+                        <div class="description-content" th:text="${ticket.description}">Detailed description of the ticket...</div>
+                    </div>
+                </div>
+
+                <!-- Attachments Container -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-paperclip"></i>Attachments
                         </div>
-                        <div class="timeline-item" th:if="${ticket.assignee != null}">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <strong>Assigned to</strong>
-                                    <p class="text-muted mb-0" th:text="${ticket.assignee.name}">Assignee name</p>
+                        <button class="btn btn-outline-secondary" onclick="addAttachment()" style="font-size: 0.7rem; padding: 0.3rem 0.6rem;">
+                            <i class="fas fa-plus me-1"></i>Add Attachment
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <ul class="attachment-list">
+                            <li class="attachment-item">
+                                <i class="fas fa-file-pdf attachment-icon"></i>
+                                <span class="attachment-name">Error_Log_Report.pdf</span>
+                                <span class="attachment-size">2.3 MB</span>
+                            </li>
+                            <li class="attachment-item">
+                                <i class="fas fa-file-image attachment-icon"></i>
+                                <span class="attachment-name">Screenshot_Error.png</span>
+                                <span class="attachment-size">1.1 MB</span>
+                            </li>
+                            <li class="attachment-item">
+                                <i class="fas fa-file-text attachment-icon"></i>
+                                <span class="attachment-name">Customer_Details.txt</span>
+                                <span class="attachment-size">45 KB</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Tabbed Section -->
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Tab Navigation -->
+                        <ul class="nav nav-tabs" id="activityTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="internal-tab" data-bs-toggle="tab" data-bs-target="#internal" type="button" role="tab">
+                                    <i class="fas fa-user me-2"></i>Internal Comments
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="external-tab" data-bs-toggle="tab" data-bs-target="#external" type="button" role="tab">
+                                    <i class="fas fa-user me-2"></i>External Comments
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="audit-tab" data-bs-toggle="tab" data-bs-target="#audit" type="button" role="tab">
+                                    <i class="fas fa-shield-alt me-2"></i>Audit
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button" role="tab">
+                                    <i class="fas fa-history me-2"></i>All Activity
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="activityTabsContent">
+                            <!-- Internal Comments Tab -->
+                            <div class="tab-pane fade show active" id="internal" role="tabpanel">
+                                <div class="comment-section">
+                                    <div class="comments-list">
+                                        <div class="comment-item">
+                                            <div class="comment-header">
+                                                <span class="comment-author">John Doe</span>
+                                                <span class="comment-date">Dec 15, 2024 10:30 AM</span>
+                                            </div>
+                                            <div class="comment-content">
+                                                This issue has been escalated to the development team for further investigation.
+                                            </div>
+                                        </div>
+                                        <div class="comment-item">
+                                            <div class="comment-header">
+                                                <span class="comment-author">Jane Smith</span>
+                                                <span class="comment-date">Dec 15, 2024 09:15 AM</span>
+                                            </div>
+                                            <div class="comment-content">
+                                                Initial assessment completed. Issue appears to be related to the recent system update.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="comment-form">
+                                        <h6 class="mb-3" style="font-size: 0.7875rem; font-weight: 600; color: #0f1111;">Add Internal Comment</h6>
+                                        <form>
+                                            <div class="mb-3">
+                                                <textarea class="form-control" id="internalComment" rows="4" placeholder="Add an internal comment..."></textarea>
+                                            </div>
+                                            <div class="text-end">
+                                                <button type="button" class="btn btn-export-blue btn-xs" onclick="addInternalComment()">
+                                                    <i class="fas fa-plus me-1"></i>Add Comment
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                                <small class="text-muted" th:text="${#temporals.format(ticket.lastUpdated, 'MMM dd, yyyy HH:mm')}">Date</small>
                             </div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <strong>Last Updated</strong>
-                                    <p class="text-muted mb-0">Ticket information modified</p>
+
+                            <!-- External Comments Tab -->
+                            <div class="tab-pane fade" id="external" role="tabpanel">
+                                <div class="comment-section">
+                                    <div class="comments-list">
+                                        <div class="comment-item">
+                                            <div class="comment-header">
+                                                <span class="comment-author">Customer Support</span>
+                                                <span class="comment-date">Dec 15, 2024 11:00 AM</span>
+                                            </div>
+                                            <div class="comment-content">
+                                                We have identified the root cause and are working on a fix. Expected resolution time is 2-3 hours.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="comment-form">
+                                        <h6 class="mb-3">Add External Comment</h6>
+                                        <form>
+                                            <div class="mb-3">
+                                                <textarea class="form-control" id="externalComment" rows="4" placeholder="Add an external comment..."></textarea>
+                                            </div>
+                                            <div class="text-end">
+                                                <button type="button" class="btn btn-export-blue btn-xs" onclick="addExternalComment()">
+                                                    <i class="fas fa-plus me-1"></i>Add Comment
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
-                                <small class="text-muted" th:text="${#temporals.format(ticket.lastUpdated, 'MMM dd, yyyy HH:mm')}">Date</small>
+                            </div>
+
+                            <!-- Audit Tab -->
+                            <div class="tab-pane fade" id="audit" role="tabpanel">
+                                <div class="audit-section">
+                                    <div class="comment-item">
+                                        <div class="comment-header">
+                                            <span class="comment-author">System</span>
+                                            <span class="comment-date">Dec 15, 2024 12:00 PM</span>
+                                        </div>
+                                        <div class="comment-content">
+                                            Ticket severity changed from MEDIUM to HIGH
+                                        </div>
+                                    </div>
+                                    <div class="comment-item">
+                                        <div class="comment-header">
+                                            <span class="comment-author">System</span>
+                                            <span class="comment-date">Dec 15, 2024 10:00 AM</span>
+                                        </div>
+                                        <div class="comment-content">
+                                            Ticket assigned to John Doe
+                                        </div>
+                                    </div>
+                                    <div class="comment-item">
+                                        <div class="comment-header">
+                                            <span class="comment-author">System</span>
+                                            <span class="comment-date">Dec 15, 2024 09:00 AM</span>
+                                        </div>
+                                        <div class="comment-content">
+                                            Ticket created by Customer Support
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- All Activity Tab -->
+                            <div class="tab-pane fade" id="activity" role="tabpanel">
+                                <div class="activity-section">
+                                    <div class="comment-item">
+                                        <div class="comment-header">
+                                            <span class="comment-author">John Doe</span>
+                                            <span class="comment-date">Dec 15, 2024 12:00 PM</span>
+                                        </div>
+                                        <div class="comment-content">
+                                            Updated ticket severity to HIGH due to customer impact
+                                        </div>
+                                    </div>
+                                    <div class="comment-item">
+                                        <div class="comment-header">
+                                            <span class="comment-author">Jane Smith</span>
+                                            <span class="comment-date">Dec 15, 2024 10:30 AM</span>
+                                        </div>
+                                        <div class="comment-content">
+                                            Added internal comment: Issue escalated to development team
+                                        </div>
+                                    </div>
+                                    <div class="comment-item">
+                                        <div class="comment-header">
+                                            <span class="comment-author">Customer Support</span>
+                                            <span class="comment-date">Dec 15, 2024 11:00 AM</span>
+                                        </div>
+                                        <div class="comment-content">
+                                            Added external comment: Working on fix, expected 2-3 hours
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-                <!-- Contact Information -->
-                <div class="card mb-4" th:if="${ticket.assignee != null}">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-user me-2"></i>Assignee Contact</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Name:</label>
-                            <p class="text-muted mb-0" th:text="${ticket.assignee.name}">Assignee Name</p>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Email:</label>
-                            <p class="text-muted mb-0">
-                                <a th:href="'mailto:' + ${ticket.assignee.email}" th:text="${ticket.assignee.email}">email@example.com</a>
-                            </p>
-                        </div>
-                        <div class="mb-3" th:if="${ticket.assignee.phone != null}">
-                            <label class="form-label fw-bold">Phone:</label>
-                            <p class="text-muted mb-0">
-                                <a th:href="'tel:' + ${ticket.assignee.phone}" th:text="${ticket.assignee.phone}">+1-555-0101</a>
-                            </p>
-                        </div>
-                        <div th:if="${ticket.assignee.supportGroup != null}">
-                            <label class="form-label fw-bold">Support Group:</label>
-                            <p class="text-muted mb-0" th:text="${ticket.assignee.supportGroup.name}">Support Group</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Solution Details -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Solution Details</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Solution Name:</label>
-                            <p class="text-muted mb-0" th:text="${ticket.solution.name}">Solution Name</p>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Description:</label>
-                            <p class="text-muted mb-0" th:text="${ticket.solution.description}">Solution description</p>
-                        </div>
-                        <div>
-                            <label class="form-label fw-bold">Created:</label>
-                            <p class="text-muted mb-0" th:text="${#temporals.format(ticket.solution.createdAt, 'MMM dd, yyyy')}">Date</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
+            <!-- Right Column (24.5%) -->
+            <div class="col-lg-3">
+                <!-- Editable Fields Container -->
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-tools me-2"></i>Quick Actions</h5>
+                        <i class="fas fa-edit"></i>Ticket Details
                     </div>
                     <div class="card-body">
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary" onclick="editTicket()">
-                                <i class="fas fa-edit me-2"></i>Edit Ticket
-                            </button>
-                            <button class="btn btn-outline-secondary" onclick="printTicket()">
-                                <i class="fas fa-print me-2"></i>Print Details
-                            </button>
-                            <button class="btn btn-outline-info" onclick="shareTicket()">
-                                <i class="fas fa-share me-2"></i>Share Ticket
-                            </button>
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Severity</div>
+                                    <div class="detail-value" id="severityValue" th:text="${ticket.severity}">High</div>
+                                </div>
+                                <button class="btn btn-link btn-sm edit-btn" onclick="editField('severity')">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                            </div>
+                            <div class="edit-dropdown" id="severityDropdown" style="display: none;">
+                                <select class="form-select form-select-sm" id="severitySelect">
+                                    <option value="LOW" th:selected="${ticket.severity == 'LOW'}">Low</option>
+                                    <option value="MEDIUM" th:selected="${ticket.severity == 'MEDIUM'}">Medium</option>
+                                    <option value="HIGH" th:selected="${ticket.severity == 'HIGH'}">High</option>
+                                    <option value="CRITICAL" th:selected="${ticket.severity == 'CRITICAL'}">Critical</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Customers Impacted</div>
+                                    <div class="detail-value" id="customersImpactedValue" th:text="${ticket.customersImpacted}">5</div>
+                                </div>
+                                <button class="btn btn-link btn-sm edit-btn" onclick="editField('customersImpacted')">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                            </div>
+                            <div class="edit-dropdown" id="customersImpactedDropdown" style="display: none;">
+                                <input type="number" class="form-control form-control-sm" id="customersImpactedInput" th:value="${ticket.customersImpacted}" min="0">
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Support Group</div>
+                                    <div class="detail-value" id="supportGroupValue" th:text="${ticket.supportGroup?.name}">Technical Support</div>
+                                </div>
+                                <button class="btn btn-link btn-sm edit-btn" onclick="editField('supportGroup')">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                            </div>
+                            <div class="edit-dropdown" id="supportGroupDropdown" style="display: none;">
+                                <select class="form-select form-select-sm" id="supportGroupSelect">
+                                    <option value="">Select Group</option>
+                                    <option value="TECHNICAL" th:selected="${ticket.supportGroup?.name == 'Technical Support'}">Technical Support</option>
+                                    <option value="CUSTOMER" th:selected="${ticket.supportGroup?.name == 'Customer Support'}">Customer Support</option>
+                                    <option value="DEVELOPMENT" th:selected="${ticket.supportGroup?.name == 'Development'}">Development</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Assignee</div>
+                                    <div class="detail-value" id="assigneeValue" th:text="${ticket.assignee?.name}">John Doe</div>
+                                </div>
+                                <button class="btn btn-link btn-sm edit-btn" onclick="editField('assignee')">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </button>
+                            </div>
+                            <div class="edit-dropdown" id="assigneeDropdown" style="display: none;">
+                                <select class="form-select form-select-sm" id="assigneeSelect">
+                                    <option value="">Select Assignee</option>
+                                    <option value="john.doe@company.com" th:selected="${ticket.assignee?.email == 'john.doe@company.com'}">John Doe</option>
+                                    <option value="jane.smith@company.com" th:selected="${ticket.assignee?.email == 'jane.smith@company.com'}">Jane Smith</option>
+                                    <option value="mike.johnson@company.com" th:selected="${ticket.assignee?.email == 'mike.johnson@company.com'}">Mike Johnson</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Partner & Account Info Container -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-building"></i>Partner Information
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Partner</div>
+                                    <div class="detail-value" th:text="${ticket.partnerName}">Partner Name</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Account</div>
+                                    <div class="detail-value" th:text="${ticket.accountName}">Account Name</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Solution</div>
+                                    <div class="detail-value" th:text="${ticket.solution.name}">Solution Name</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Created</div>
+                                    <div class="detail-value" th:text="${#temporals.format(ticket.createdAt, 'MMM dd, yyyy')}">Date</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contacts Container -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-address-book"></i>Contacts
+                    </div>
+                    <div class="card-body">
+                        <h6 class="mb-3">Chase Contacts</h6>
+                        <ul class="contact-list">
+                            <li class="contact-item">
+                                <a href="mailto:chase.contact1@company.com" class="contact-email">chase.contact1@company.com</a>
+                            </li>
+                            <li class="contact-item">
+                                <a href="mailto:chase.contact2@company.com" class="contact-email">chase.contact2@company.com</a>
+                            </li>
+                        </ul>
+                        
+                        <h6 class="mb-3 mt-4">Partner Contacts</h6>
+                        <ul class="contact-list">
+                            <li class="contact-item">
+                                <a href="mailto:partner.contact1@partner.com" class="contact-email">partner.contact1@partner.com</a>
+                            </li>
+                            <li class="contact-item">
+                                <a href="mailto:partner.contact2@partner.com" class="contact-email">partner.contact2@partner.com</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function editTicket() {
-            // TODO: Implement edit functionality
-            alert('Edit functionality will be implemented here');
+        function addInternalComment() {
+            const comment = document.getElementById('internalComment').value;
+            if (comment.trim()) {
+                // TODO: Implement comment addition logic
+                alert('Internal comment added: ' + comment);
+                document.getElementById('internalComment').value = '';
+            }
         }
 
-        function printTicket() {
-            window.print();
+        function addExternalComment() {
+            const comment = document.getElementById('externalComment').value;
+            if (comment.trim()) {
+                // TODO: Implement comment addition logic
+                alert('External comment added: ' + comment);
+                document.getElementById('externalComment').value = '';
+            }
         }
 
-        function shareTicket() {
-            // TODO: Implement share functionality
-            alert('Share functionality will be implemented here');
+        function saveTicketDetails() {
+            const severity = document.getElementById('severitySelect').value;
+            const customersImpacted = document.getElementById('customersImpacted').value;
+            const supportGroup = document.getElementById('supportGroupSelect').value;
+            const assignee = document.getElementById('assigneeSelect').value;
+            
+            // TODO: Implement save logic
+            alert('Ticket details saved successfully!');
+        }
+
+        function addAttachment() {
+            // TODO: Implement file upload logic
+            alert('File upload functionality will be implemented here');
+        }
+
+        function editField(fieldName) {
+            // Hide all dropdowns first
+            const allDropdowns = document.querySelectorAll('.edit-dropdown');
+            allDropdowns.forEach(dropdown => dropdown.style.display = 'none');
+            
+            // Show the selected dropdown
+            const dropdown = document.getElementById(fieldName + 'Dropdown');
+            if (dropdown) {
+                dropdown.style.display = 'block';
+                
+                // Add event listeners for the dropdown
+                const selectElement = dropdown.querySelector('select, input');
+                if (selectElement) {
+                    selectElement.addEventListener('change', function() {
+                        updateFieldValue(fieldName, this.value);
+                    });
+                    
+                    // For input fields, also listen for Enter key
+                    if (selectElement.tagName === 'INPUT') {
+                        selectElement.addEventListener('keypress', function(e) {
+                            if (e.key === 'Enter') {
+                                updateFieldValue(fieldName, this.value);
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        function updateFieldValue(fieldName, newValue) {
+            const valueElement = document.getElementById(fieldName + 'Value');
+            const dropdown = document.getElementById(fieldName + 'Dropdown');
+            
+            if (valueElement) {
+                // Update the display value
+                if (fieldName === 'severity') {
+                    valueElement.textContent = newValue;
+                } else if (fieldName === 'customersImpacted') {
+                    valueElement.textContent = newValue;
+                } else if (fieldName === 'supportGroup') {
+                    const select = document.getElementById('supportGroupSelect');
+                    const selectedOption = select.options[select.selectedIndex];
+                    valueElement.textContent = selectedOption.text;
+                } else if (fieldName === 'assignee') {
+                    const select = document.getElementById('assigneeSelect');
+                    const selectedOption = select.options[select.selectedIndex];
+                    valueElement.textContent = selectedOption.text;
+                }
+                
+                // Hide the dropdown
+                if (dropdown) {
+                    dropdown.style.display = 'none';
+                }
+                
+                // TODO: Implement save logic to backend
+                console.log('Updated ' + fieldName + ' to: ' + newValue);
+            }
         }
     </script>
 </body>

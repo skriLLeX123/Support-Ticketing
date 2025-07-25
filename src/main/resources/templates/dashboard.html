@@ -326,7 +326,7 @@
         
         .ag-header-cell {
             border-bottom: 2px solid #dee2e6;
-            font-weight: 600;
+            font-weight: normal;
             color: #495057;
             border-radius: 8px 8px 0 0;
             padding: 8px 12px;
@@ -372,22 +372,22 @@
         
         .severity-critical {
             color: #dc3545;
-            font-weight: 600;
+            font-weight: normal;
         }
         
         .severity-high {
             color: #fd7e14;
-            font-weight: 600;
+            font-weight: normal;
         }
         
         .severity-medium {
             color: #ffc107;
-            font-weight: 600;
+            font-weight: normal;
         }
         
         .severity-low {
             color: #28a745;
-            font-weight: 600;
+            font-weight: normal;
         }
         
         .type-badge {
@@ -395,7 +395,7 @@
             padding: 2px 6px;
             border-radius: 3px;
             font-size: 0.7rem;
-            font-weight: 500;
+            font-weight: normal;
             background-color: #e9ecef;
             color: #495057;
             border: 1px solid #ced4da;
@@ -444,6 +444,15 @@
             letter-spacing: 0.5px;
         }
         
+        /* Ensure all grid cell content uses normal font weight */
+        .ag-cell {
+            font-weight: normal !important;
+        }
+        
+        .ag-cell-value {
+            font-weight: normal !important;
+        }
+        
         /* Make rows look clickable */
         .ag-row {
             cursor: pointer;
@@ -457,6 +466,8 @@
         .ag-row.ag-row-selected {
             background-color: #e3f2fd !important;
         }
+        
+
         
 
     </style>
@@ -672,9 +683,18 @@
                     <div class="card-header d-flex justify-content-end align-items-center">
                         <div class="d-flex align-items-center">
                             <span class="text-muted me-3" id="ticketCount">0 tickets</span>
-                            <button class="btn btn-sm btn-outline-primary" onclick="openExportModal()">
+                            <button class="btn btn-sm btn-outline-primary me-2" onclick="openExportModal()">
                                 <i class="fas fa-download me-1"></i>
                                 Export
+                            </button>
+                            <button class="btn btn-outline-secondary dropdown-toggle btn-sm me-2" type="button" id="selectColumnsBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-columns me-1"></i> Select Columns
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="selectColumnsBtn" id="columnsDropdown">
+                                <!-- Dynamically filled by JS -->
+                            </ul>
+                            <button class="btn btn-outline-secondary btn-sm" type="button" onclick="resetColumnVisibility()" title="Reset column visibility to default">
+                                <i class="fas fa-undo me-1"></i> Reset
                             </button>
                         </div>
                     </div>
@@ -1128,6 +1148,12 @@
                 // Don't auto-size columns to fit, let them use their defined widths
                 updateTicketCount();
                 applyRowStyling();
+                
+                // Apply saved column visibility after grid is fully ready
+                setTimeout(() => {
+                    applySavedColumnVisibility();
+                    updateColumnDropdownCheckboxes();
+                }, 50);
             },
             onFilterChanged: function(params) {
                 console.log('Filter changed, displayed rows:', params.api.getDisplayedRowCount());
@@ -1142,6 +1168,54 @@
             }
         };
 
+        // List of all columns (update if you add/remove columns in columnDefs)
+        const allColumns = [
+            { field: 'ticketId', label: 'Ticket Id' },
+            { field: 'title', label: 'Title' },
+            { field: 'ticketType', label: 'Type' },
+            { field: 'severity', label: 'Severity' },
+            { field: 'partnerName', label: 'Partner' },
+            { field: 'accountName', label: 'Account' },
+            { field: 'assigneeName', label: 'Assignee' },
+            { field: 'supportGroupName', label: 'Support Group' },
+            { field: 'solutionName', label: 'Solution' },
+            { field: 'customersImpacted', label: 'Impact' },
+            { field: 'createdAt', label: 'Created' },
+            { field: 'lastUpdated', label: 'Last Updated' }
+        ];
+
+        // Column persistence functions
+        function saveColumnVisibility() {
+            const columnStates = {};
+            allColumns.forEach(col => {
+                const isVisible = gridOptions.columnApi.getColumn(col.field)?.isVisible();
+                columnStates[col.field] = isVisible !== false; // Default to true if undefined
+            });
+            localStorage.setItem('supportTicketColumnVisibility', JSON.stringify(columnStates));
+        }
+
+        function loadColumnVisibility() {
+            const savedStates = localStorage.getItem('supportTicketColumnVisibility');
+            if (savedStates) {
+                try {
+                    return JSON.parse(savedStates);
+                } catch (e) {
+                    console.warn('Failed to parse saved column states:', e);
+                }
+            }
+            return null;
+        }
+
+        function applySavedColumnVisibility() {
+            const savedStates = loadColumnVisibility();
+            if (savedStates && gridOptions.columnApi) {
+                allColumns.forEach(col => {
+                    const shouldBeVisible = savedStates[col.field] !== false; // Default to true
+                    gridOptions.columnApi.setColumnVisible(col.field, shouldBeVisible);
+                });
+            }
+        }
+
         // Initialize the grid
         document.addEventListener('DOMContentLoaded', function() {
             const gridDiv = document.querySelector('#ticketGrid');
@@ -1149,7 +1223,53 @@
             
             // Set up filter event listeners
             setupFilterEventListeners();
+
+            // Apply saved column visibility after grid is ready
+            setTimeout(() => {
+                applySavedColumnVisibility();
+                updateColumnDropdownCheckboxes();
+            }, 100);
+
+            // Populate columns dropdown
+            const dropdown = document.getElementById('columnsDropdown');
+            dropdown.innerHTML = allColumns.map(col =>
+                `<li><label class='dropdown-item'><input type='checkbox' class='me-2 column-toggle' data-field='${col.field}' checked> ${col.label}</label></li>`
+            ).join('');
+            
+            // Add event listeners
+            dropdown.querySelectorAll('.column-toggle').forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const field = this.getAttribute('data-field');
+                    gridOptions.columnApi.setColumnVisible(field, this.checked);
+                    saveColumnVisibility(); // Save changes immediately
+                });
+            });
         });
+
+        function updateColumnDropdownCheckboxes() {
+            const checkboxes = document.querySelectorAll('.column-toggle');
+            checkboxes.forEach(checkbox => {
+                const field = checkbox.getAttribute('data-field');
+                const isVisible = gridOptions.columnApi.getColumn(field)?.isVisible();
+                checkbox.checked = isVisible !== false; // Default to true if undefined
+            });
+        }
+
+        function resetColumnVisibility() {
+            // Show all columns by default
+            allColumns.forEach(col => {
+                gridOptions.columnApi.setColumnVisible(col.field, true);
+            });
+            
+            // Update checkboxes
+            updateColumnDropdownCheckboxes();
+            
+            // Clear saved states
+            localStorage.removeItem('supportTicketColumnVisibility');
+            
+            // Show confirmation
+            alert('Column visibility has been reset to default. All columns are now visible.');
+        }
 
         function updateTicketCount() {
             const rowCount = gridOptions.api.getDisplayedRowCount();
@@ -1535,4 +1655,5 @@
         }
     </script>
 </body>
+</html> 
 </html> 

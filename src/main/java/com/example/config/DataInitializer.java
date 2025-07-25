@@ -68,8 +68,8 @@ public class DataInitializer implements CommandLineRunner {
         // Amazon tickets
         SupportTicket ticket1 = createTicketWithId(
             "AMZ", "T", "000001",
-            "Database connection timeout",
-            "Users are experiencing database connection timeouts during peak hours. This is affecting critical business operations.",
+            "API integration failure",
+            "Third-party API integration is failing intermittently, causing data synchronization issues.",
             TicketType.TECHNICAL,
             "Amazon",
             "Amazon-Prod",
