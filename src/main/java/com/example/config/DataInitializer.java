@@ -69,7 +69,7 @@ public class DataInitializer implements CommandLineRunner {
         SupportTicket ticket1 = createTicketWithId(
             "AMZ", "T", "000001",
             "API integration failure",
-            "Third-party API integration is failing intermittently, causing data synchronization issues.",
+            "Third-party API integration is failing intermittently, causing data synchronization issues between our e-commerce platform and Amazon's inventory management system. The integration was working properly until last week when we started experiencing timeout errors and connection drops. This is affecting our ability to sync product inventory, pricing updates, and order status changes in real-time. Our monitoring system shows that approximately 30% of API calls are failing with HTTP 500 errors, and the remaining calls are taking significantly longer than the expected response time of 2 seconds. We have already tried increasing the connection timeout values and implementing retry logic, but the issue persists. The problem appears to be related to the recent deployment of our new microservices architecture.",
             TicketType.TECHNICAL,
             "Amazon",
             "Amazon-Prod",
@@ -83,7 +83,7 @@ public class DataInitializer implements CommandLineRunner {
         SupportTicket ticket2 = createTicketWithId(
             "AMZ", "F", "000001",
             "File upload failing",
-            "File upload functionality is not working for files larger than 10MB. Users are unable to upload important documents.",
+            "File upload functionality is not working for files larger than 10MB. Users are unable to upload important documents including product catalogs, bulk inventory spreadsheets, and high-resolution product images. The upload process starts normally but fails at approximately 85% completion with a generic 'Upload Failed' error message. This issue affects our content management system where vendors need to upload large product catalogs and marketing materials. We have tested with various file types including PDF, Excel, CSV, and image files, and the problem is consistent across all formats. The server logs show that the upload is being terminated due to memory constraints in our application server. We have already increased the maximum file size limit in our web server configuration, but the issue persists. This is blocking several critical business processes that depend on large file uploads.",
             TicketType.FILE_TRANSFER,
             "Amazon",
             "Amazon-Dev",
@@ -98,7 +98,7 @@ public class DataInitializer implements CommandLineRunner {
         SupportTicket ticket3 = createTicketWithId(
             "DOR", "T", "000001",
             "API rate limiting issue",
-            "Third-party API integration is hitting rate limits frequently, causing service disruptions.",
+            "Third-party API integration is hitting rate limits frequently, causing service disruptions in our food delivery platform. The DoorDash API is returning HTTP 429 (Too Many Requests) errors approximately 40% of the time during peak hours, which is preventing us from fetching real-time order status updates, restaurant availability, and delivery tracking information. This issue started occurring after we increased our order volume by 60% following a successful marketing campaign. Our current API call frequency is around 500 requests per minute, which exceeds the documented rate limit of 300 requests per minute. We have implemented exponential backoff and retry logic, but the delays are causing poor user experience with order status updates taking up to 5 minutes to refresh. The issue is particularly severe during lunch and dinner rush hours when our system needs to make the most API calls. We need to either optimize our API usage patterns or negotiate higher rate limits with DoorDash.",
             TicketType.TECHNICAL,
             "DoorDash",
             "DoorDash-API",
@@ -127,7 +127,7 @@ public class DataInitializer implements CommandLineRunner {
         SupportTicket ticket5 = createTicketWithId(
             "APP", "T", "000001",
             "System performance degradation",
-            "Overall system performance has degraded by 40% in the last week, affecting all users.",
+            "Overall system performance has degraded by 40% in the last week, affecting all users of our enterprise software platform. Response times for database queries have increased from an average of 200ms to 800ms, and page load times have gone from 2 seconds to 8 seconds. The performance degradation is most noticeable during peak business hours when concurrent user sessions exceed 1000. Our monitoring tools indicate that the bottleneck is primarily in the database layer, where connection pooling is not working efficiently and queries are not being optimized properly. We have also noticed increased CPU usage on our application servers, reaching 85% during peak hours compared to the normal 40-50% range. The issue appears to be related to a recent database migration where we moved from MySQL 5.7 to MySQL 8.0, and some query optimizations were lost during the migration process. We need to investigate the query execution plans and potentially add database indexes to improve performance.",
             TicketType.TECHNICAL,
             "Apple",
             "Apple-Main",
@@ -170,7 +170,7 @@ public class DataInitializer implements CommandLineRunner {
         SupportTicket ticket8 = createTicketWithId(
             "AMX", "T", "000001",
             "Mobile app API errors",
-            "Mobile application is experiencing API errors when syncing data.",
+            "Mobile application is experiencing API errors when syncing data with our backend services. Users are reporting that the app crashes when trying to refresh account information, transaction history, and payment status updates. The error logs show that the mobile app is receiving HTTP 500 errors from our REST API endpoints, specifically when calling the /api/v1/transactions and /api/v1/account endpoints. The issue appears to be related to a recent deployment where we updated the API response format to include additional fields, but the mobile app is still expecting the old format. This is causing JSON parsing errors in the mobile application. We have also noticed that the API is returning malformed JSON responses in some cases, which is causing the mobile app to crash with a 'JSONException: Unexpected token' error. The problem affects both iOS and Android versions of the app, and we have received over 200 crash reports in the last 24 hours. We need to either rollback the API changes or update the mobile app to handle the new response format.",
             TicketType.TECHNICAL,
             "Amex",
             "Amex-App",
@@ -243,7 +243,7 @@ public class DataInitializer implements CommandLineRunner {
         SupportTicket ticket13 = createTicketWithId(
             "NET", "T", "000001",
             "Recommendation algorithm issue",
-            "Content recommendation algorithm is not working properly for new users.",
+            "Content recommendation algorithm is not working properly for new users, resulting in poor user experience and decreased engagement metrics. New users are receiving generic recommendations instead of personalized content suggestions based on their viewing preferences and demographic information. The algorithm is failing to process user behavior data correctly, including watch history, ratings, and search patterns. Our analytics show that new user retention has dropped by 25% in the last two weeks, and average session duration has decreased from 45 minutes to 28 minutes. The machine learning model that powers our recommendation engine appears to be stuck in a local minimum, providing similar recommendations to all users regardless of their individual preferences. We have also noticed that the algorithm is not properly handling edge cases such as users who watch content in multiple languages or users with diverse genre preferences. The issue seems to be related to a recent update to our recommendation model where we introduced new features but didn't properly validate the model's performance on new user data.",
             TicketType.TECHNICAL,
             "Netflix",
             "Netflix-AI",
