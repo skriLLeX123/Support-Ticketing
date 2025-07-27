@@ -44,7 +44,13 @@ public class WebController {
     public String ticketDetail(@PathVariable UUID id, Model model) {
         Optional<SupportTicket> ticket = supportTicketService.getTicketById(id);
         if (ticket.isPresent()) {
-            model.addAttribute("ticket", ticket.get());
+            SupportTicket ticketData = ticket.get();
+            model.addAttribute("ticket", ticketData);
+            
+            // Add formatted ticket ID
+            String formattedTicketId = formatTicketId(ticketData.getPartnerName(), ticketData.getTicketType(), 1);
+            model.addAttribute("formattedTicketId", formattedTicketId);
+            
             return "ticket-detail";
         } else {
             return "redirect:/";

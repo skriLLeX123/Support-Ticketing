@@ -104,6 +104,16 @@
             color: #000000;
             font-size: 0.7875rem;
         }
+        
+        /* Reduce font size for contact data by 20% */
+        .contact-section .detail-key {
+            font-size: 0.8em;
+        }
+        
+        /* Reduce email font size by additional 20% for minimal look */
+        .contact-section .detail-value {
+            font-size: 0.64em;
+        }
 
         .card-header i {
             color: var(--accent-color);
@@ -302,6 +312,26 @@
             text-decoration: underline;
         }
 
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .contact-name {
+            font-weight: 600;
+            color: #0f1111;
+            font-size: 0.81rem;
+            line-height: 1.4;
+        }
+
+        .contact-email {
+            color: #117ACA;
+            text-decoration: none;
+            font-weight: normal;
+            font-size: 0.7875rem;
+        }
+
         .external-tickets-scrollable {
             max-height: 150px;
             overflow-y: auto;
@@ -431,13 +461,16 @@
         }
 
         .view-toggle-group .btn {
-            padding: 0.25rem;
-            font-size: 0.6rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 25px;
-            height: 25px;
+            padding: 0.22rem !important;
+            font-size: 0.5132rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 21.9px !important;
+            height: 21.9px !important;
+            line-height: 1 !important;
+            border-width: 0.5px !important;
+            border-radius: 0 !important;
         }
 
         .view-toggle-group .btn i {
@@ -994,7 +1027,7 @@
 
     <div class="container" style="margin-top: 2rem;">
         <div class="row">
-            <!-- Left Column (75.5%) -->
+            <!-- Left Column (75.5%) - Main Content -->
             <div class="col-lg-9">
                 <!-- Title and Description Container -->
                 <div class="card">
@@ -1014,10 +1047,10 @@
                             <i class="fas fa-paperclip"></i>Attachments
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <button class="btn btn-outline-secondary" onclick="addAttachment()" style="font-size: 0.7rem; padding: 0.3rem 0.6rem;">
-                                <i class="fas fa-plus me-1"></i>Add Attachment
+                            <button class="btn" onclick="addAttachment()" style="font-size: 0.5672rem; padding: 0.2431rem 0.4862rem; background-color: var(--secondary-color); border-color: var(--secondary-color); color: white;">
+                                <i class="fas fa-upload me-1"></i>Add Attachment
                             </button>
-                            <div class="btn-group btn-group-sm view-toggle-group" role="group">
+                            <div class="btn-group view-toggle-group" role="group">
                                 <button type="button" class="btn btn-outline-secondary active" id="tileViewBtn" onclick="switchToTileView()" title="Tile View">
                                     <i class="fas fa-th"></i>
                                 </button>
@@ -1387,7 +1420,7 @@
                                                 <textarea class="form-control" id="internalComment" rows="4" placeholder="Add an internal comment..."></textarea>
                                             </div>
                                             <div class="text-end">
-                                                <button type="button" class="btn btn-outline-secondary" onclick="addInternalComment()" style="font-size: 0.7rem; padding: 0.3rem 0.6rem;">
+                                                <button type="button" class="btn" onclick="addInternalComment()" style="font-size: 0.7rem; padding: 0.3rem 0.6rem; background-color: var(--secondary-color); border-color: var(--secondary-color); color: white;">
                                                     <i class="fas fa-plus me-1"></i>Add Comment
                                                 </button>
                                             </div>
@@ -1418,7 +1451,7 @@
                                                 <textarea class="form-control" id="externalComment" rows="4" placeholder="Add an external comment..."></textarea>
                                             </div>
                                             <div class="text-end">
-                                                <button type="button" class="btn btn-outline-secondary" onclick="addExternalComment()" style="font-size: 0.7rem; padding: 0.3rem 0.6rem;">
+                                                <button type="button" class="btn" onclick="addExternalComment()" style="font-size: 0.7rem; padding: 0.3rem 0.6rem; background-color: var(--secondary-color); border-color: var(--secondary-color); color: white;">
                                                     <i class="fas fa-plus me-1"></i>Add Comment
                                                 </button>
                                             </div>
@@ -1499,12 +1532,83 @@
 
             <!-- Right Column (24.5%) -->
             <div class="col-lg-3">
+                <!-- Partner & Account Info Container -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-link btn-sm me-1" onclick="toggleContainer('partnerInfo')" style="padding: 0; color: #6c757d; border: none; background: none; box-shadow: none;">
+                                <i class="fas fa-chevron-down" id="partnerInfo-icon"></i>
+                            </button>
+                            <div class="me-2" style="width: 1px; height: 16px; background-color: #dee2e6;"></div>
+                            <i class="fas fa-building"></i>Partner Information
+                        </div>
+                    </div>
+                    <div class="card-body" id="partnerInfo-body">
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Partner</div>
+                                    <div class="detail-value" th:text="${ticket.partnerName}">Partner Name</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Account</div>
+                                    <div class="detail-value" th:text="${ticket.accountName}">Account Name</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Solution</div>
+                                    <div class="detail-value" th:text="${ticket.solution.name}">Solution Name</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Environment</div>
+                                    <div class="detail-value">PROD</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Editable Fields Container -->
                 <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-edit"></i>Ticket Details
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-link btn-sm me-1" onclick="toggleContainer('ticketDetails')" style="padding: 0; color: #6c757d; border: none; background: none; box-shadow: none;">
+                                <i class="fas fa-chevron-down" id="ticketDetails-icon"></i>
+                            </button>
+                            <div class="me-2" style="width: 1px; height: 16px; background-color: #dee2e6;"></div>
+                            <i class="fas fa-edit"></i>Ticket Details
+                        </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" id="ticketDetails-body">
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Ticket ID</div>
+                                    <div class="detail-value" th:text="${formattedTicketId}">Ticket ID</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-row">
+                                <div class="detail-content">
+                                    <div class="detail-key">Ticket Type</div>
+                                    <div class="detail-value" th:text="${ticket.ticketType}">Technical</div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="detail-item">
                             <div class="detail-row">
                                 <div class="detail-content">
@@ -1584,10 +1688,16 @@
 
                 <!-- External Ticket References Container -->
                 <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-link"></i>External References
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-link btn-sm me-1" onclick="toggleContainer('externalReferences')" style="padding: 0; color: #6c757d; border: none; background: none; box-shadow: none;">
+                                <i class="fas fa-chevron-down" id="externalReferences-icon"></i>
+                            </button>
+                            <div class="me-2" style="width: 1px; height: 16px; background-color: #dee2e6;"></div>
+                            <i class="fas fa-link"></i>External References
+                        </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" id="externalReferences-body">
                         <div class="detail-item">
                             <div class="detail-row">
                                 <div class="detail-content">
@@ -1620,76 +1730,173 @@
                     </div>
                 </div>
 
-                <!-- Partner & Account Info Container -->
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-building"></i>Partner Information
-                    </div>
-                    <div class="card-body">
-                        <div class="detail-item">
-                            <div class="detail-row">
-                                <div class="detail-content">
-                                    <div class="detail-key">Partner</div>
-                                    <div class="detail-value" th:text="${ticket.partnerName}">Partner Name</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-row">
-                                <div class="detail-content">
-                                    <div class="detail-key">Account</div>
-                                    <div class="detail-value" th:text="${ticket.accountName}">Account Name</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-row">
-                                <div class="detail-content">
-                                    <div class="detail-key">Solution</div>
-                                    <div class="detail-value" th:text="${ticket.solution.name}">Solution Name</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-row">
-                                <div class="detail-content">
-                                    <div class="detail-key">Created</div>
-                                    <div class="detail-value" th:text="${#temporals.format(ticket.createdAt, 'MMM dd, yyyy')}">Date</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Contacts Container -->
                 <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-address-book"></i>Contacts
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <button class="btn btn-link btn-sm me-1" onclick="toggleContainer('contacts')" style="padding: 0; color: #6c757d; border: none; background: none; box-shadow: none;">
+                                <i class="fas fa-chevron-down" id="contacts-icon"></i>
+                            </button>
+                            <div class="me-2" style="width: 1px; height: 16px; background-color: #dee2e6;"></div>
+                            <i class="fas fa-address-book"></i>Contacts
+                        </div>
+                        <button class="btn" onclick="openAddContactModal()" style="font-size: 0.5672rem; padding: 0.2431rem 0.4862rem; background-color: var(--secondary-color); border-color: var(--secondary-color); color: white;">
+                            <i class="fas fa-plus me-1"></i>Add Contact
+                        </button>
                     </div>
-                    <div class="card-body">
-                        <h6 class="mb-3">Chase Contacts</h6>
-                        <ul class="contact-list">
-                            <li class="contact-item">
-                                <a href="mailto:chase.contact1@company.com" class="contact-email">chase.contact1@company.com</a>
+                    <div class="card-body" id="contacts-body">
+                        <!-- Tab Navigation -->
+                        <ul class="nav nav-tabs" id="contactsTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="chase-tab" data-bs-toggle="tab" data-bs-target="#chase" type="button" role="tab">
+                                    <i class="fas fa-building me-2"></i>Chase Contacts
+                                </button>
                             </li>
-                            <li class="contact-item">
-                                <a href="mailto:chase.contact2@company.com" class="contact-email">chase.contact2@company.com</a>
-                            </li>
-                        </ul>
-                        
-                        <h6 class="mb-3 mt-4">Partner Contacts</h6>
-                        <ul class="contact-list">
-                            <li class="contact-item">
-                                <a href="mailto:partner.contact1@partner.com" class="contact-email">partner.contact1@partner.com</a>
-                            </li>
-                            <li class="contact-item">
-                                <a href="mailto:partner.contact2@partner.com" class="contact-email">partner.contact2@partner.com</a>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="partner-tab" data-bs-toggle="tab" data-bs-target="#partner" type="button" role="tab">
+                                    <i class="fas fa-handshake me-2"></i>Partner Contacts
+                                </button>
                             </li>
                         </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="contactsTabsContent">
+                            <!-- Chase Contacts Tab -->
+                            <div class="tab-pane fade show active" id="chase" role="tabpanel">
+                                <div class="contact-section">
+                                    <div class="detail-item">
+                                        <div class="detail-row">
+                                            <div class="detail-content">
+                                                <div class="detail-key">John Smith</div>
+                                                <div class="detail-value">
+                                                    <a href="mailto:john.smith@company.com" class="contact-email">john.smith@company.com</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-row">
+                                            <div class="detail-content">
+                                                <div class="detail-key">Sarah Johnson</div>
+                                                <div class="detail-value">
+                                                    <a href="mailto:sarah.johnson@company.com" class="contact-email">sarah.johnson@company.com</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-row">
+                                            <div class="detail-content">
+                                                <div class="detail-key">Technical Support Team</div>
+                                                <div class="detail-value">
+                                                    <a href="mailto:tech.support@company.com" class="contact-email">tech.support@company.com</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-row">
+                                            <div class="detail-content">
+                                                <div class="detail-key">Customer Success Distribution</div>
+                                                <div class="detail-value">
+                                                    <a href="mailto:customer.success@company.com" class="contact-email">customer.success@company.com</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Partner Contacts Tab -->
+                            <div class="tab-pane fade" id="partner" role="tabpanel">
+                                <div class="contact-section">
+                                    <div class="detail-item">
+                                        <div class="detail-row">
+                                            <div class="detail-content">
+                                                <div class="detail-key">Mike Davis</div>
+                                                <div class="detail-value">
+                                                    <a href="mailto:mike.davis@partner.com" class="contact-email">mike.davis@partner.com</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-row">
+                                            <div class="detail-content">
+                                                <div class="detail-key">Lisa Wilson</div>
+                                                <div class="detail-value">
+                                                    <a href="mailto:lisa.wilson@partner.com" class="contact-email">lisa.wilson@partner.com</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-row">
+                                            <div class="detail-content">
+                                                <div class="detail-key">Partner Support Group</div>
+                                                <div class="detail-value">
+                                                    <a href="mailto:partner.support@partner.com" class="contact-email">partner.support@partner.com</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="detail-item">
+                                        <div class="detail-row">
+                                            <div class="detail-content">
+                                                <div class="detail-key">Escalation Team</div>
+                                                <div class="detail-value">
+                                                    <a href="mailto:escalation@partner.com" class="contact-email">escalation@partner.com</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
 
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Contact Modal -->
+    <div class="modal fade" id="addContactModal" tabindex="-1" aria-labelledby="addContactModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addContactModalLabel">Add New Contact</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addContactForm">
+                        <div class="mb-3">
+                            <label for="contactType" class="form-label">Contact Type</label>
+                            <select class="form-select" id="contactType" required>
+                                <option value="">Select Contact Type</option>
+                                <option value="chase">Chase Contact</option>
+                                <option value="partner">Partner Contact</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contactName" class="form-label">Contact Name</label>
+                            <input type="text" class="form-control" id="contactName" placeholder="Enter contact name or team name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contactEmail" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="contactEmail" placeholder="Enter email address" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contactDescription" class="form-label">Description (Optional)</label>
+                            <textarea class="form-control" id="contactDescription" rows="2" placeholder="Brief description of the contact or team"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addContact()">Add Contact</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1891,6 +2098,65 @@
             // Update button states
             listBtn.classList.add('active');
             tileBtn.classList.remove('active');
+        }
+
+        function openAddContactModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addContactModal'));
+            modal.show();
+        }
+
+        function addContact() {
+            const contactType = document.getElementById('contactType').value;
+            const contactName = document.getElementById('contactName').value;
+            const contactEmail = document.getElementById('contactEmail').value;
+            const contactDescription = document.getElementById('contactDescription').value;
+
+            if (!contactType || !contactName || !contactEmail) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            // Create new contact element
+            const newContact = document.createElement('div');
+            newContact.className = 'detail-item';
+            newContact.innerHTML = `
+                <div class="detail-row">
+                    <div class="detail-content">
+                        <div class="detail-key">${contactName}</div>
+                        <div class="detail-value">
+                            <a href="mailto:${contactEmail}" class="contact-email">${contactEmail}</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add to appropriate tab
+            const targetTab = contactType === 'chase' ? 'chase' : 'partner';
+            const targetSection = document.querySelector(`#${targetTab} .contact-section`);
+            targetSection.appendChild(newContact);
+
+            // Close modal and reset form
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addContactModal'));
+            modal.hide();
+            
+            // Reset form
+            document.getElementById('addContactForm').reset();
+
+            // Show success message
+            alert(`Contact "${contactName}" added successfully to ${contactType} contacts!`);
+        }
+
+        function toggleContainer(containerId) {
+            const body = document.getElementById(containerId + '-body');
+            const icon = document.getElementById(containerId + '-icon');
+            
+            if (body.style.display === 'none') {
+                body.style.display = 'block';
+                icon.className = 'fas fa-chevron-down';
+            } else {
+                body.style.display = 'none';
+                icon.className = 'fas fa-chevron-right';
+            }
         }
 
 
