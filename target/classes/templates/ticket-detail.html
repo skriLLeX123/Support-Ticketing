@@ -59,6 +59,218 @@
             color: var(--text-muted);
         }
 
+        /* Sidebar Toggle Button */
+        .sidebar-toggle {
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            display: block;
+            background: transparent;
+        }
+        
+        .sidebar-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            z-index: 1050;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            pointer-events: auto;
+        }
+
+        .sidebar.hide {
+            left: -280px;
+            pointer-events: none;
+        }
+
+        .sidebar-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            z-index: 1051;
+        }
+
+        .sidebar-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-title {
+            color: white;
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .sidebar-close {
+            color: white !important;
+            padding: 0;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-content {
+            padding: 1rem 0;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1rem;
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid #3498db;
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
+            pointer-events: none;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+            pointer-events: auto;
+        }
+
+        /* Main Content Adjustment */
+        .main-content {
+            transition: margin-left 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Ensure main content layout is not affected by sidebar */
+        .container-fluid {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .main-container {
+            margin-top: 2rem;
+        }
+
+        .row {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .col-lg-9, .col-lg-3 {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 992px) {
+            .sidebar {
+                left: 0;
+                pointer-events: auto;
+            }
+            
+            .main-content {
+                margin-left: 280px;
+                position: relative;
+                z-index: 1;
+                transition: margin-left 0.3s ease;
+            }
+            
+            .main-content.sidebar-hidden {
+                margin-left: 0 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: flex-start !important;
+            }
+            
+            /* Center content when sidebar is hidden */
+            .main-content.sidebar-hidden .main-container {
+                max-width: 1200px !important;
+                width: 100% !important;
+                margin: 2rem auto 0 auto !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+            }
+            
+            /* Add right margin to prevent sticking to edge */
+            .col-lg-3 {
+                padding-right: 20px;
+            }
+            
+            .sidebar-overlay.show {
+                display: none;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar {
+                left: -280px;
+                pointer-events: none;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                position: relative;
+                z-index: 1;
+                transition: margin-left 0.3s ease;
+            }
+            
+            .sidebar.show {
+                left: 0;
+                pointer-events: auto;
+            }
+        }
+
 
 
         .severity-badge {
@@ -1007,12 +1219,20 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/">
-                <i class="fas fa-headset me-1"></i>Support Ticket System
-            </a>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <!-- Hamburger Menu Button -->
+                <button class="btn btn-link text-light sidebar-toggle me-3" id="sidebarToggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <a class="navbar-brand mb-0" href="/">
+                    <i class="fas fa-headset me-1"></i>Support Ticket System
+                </a>
+            </div>
+            
             <div class="d-flex">
                 <a href="/" class="btn btn-outline-light">
                     <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
@@ -1021,14 +1241,52 @@
         </div>
     </nav>
 
+    <!-- Left Side Navigation -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close-btn" onclick="toggleSidebar()" title="Toggle sidebar">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="sidebar-header">
+            <h5 class="sidebar-title">
+                <i class="fas fa-bars me-2"></i>Navigation
+            </h5>
+        </div>
+        <div class="sidebar-content">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard" id="nav-dashboard">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/tickets" id="nav-ticketing">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        <span>Ticketing</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/solutions" id="nav-solutions">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <span>Solutions</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 
 
 
-    <div class="container" style="margin-top: 2rem;">
-        <div class="row">
-            <!-- Left Column (75.5%) - Main Content -->
-            <div class="col-lg-9">
+
+    <div class="main-content" id="mainContent">
+        <div class="container-fluid main-container">
+            <div class="row">
+                <!-- Main Content Area -->
+                <div class="col-lg-9">
                 <!-- Title and Description Container -->
                 <div class="card">
                     <div class="card-header">
@@ -1530,8 +1788,8 @@
                 </div>
             </div>
 
-            <!-- Right Column (24.5%) -->
-            <div class="col-lg-3">
+                <!-- Right Column -->
+                <div class="col-lg-3">
                 <!-- Partner & Account Info Container -->
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -1749,12 +2007,12 @@
                         <ul class="nav nav-tabs" id="contactsTabs" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="chase-tab" data-bs-toggle="tab" data-bs-target="#chase" type="button" role="tab">
-                                    <i class="fas fa-building me-2"></i>Chase Contacts
+                                    <i class="fas fa-building me-2"></i>Chase
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="partner-tab" data-bs-toggle="tab" data-bs-target="#partner" type="button" role="tab">
-                                    <i class="fas fa-handshake me-2"></i>Partner Contacts
+                                    <i class="fas fa-handshake me-2"></i>Partner
                                 </button>
                             </li>
                         </ul>
@@ -1855,11 +2113,12 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
     </div>
+</div>
+</div>
+</div>
 
     <!-- Add Contact Modal -->
     <div class="modal fade" id="addContactModal" tabindex="-1" aria-labelledby="addContactModalLabel" aria-hidden="true">
@@ -1903,6 +2162,61 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const mainContent = document.getElementById('mainContent');
+            
+            // Toggle sidebar visibility
+            if (sidebar.classList.contains('hide')) {
+                sidebar.classList.remove('hide');
+                overlay.classList.remove('show');
+                mainContent.classList.remove('sidebar-hidden');
+            } else {
+                sidebar.classList.add('hide');
+                overlay.classList.add('show');
+                mainContent.classList.add('sidebar-hidden');
+            }
+        }
+
+        // Close Sidebar Function
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const mainContent = document.getElementById('mainContent');
+            
+            sidebar.classList.add('hide');
+            overlay.classList.add('show');
+            mainContent.classList.add('sidebar-hidden');
+        }
+
+        // Close sidebar when clicking on overlay (mobile)
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('sidebarOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    toggleSidebar();
+                });
+            }
+            
+            // Set active navigation based on current page
+            setActiveNavigation();
+        });
+
+        function setActiveNavigation() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPath || 
+                    (currentPath === '/' && link.getAttribute('href') === '/dashboard')) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
         function addInternalComment() {
             const comment = document.getElementById('internalComment').value;
             if (comment.trim()) {

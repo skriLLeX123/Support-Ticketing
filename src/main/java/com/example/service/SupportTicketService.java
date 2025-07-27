@@ -2,9 +2,11 @@ package com.example.service;
 
 import com.example.dto.SupportTicketDTO;
 import com.example.entity.SupportTicket;
+import com.example.entity.Solution;
 import com.example.entity.TicketType;
 import com.example.entity.Severity;
 import com.example.repository.SupportTicketRepository;
+import com.example.repository.SolutionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,9 @@ public class SupportTicketService {
 
     @Autowired
     private SupportTicketRepository supportTicketRepository;
+
+    @Autowired
+    private SolutionRepository solutionRepository;
 
     /**
      * Get all support tickets
@@ -177,6 +182,13 @@ public class SupportTicketService {
     public List<SupportTicket> searchTicketsByCriteria(TicketType ticketType, Severity severity, 
                                                       String partnerName, String accountName) {
         return supportTicketRepository.findTicketsByCriteria(ticketType, severity, partnerName, accountName);
+    }
+
+    /**
+     * Get all solutions
+     */
+    public List<Solution> getAllSolutions() {
+        return solutionRepository.findAll();
     }
 
     /**

@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tickets - Support Ticket System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- ag-Grid CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.1/styles/ag-grid.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.1/styles/ag-theme-alpine.css">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-gray: #ecf0f1;
+            --border-color: #bdc3c7;
+            --text-muted: #7f8c8d;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.4;
+            font-size: 0.7875rem;
+            color: #0f1111;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .search-box {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+        }
+        
+        .search-box::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .filter-sidebar {
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            min-height: calc(100vh - 200px);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            font-size: 0.85rem;
+        }
+        
+        .filter-sidebar .card-header {
+            background-color: #f7fafa;
+            border-bottom: 1px solid #e1e8ed;
+            padding: 12px 16px;
+        }
+        
+        .filter-sidebar .card-header h6 {
+            color: #0f1111;
+            font-weight: 700;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .filter-sidebar .card-body {
+            padding: 16px;
+        }
+        
+        .filter-sidebar .filter-section {
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .filter-sidebar .filter-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .filter-sidebar .filter-header {
+            font-weight: 700;
+            color: #0f1111;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-sidebar .filter-checkbox {
+            margin-bottom: 4px;
+            padding: 2px 0;
+        }
+        
+        .filter-sidebar .filter-checkbox input[type="checkbox"] {
+            margin-right: 8px;
+            accent-color: #117ACA;
+        }
+        
+        .filter-sidebar .filter-checkbox label {
+            font-size: 14px;
+            color: #0f1111;
+            cursor: pointer;
+            margin-bottom: 0;
+            font-weight: 400;
+            transition: color 0.2s ease;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            z-index: 1050;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar.show {
+            left: 0;
+        }
+
+        .sidebar-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            z-index: 1051;
+        }
+
+        .sidebar-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-title {
+            color: white;
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .sidebar-close {
+            color: white !important;
+            padding: 0;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-content {
+            padding: 1rem 0;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1rem;
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid #3498db;
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* Main Content Adjustment */
+        .main-content {
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 992px) {
+            .sidebar {
+                left: -280px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar.show {
+                left: 0;
+            }
+            
+            .sidebar-overlay.show {
+                display: block;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* ag-Grid Customizations */
+        .ag-theme-alpine {
+            --ag-header-height: 40px;
+            --ag-header-foreground-color: #0f1111;
+            --ag-header-background-color: #f8f9fa;
+            --ag-header-cell-hover-background-color: #e9ecef;
+            --ag-header-cell-moving-background-color: #dee2e6;
+            --ag-font-size: 13px;
+            --ag-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --ag-row-hover-color: #f8f9fa;
+            --ag-selected-row-background-color: #e3f2fd;
+            --ag-cell-horizontal-border: solid #e9ecef;
+            --ag-row-border-color: #e9ecef;
+            --ag-cell-horizontal-padding: 8px;
+            --ag-cell-vertical-padding: 6px;
+            height: 600px;
+            width: 100%;
+        }
+
+        .ag-header-cell {
+            font-weight: 600;
+            color: #0f1111;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ag-cell {
+            font-weight: normal !important;
+        }
+
+        .ag-cell-value {
+            font-weight: normal !important;
+        }
+
+        .ag-row {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .ag-row:hover {
+            background-color: #f8f9fa !important;
+        }
+
+        .ag-row.ag-row-selected {
+            background-color: #e3f2fd !important;
+        }
+
+        .ticket-id-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .partner-logo {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            object-fit: cover;
+        }
+
+        .severity-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            font-weight: 500;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .severity-critical {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .severity-high {
+            background-color: #fd7e14;
+            color: white;
+        }
+
+        .severity-medium {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .severity-low {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .type-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            background-color: #e9ecef;
+            color: #495057;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <!-- Hamburger Menu Button -->
+            <button class="btn btn-link text-light" id="sidebarToggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-headset me-1"></i>Support Ticket System
+            </a>
+            <div class="d-flex">
+                <input type="text" class="form-control search-box me-2" id="globalSearch" placeholder="Search tickets...">
+                <button class="btn btn-outline-light" type="button" onclick="clearAllFilters()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Left Side Navigation -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close sidebar">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="sidebar-header">
+            <h5 class="sidebar-title">
+                <i class="fas fa-bars me-2"></i>Navigation
+            </h5>
+        </div>
+        <div class="sidebar-content">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard" id="nav-dashboard">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/tickets" id="nav-ticketing">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        <span>Ticketing</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/solutions" id="nav-solutions">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <span>Solutions</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-content" id="mainContent">
+        <div class="container-fluid mt-4">
+            <div class="row">
+                <!-- Filter Sidebar -->
+                <div class="col-md-2">
+                    <div class="card filter-sidebar">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-filter me-2"></i>
+                                Filters
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <!-- Severity Filter -->
+                            <div class="filter-section">
+                                <div class="filter-header">Severity</div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="severity-critical" value="CRITICAL">
+                                    <label for="severity-critical">Critical</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="severity-high" value="HIGH">
+                                    <label for="severity-high">High</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="severity-medium" value="MEDIUM">
+                                    <label for="severity-medium">Medium</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="severity-low" value="LOW">
+                                    <label for="severity-low">Low</label>
+                                </div>
+                            </div>
+
+                            <!-- Ticket Type Filter -->
+                            <div class="filter-section">
+                                <div class="filter-header">Ticket Type</div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="type-technical" value="TECHNICAL">
+                                    <label for="type-technical">Technical</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="type-general" value="GENERAL">
+                                    <label for="type-general">General</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="type-file-transfer" value="FILE_TRANSFER">
+                                    <label for="type-file-transfer">File Transfer</label>
+                                </div>
+                            </div>
+
+                            <!-- Partner Filter -->
+                            <div class="filter-section">
+                                <div class="filter-header">Partner</div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="partner-amazon" value="Amazon">
+                                    <label for="partner-amazon">Amazon</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="partner-doordash" value="DoorDash">
+                                    <label for="partner-doordash">DoorDash</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="partner-apple" value="Apple">
+                                    <label for="partner-apple">Apple</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="partner-amex" value="Amex">
+                                    <label for="partner-amex">Amex</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="partner-disney" value="Disney">
+                                    <label for="partner-disney">Disney</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="partner-hulu" value="Hulu">
+                                    <label for="partner-hulu">Hulu</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="partner-netflix" value="Netflix">
+                                    <label for="partner-netflix">Netflix</label>
+                                </div>
+                            </div>
+
+                            <!-- Support Group Filter -->
+                            <div class="filter-section">
+                                <div class="filter-header">Support Group</div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="group-technical" value="Technical Support">
+                                    <label for="group-technical">Technical Support</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="group-customer" value="Customer Support">
+                                    <label for="group-customer">Customer Support</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="group-escalation" value="Escalation Team">
+                                    <label for="group-escalation">Escalation Team</label>
+                                </div>
+                            </div>
+
+                            <!-- Status Filter -->
+                            <div class="filter-section">
+                                <div class="filter-header">Status</div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="status-open" value="OPEN">
+                                    <label for="status-open">Open</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="status-in-progress" value="IN_PROGRESS">
+                                    <label for="status-in-progress">In Progress</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="status-resolved" value="RESOLVED">
+                                    <label for="status-resolved">Resolved</label>
+                                </div>
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="status-closed" value="CLOSED">
+                                    <label for="status-closed">Closed</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="col-md-10">
+                    <!-- Header with Export Button -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="mb-1">Support Tickets</h2>
+                            <p class="text-muted mb-0">Manage and track support tickets across all partners</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="openExportModal()">
+                                <i class="fas fa-download me-2"></i>
+                                Export Data
+                            </button>
+                            <button class="btn btn-primary" onclick="clearAllFilters()">
+                                <i class="fas fa-plus me-2"></i>
+                                Create Ticket
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Grid Controls -->
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="text-muted">Showing <strong id="visibleRowCount">0</strong> of <strong id="totalRowCount">0</strong> tickets</span>
+                                <div class="vr"></div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <label class="form-label mb-0">Columns:</label>
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-columns me-1"></i>
+                                            Manage
+                                        </button>
+                                        <ul class="dropdown-menu" id="columnVisibilityMenu">
+                                            <!-- Dynamically filled by JS -->
+                                        </ul>
+                                        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="resetColumnVisibility()" title="Reset column visibility to default">
+                                            <i class="fas fa-undo me-1"></i> Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="ticketGrid" class="ag-theme-alpine"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exportModalLabel">
+                        <i class="fas fa-download me-2"></i>
+                        Export Support Tickets
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body export-modal">
+                    <div class="row">
+                        <!-- Left Partition - Date Range & Filters -->
+                        <div class="col-md-5">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-calendar-alt me-2"></i>
+                                        Date Range & Filters
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Date Range Selection -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Date Range</label>
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="dateRange" id="lastWeek" value="lastWeek" checked>
+                                                <label class="form-check-label" for="lastWeek">
+                                                    Last Week
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="dateRange" id="lastMonth" value="lastMonth">
+                                                <label class="form-check-label" for="lastMonth">
+                                                    Last Month
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="dateRange" id="lastQuarter" value="lastQuarter">
+                                                <label class="form-check-label" for="lastQuarter">
+                                                    Last Quarter (3 months)
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="dateRange" id="lastYear" value="lastYear">
+                                                <label class="form-check-label" for="lastYear">
+                                                    Last Year
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="dateRange" id="customRange" value="customRange">
+                                                <label class="form-check-label" for="customRange">
+                                                    Custom Range
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Custom Date Range -->
+                                        <div id="customDateRange" class="row" style="display: none;">
+                                            <div class="col-6">
+                                                <label class="form-label">From Date</label>
+                                                <input type="date" class="form-control" id="fromDate">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="form-label">To Date</label>
+                                                <input type="date" class="form-control" id="toDate">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <!-- Export Format -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Export Format</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exportFormat" id="formatCSV" value="csv" checked>
+                                            <label class="form-check-label" for="formatCSV">
+                                                CSV (Comma Separated Values)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exportFormat" id="formatExcel" value="excel">
+                                            <label class="form-check-label" for="formatExcel">
+                                                Excel (.xlsx)
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="exportFormat" id="formatJSON" value="json">
+                                            <label class="form-check-label" for="formatJSON">
+                                                JSON
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Partition - Column Selection -->
+                        <div class="col-md-7">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-columns me-2"></i>
+                                        Select Columns to Export
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-ticketId" value="ticketId" checked>
+                                                <label class="form-check-label" for="col-ticketId">Ticket ID</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-title" value="title" checked>
+                                                <label class="form-check-label" for="col-title">Title</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-description" value="description">
+                                                <label class="form-check-label" for="col-description">Description</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-ticketType" value="ticketType" checked>
+                                                <label class="form-check-label" for="col-ticketType">Ticket Type</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-severity" value="severity" checked>
+                                                <label class="form-check-label" for="col-severity">Severity</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-partnerName" value="partnerName" checked>
+                                                <label class="form-check-label" for="col-partnerName">Partner</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-accountName" value="accountName" checked>
+                                                <label class="form-check-label" for="col-accountName">Account</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-assigneeName" value="assigneeName">
+                                                <label class="form-check-label" for="col-assigneeName">Assignee</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-supportGroupName" value="supportGroupName">
+                                                <label class="form-check-label" for="col-supportGroupName">Support Group</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-solutionName" value="solutionName">
+                                                <label class="form-check-label" for="col-solutionName">Solution</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-customersImpacted" value="customersImpacted">
+                                                <label class="form-check-label" for="col-customersImpacted">Customers Impacted</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-createdAt" value="createdAt" checked>
+                                                <label class="form-check-label" for="col-createdAt">Created Date</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="col-lastUpdated" value="lastUpdated">
+                                                <label class="form-check-label" for="col-lastUpdated">Last Updated</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="executeExport()">
+                        <i class="fas fa-download me-1"></i>
+                        Export Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- ag-Grid JS -->
+    <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.1/dist/ag-grid-community.min.js"></script>
+    
+    <script th:inline="javascript">
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            // Always slide in when this function is called
+            sidebar.classList.add('show');
+            overlay.classList.add('show');
+        }
+
+        // Close Sidebar Function
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+
+        // Close sidebar when clicking on overlay (mobile)
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('sidebarOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    closeSidebar();
+                });
+            }
+            
+            // Set active navigation based on current page
+            setActiveNavigation();
+        });
+
+        function setActiveNavigation() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPath || 
+                    (currentPath === '/' && link.getAttribute('href') === '/dashboard')) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Get tickets data from Thymeleaf
+        const ticketsData = /*[[${tickets}]]*/ [];
+        console.log('Tickets data loaded:', ticketsData.length, 'tickets');
+        if (ticketsData.length > 0) {
+            console.log('Sample ticket data:', ticketsData[0]);
+        }
+        
+        // Global filter state
+        let currentFilters = [];
+        
+        // ag-Grid configuration
+        const gridOptions = {
+            columnDefs: [
+                {
+                    headerName: 'Ticket Id',
+                    field: 'ticketId',
+                    width: 120,
+                    filter: true,
+                    valueGetter: function(params) {
+                        const partner = params.data.partnerName;
+                        let ticketId = '';
+                        
+                        if (partner === 'Amazon') {
+                            ticketId = 'AMZT000001';
+                        } else if (partner === 'DoorDash') {
+                            ticketId = 'DORG000001';
+                        } else if (partner === 'Apple') {
+                            ticketId = 'APPF000001';
+                        } else if (partner === 'Amex') {
+                            ticketId = 'AMXT000001';
+                        } else if (partner === 'Disney') {
+                            ticketId = 'DISG000001';
+                        } else if (partner === 'Hulu') {
+                            ticketId = 'HULF000001';
+                        } else if (partner === 'Netflix') {
+                            ticketId = 'NETT000001';
+                        } else {
+                            ticketId = 'XXXG000001';
+                        }
+                        
+                        return ticketId;
+                    },
+                    cellRenderer: function(params) {
+                        const partner = params.data.partnerName;
+                        let logoUrl = '';
+                        let ticketId = '';
+                        
+                        if (partner === 'Amazon') {
+                            logoUrl = 'https://logo.clearbit.com/amazon.com';
+                            ticketId = 'AMZT000001';
+                        } else if (partner === 'DoorDash') {
+                            logoUrl = 'https://logo.clearbit.com/doordash.com';
+                            ticketId = 'DORG000001';
+                        } else if (partner === 'Apple') {
+                            logoUrl = 'https://logo.clearbit.com/apple.com';
+                            ticketId = 'APPF000001';
+                        } else if (partner === 'Amex') {
+                            logoUrl = 'https://logo.clearbit.com/americanexpress.com';
+                            ticketId = 'AMXT000001';
+                        } else if (partner === 'Disney') {
+                            logoUrl = 'https://logo.clearbit.com/disney.com';
+                            ticketId = 'DISG000001';
+                        } else if (partner === 'Hulu') {
+                            logoUrl = 'https://logo.clearbit.com/hulu.com';
+                            ticketId = 'HULF000001';
+                        } else if (partner === 'Netflix') {
+                            logoUrl = 'https://logo.clearbit.com/netflix.com';
+                            ticketId = 'NETT000001';
+                        } else {
+                            ticketId = 'XXXG000001';
+                        }
+                        
+                        return `<div class="ticket-id-cell">
+                                    <img src="${logoUrl}" class="partner-logo" onerror="this.style.display='none'">
+                                    <span>${ticketId}</span>
+                                    <i class="fas fa-external-link-alt ms-2 text-muted" style="font-size: 0.75rem;"></i>
+                                </div>`;
+                    }
+                },
+                {
+                    headerName: 'Title',
+                    field: 'title',
+                    width: 200,
+                    filter: true,
+                    cellRenderer: function(params) {
+                        return `<div class="ticket-title">${params.data.title}</div>
+                                    <div class="ticket-description">${params.data.description}</div>`;
+                    }
+                },
+                {
+                    headerName: 'Type',
+                    field: 'ticketType',
+                    width: 100,
+                    filter: true,
+                    cellRenderer: function(params) {
+                        const type = params.data.ticketType;
+                        return `<span class="type-badge">${type}</span>`;
+                    }
+                },
+                {
+                    headerName: 'Severity',
+                    field: 'severity',
+                    width: 100,
+                    filter: true,
+                    cellRenderer: function(params) {
+                        const severity = params.data.severity;
+                        const severityClass = severity.toLowerCase();
+                        return `<span class="severity-badge severity-${severityClass}">${severity}</span>`;
+                    }
+                },
+                {
+                    headerName: 'Partner',
+                    field: 'partnerName',
+                    width: 120,
+                    filter: true
+                },
+                {
+                    headerName: 'Account',
+                    field: 'accountName',
+                    width: 120,
+                    filter: true
+                },
+                {
+                    headerName: 'Assignee',
+                    field: 'assigneeName',
+                    width: 120,
+                    filter: true,
+                    valueGetter: function(params) {
+                        return params.data.assigneeName || '-';
+                    }
+                },
+                {
+                    headerName: 'Support Group',
+                    field: 'supportGroupName',
+                    width: 140,
+                    filter: true,
+                    valueGetter: function(params) {
+                        return params.data.supportGroupName || '-';
+                    }
+                },
+                {
+                    headerName: 'Solution',
+                    field: 'solutionName',
+                    width: 120,
+                    filter: true,
+                    valueGetter: function(params) {
+                        return params.data.solutionName || '-';
+                    }
+                },
+                {
+                    headerName: 'Customers Impacted',
+                    field: 'customersImpacted',
+                    width: 140,
+                    filter: true,
+                    valueGetter: function(params) {
+                        return params.data.customersImpacted || 0;
+                    }
+                },
+                {
+                    headerName: 'Created',
+                    field: 'createdAt',
+                    width: 120,
+                    filter: true,
+                    valueGetter: function(params) {
+                        const date = new Date(params.data.createdAt);
+                        return date.toLocaleDateString();
+                    }
+                },
+                {
+                    headerName: 'Last Updated',
+                    field: 'lastUpdated',
+                    width: 120,
+                    filter: true,
+                    valueGetter: function(params) {
+                        const date = new Date(params.data.lastUpdated);
+                        return date.toLocaleDateString();
+                    }
+                }
+            ],
+            rowData: ticketsData,
+            pagination: true,
+            paginationPageSize: 25,
+            domLayout: 'autoHeight',
+            defaultColDef: {
+                sortable: true,
+                resizable: true,
+                filter: true
+            },
+            onGridReady: function(params) {
+                updateRowCount();
+                setupColumnVisibilityMenu();
+                setupFilterListeners();
+            },
+            onRowClicked: function(params) {
+                // Navigate to ticket detail page
+                window.location.href = `/ticket/${params.data.ticketId}`;
+            }
+        };
+
+        // Initialize the grid
+        document.addEventListener('DOMContentLoaded', function() {
+            const gridDiv = document.querySelector('#ticketGrid');
+            new agGrid.Grid(gridDiv, gridOptions);
+        });
+
+        function updateRowCount() {
+            const totalRows = gridOptions.api.getDisplayedRowCount();
+            const visibleRows = gridOptions.api.getRenderedNodes().length;
+            document.getElementById('totalRowCount').textContent = totalRows;
+            document.getElementById('visibleRowCount').textContent = visibleRows;
+        }
+
+        function setupColumnVisibilityMenu() {
+            const menu = document.getElementById('columnVisibilityMenu');
+            const columnDefs = gridOptions.columnDefs;
+            
+            columnDefs.forEach(col => {
+                const li = document.createElement('li');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'form-check-input me-2';
+                checkbox.checked = true;
+                checkbox.onchange = function() {
+                    gridOptions.columnApi.setColumnVisible(col.field, this.checked);
+                };
+                
+                const label = document.createElement('label');
+                label.className = 'form-check-label';
+                label.textContent = col.headerName;
+                
+                li.appendChild(checkbox);
+                li.appendChild(label);
+                menu.appendChild(li);
+            });
+        }
+
+        function resetColumnVisibility() {
+            gridOptions.columnDefs.forEach(col => {
+                gridOptions.columnApi.setColumnVisible(col.field, true);
+            });
+            
+            // Reset checkboxes
+            const checkboxes = document.querySelectorAll('#columnVisibilityMenu input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = true);
+        }
+
+        function setupFilterListeners() {
+            const filterCheckboxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]');
+            filterCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', applyFilters);
+            });
+        }
+
+        function applyFilters() {
+            const filters = [];
+            const filterCheckboxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]:checked');
+            
+            filterCheckboxes.forEach(checkbox => {
+                filters.push({
+                    field: getFilterField(checkbox.id),
+                    value: checkbox.value
+                });
+            });
+            
+            currentFilters = filters;
+            updateGridData();
+        }
+
+        function getFilterField(checkboxId) {
+            if (checkboxId.includes('severity')) return 'severity';
+            if (checkboxId.includes('type')) return 'ticketType';
+            if (checkboxId.includes('partner')) return 'partnerName';
+            if (checkboxId.includes('group')) return 'supportGroupName';
+            if (checkboxId.includes('status')) return 'status';
+            return '';
+        }
+
+        function updateGridData() {
+            let filteredData = ticketsData;
+            
+            currentFilters.forEach(filter => {
+                filteredData = filteredData.filter(ticket => {
+                    const ticketValue = ticket[filter.field];
+                    return ticketValue && ticketValue.toString().toLowerCase() === filter.value.toLowerCase();
+                });
+            });
+            
+            gridOptions.api.setRowData(filteredData);
+            updateRowCount();
+        }
+
+        function clearAllFilters() {
+            const filterCheckboxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]');
+            filterCheckboxes.forEach(checkbox => checkbox.checked = false);
+            
+            currentFilters = [];
+            gridOptions.api.setRowData(ticketsData);
+            updateRowCount();
+        }
+
+        function openExportModal() {
+            const modal = new bootstrap.Modal(document.getElementById('exportModal'));
+            modal.show();
+        }
+
+        function executeExport() {
+            // TODO: Implement export functionality
+            console.log('Exporting data...');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('exportModal'));
+            modal.hide();
+        }
+    </script>
+</body>
+</html> 

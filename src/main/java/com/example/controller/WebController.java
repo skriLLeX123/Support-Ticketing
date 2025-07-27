@@ -38,6 +38,42 @@ public class WebController {
     }
 
     /**
+     * Dashboard page (alternative route)
+     */
+    @GetMapping("/dashboard")
+    public String dashboardAlt(Model model) {
+        List<SupportTicketDTO> tickets = supportTicketService.getAllTicketsAsDTOs();
+        SupportTicketService.TicketStatistics stats = supportTicketService.getTicketStatistics();
+        
+        model.addAttribute("tickets", tickets);
+        model.addAttribute("statistics", stats);
+        return "dashboard";
+    }
+
+    /**
+     * Tickets listing page
+     */
+    @GetMapping("/tickets")
+    public String tickets(Model model) {
+        List<SupportTicketDTO> tickets = supportTicketService.getAllTicketsAsDTOs();
+        SupportTicketService.TicketStatistics stats = supportTicketService.getTicketStatistics();
+        
+        model.addAttribute("tickets", tickets);
+        model.addAttribute("statistics", stats);
+        return "tickets"; // Using dedicated tickets template
+    }
+
+    /**
+     * Solutions page
+     */
+    @GetMapping("/solutions")
+    public String solutions(Model model) {
+        List<Solution> solutions = supportTicketService.getAllSolutions();
+        model.addAttribute("solutions", solutions);
+        return "solutions"; // We'll need to create this template
+    }
+
+    /**
      * Ticket detail page
      */
     @GetMapping("/ticket/{id}")

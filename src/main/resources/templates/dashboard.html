@@ -99,6 +99,188 @@
             transition: color 0.2s ease;
         }
 
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            z-index: 1050;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar.hide {
+            left: -280px;
+        }
+
+        .sidebar-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            z-index: 1051;
+        }
+
+        .sidebar-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-title {
+            color: white;
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .sidebar-close {
+            color: white !important;
+            padding: 0;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-content {
+            padding: 1rem 0;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1rem;
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid #3498db;
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* Main Content Adjustment */
+        .main-content {
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 992px) {
+            .sidebar {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 280px;
+            }
+            
+            .sidebar-overlay.show {
+                display: none;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar {
+                left: -280px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar.show {
+                left: 0;
+            }
+        }
+
+        /* Dashboard Widget Styles */
+        .stat-item {
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ticket-item, .solution-item {
+            transition: background-color 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .ticket-item:hover, .solution-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .ticket-title, .solution-title {
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .ticket-meta, .solution-meta {
+            font-size: 0.75rem;
+        }
+
+        .ticket-icon, .solution-icon {
+            width: 24px;
+            text-align: center;
+        }
+
         /* Export Modal Styles */
         .modal-xl {
             max-width: 70vw;
@@ -473,25 +655,241 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <!-- Top Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                Support Ticket System
+            <!-- Hamburger Menu Button -->
+            <button class="btn btn-link text-light" id="sidebarToggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-headset me-1"></i>Support Ticket System
             </a>
             <div class="d-flex">
                 <input type="text" class="form-control search-box me-2" id="globalSearch" placeholder="Search tickets...">
                 <button class="btn btn-outline-light" type="button" onclick="clearAllFilters()">
-                                                <i class="fas fa-search"></i>
+                    <i class="fas fa-search"></i>
                 </button>
             </div>
         </div>
     </nav>
 
-    <div class="container-fluid mt-4">
-        <div class="row">
-            <!-- Filter Sidebar -->
-            <div class="col-md-2">
+    <!-- Left Side Navigation -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close-btn" onclick="toggleSidebar()" title="Toggle sidebar">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="sidebar-header">
+            <h5 class="sidebar-title">
+                <i class="fas fa-bars me-2"></i>Navigation
+            </h5>
+        </div>
+        <div class="sidebar-content">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/dashboard" id="nav-dashboard">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tickets" id="nav-ticketing">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        <span>Ticketing</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/solutions" id="nav-solutions">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <span>Solutions</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-content" id="mainContent">
+        <div class="container-fluid mt-4">
+            <div class="row">
+                <!-- Dashboard Header -->
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="mb-1">Dashboard</h2>
+                            <p class="text-muted mb-0">Overview of tickets and solutions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tickets Widget -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-ticket-alt me-2"></i>
+                                Recent Tickets
+                            </h5>
+                            <a href="/tickets" class="btn btn-sm btn-outline-primary">
+                                View All
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="ticket-stats mb-3">
+                                <div class="row text-center">
+                                    <div class="col-3">
+                                        <div class="stat-item">
+                                            <div class="stat-number text-danger">12</div>
+                                            <div class="stat-label">Critical</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="stat-item">
+                                            <div class="stat-number text-warning">28</div>
+                                            <div class="stat-label">High</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="stat-item">
+                                            <div class="stat-number text-info">45</div>
+                                            <div class="stat-label">Medium</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="stat-item">
+                                            <div class="stat-number text-success">67</div>
+                                            <div class="stat-label">Low</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="recent-tickets">
+                                <div class="ticket-item d-flex align-items-center p-2 border-bottom">
+                                    <div class="ticket-icon me-3">
+                                        <i class="fas fa-exclamation-triangle text-danger"></i>
+                                    </div>
+                                    <div class="ticket-info flex-grow-1">
+                                        <div class="ticket-title">System Down - Critical Issue</div>
+                                        <div class="ticket-meta text-muted small">Amazon • 2 hours ago</div>
+                                    </div>
+                                    <div class="ticket-status">
+                                        <span class="badge bg-danger">Critical</span>
+                                    </div>
+                                </div>
+                                <div class="ticket-item d-flex align-items-center p-2 border-bottom">
+                                    <div class="ticket-icon me-3">
+                                        <i class="fas fa-exclamation text-warning"></i>
+                                    </div>
+                                    <div class="ticket-info flex-grow-1">
+                                        <div class="ticket-title">API Integration Error</div>
+                                        <div class="ticket-meta text-muted small">DoorDash • 4 hours ago</div>
+                                    </div>
+                                    <div class="ticket-status">
+                                        <span class="badge bg-warning">High</span>
+                                    </div>
+                                </div>
+                                <div class="ticket-item d-flex align-items-center p-2">
+                                    <div class="ticket-icon me-3">
+                                        <i class="fas fa-info-circle text-info"></i>
+                                    </div>
+                                    <div class="ticket-info flex-grow-1">
+                                        <div class="ticket-title">Feature Request - New Payment Method</div>
+                                        <div class="ticket-meta text-muted small">Apple • 6 hours ago</div>
+                                    </div>
+                                    <div class="ticket-status">
+                                        <span class="badge bg-info">Medium</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solutions Widget -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-lightbulb me-2"></i>
+                                Popular Solutions
+                            </h5>
+                            <a href="/solutions" class="btn btn-sm btn-outline-primary">
+                                View All
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="solution-stats mb-3">
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <div class="stat-item">
+                                            <div class="stat-number text-primary">156</div>
+                                            <div class="stat-label">Total Solutions</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stat-item">
+                                            <div class="stat-number text-success">89</div>
+                                            <div class="stat-label">Resolved</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stat-item">
+                                            <div class="stat-number text-info">67</div>
+                                            <div class="stat-label">In Progress</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="popular-solutions">
+                                <div class="solution-item d-flex align-items-center p-2 border-bottom">
+                                    <div class="solution-icon me-3">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </div>
+                                    <div class="solution-info flex-grow-1">
+                                        <div class="solution-title">API Authentication Fix</div>
+                                        <div class="solution-meta text-muted small">Used 23 times • Last used 1 day ago</div>
+                                    </div>
+                                    <div class="solution-rating">
+                                        <i class="fas fa-star text-warning"></i>
+                                        <span class="small">4.8</span>
+                                    </div>
+                                </div>
+                                <div class="solution-item d-flex align-items-center p-2 border-bottom">
+                                    <div class="solution-icon me-3">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </div>
+                                    <div class="solution-info flex-grow-1">
+                                        <div class="solution-title">Database Connection Pool</div>
+                                        <div class="solution-meta text-muted small">Used 18 times • Last used 2 days ago</div>
+                                    </div>
+                                    <div class="solution-rating">
+                                        <i class="fas fa-star text-warning"></i>
+                                        <span class="small">4.6</span>
+                                    </div>
+                                </div>
+                                <div class="solution-item d-flex align-items-center p-2">
+                                    <div class="solution-icon me-3">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </div>
+                                    <div class="solution-info flex-grow-1">
+                                        <div class="solution-title">SSL Certificate Renewal</div>
+                                        <div class="solution-meta text-muted small">Used 15 times • Last used 3 days ago</div>
+                                    </div>
+                                    <div class="solution-rating">
+                                        <i class="fas fa-star text-warning"></i>
+                                        <span class="small">4.7</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
                 <div class="card filter-sidebar">
                     <div class="card-header">
                         <h6 class="mb-0">
@@ -705,6 +1103,7 @@
             </div>
         </div>
     </div>
+</div>
 
     <!-- Export Modal -->
     <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
@@ -931,6 +1330,56 @@
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community@30.2.1/dist/ag-grid-community.min.js"></script>
     
     <script th:inline="javascript">
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            // Toggle sidebar visibility
+            if (sidebar.classList.contains('hide')) {
+                sidebar.classList.remove('hide');
+                overlay.classList.remove('show');
+            } else {
+                sidebar.classList.add('hide');
+                overlay.classList.add('show');
+            }
+        }
+
+        // Close Sidebar Function
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.add('hide');
+            overlay.classList.add('show');
+        }
+
+        // Close sidebar when clicking on overlay (mobile)
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('sidebarOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    toggleSidebar();
+                });
+            }
+            
+            // Set active navigation based on current page
+            setActiveNavigation();
+        });
+
+        function setActiveNavigation() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPath || 
+                    (currentPath === '/' && link.getAttribute('href') === '/dashboard')) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
         // Get tickets data from Thymeleaf
         const ticketsData = /*[[${tickets}]]*/ [];
         console.log('Tickets data loaded:', ticketsData.length, 'tickets');

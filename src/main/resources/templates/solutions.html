@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solutions - Support Ticket System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-gray: #ecf0f1;
+            --border-color: #bdc3c7;
+            --text-muted: #7f8c8d;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.4;
+            font-size: 0.7875rem;
+            color: #0f1111;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .search-box {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+        }
+        
+        .search-box::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            z-index: 1050;
+            transition: left 0.3s ease;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar.show {
+            left: 0;
+        }
+
+        .sidebar-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            z-index: 1051;
+        }
+
+        .sidebar-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-title {
+            color: white;
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .sidebar-close {
+            color: white !important;
+            padding: 0;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-content {
+            padding: 1rem 0;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1rem;
+            border: none;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid #3498db;
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* Main Content Adjustment */
+        .main-content {
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 992px) {
+            .sidebar {
+                left: -280px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar.show {
+                left: 0;
+            }
+            
+            .sidebar-overlay.show {
+                display: block;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Solutions Styles */
+        .solution-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .solution-stats {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <!-- Hamburger Menu Button -->
+            <button class="btn btn-link text-light" id="sidebarToggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-headset me-1"></i>Support Ticket System
+            </a>
+            <div class="d-flex">
+                <input type="text" class="form-control search-box me-2" id="globalSearch" placeholder="Search solutions...">
+                <button class="btn btn-outline-light" type="button" onclick="searchSolutions()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Left Side Navigation -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close sidebar">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="sidebar-header">
+            <h5 class="sidebar-title">
+                <i class="fas fa-bars me-2"></i>Navigation
+            </h5>
+        </div>
+        <div class="sidebar-content">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard" id="nav-dashboard">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tickets" id="nav-ticketing">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        <span>Ticketing</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-content" id="mainContent">
+        <div class="container-fluid mt-4">
+            <div class="row">
+                <!-- Solutions Header -->
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="mb-1">Solutions</h2>
+                            <p class="text-muted mb-0">Knowledge base and solution repository</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="exportSolutions()">
+                                <i class="fas fa-download me-2"></i>
+                                Export
+                            </button>
+                            <button class="btn btn-primary" onclick="createSolution()">
+                                <i class="fas fa-plus me-2"></i>
+                                Create Solution
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solutions Statistics -->
+                <div class="col-12">
+                    <div class="solution-stats">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <div class="stat-item">
+                                    <div class="stat-number">156</div>
+                                    <div class="stat-label">Total Solutions</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-item">
+                                    <div class="stat-number">89</div>
+                                    <div class="stat-label">Resolved</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-item">
+                                    <div class="stat-number">67</div>
+                                    <div class="stat-label">In Progress</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-item">
+                                    <div class="stat-number">4.8</div>
+                                    <div class="stat-label">Average Rating</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Solutions Grid -->
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 mb-4" th:each="solution : ${solutions}">
+                            <div class="card solution-card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="solution-icon me-3">
+                                            <i class="fas fa-lightbulb text-warning" style="font-size: 1.5rem;"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="card-title mb-1" th:text="${solution.name}">Solution Name</h6>
+                                            <div class="text-muted small" th:text="${solution.description}">Solution description</div>
+                                        </div>
+                                    </div>
+                                    <div class="solution-meta">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <div class="small text-muted">Used</div>
+                                                <div class="fw-bold">23</div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="small text-muted">Rating</div>
+                                                <div class="fw-bold">
+                                                    <i class="fas fa-star text-warning"></i> 4.8
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="small text-muted">Status</div>
+                                                <div class="fw-bold text-success">Active</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <button class="btn btn-sm btn-outline-primary" onclick="viewSolution('[[${solution.id}]]')">
+                                            <i class="fas fa-eye me-1"></i>View
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="editSolution('[[${solution.id}]]')">
+                                            <i class="fas fa-edit me-1"></i>Edit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            // Always slide in when this function is called
+            sidebar.classList.add('show');
+            overlay.classList.add('show');
+        }
+
+        // Close Sidebar Function
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+
+        // Close sidebar when clicking on overlay (mobile)
+        document.addEventListener('DOMContentLoaded', function() {
+            const overlay = document.getElementById('sidebarOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    closeSidebar();
+                });
+            }
+            
+            // Set active navigation based on current page
+            setActiveNavigation();
+        });
+
+        function setActiveNavigation() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPath || 
+                    (currentPath === '/' && link.getAttribute('href') === '/dashboard')) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        function searchSolutions() {
+            const searchTerm = document.getElementById('globalSearch').value;
+            // TODO: Implement solution search
+            console.log('Searching for:', searchTerm);
+        }
+
+        function exportSolutions() {
+            // TODO: Implement solution export
+            console.log('Exporting solutions');
+        }
+
+        function createSolution() {
+            // TODO: Implement solution creation
+            console.log('Creating new solution');
+        }
+
+        function viewSolution(id) {
+            // TODO: Implement solution view
+            console.log('Viewing solution:', id);
+        }
+
+        function editSolution(id) {
+            // TODO: Implement solution edit
+            console.log('Editing solution:', id);
+        }
+    </script>
+</body>
+</html> 
