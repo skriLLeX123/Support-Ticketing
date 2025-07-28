@@ -29,12 +29,17 @@ public class WebController {
      */
     @GetMapping("/")
     public String dashboard(Model model) {
-        List<SupportTicketDTO> tickets = supportTicketService.getAllTicketsAsDTOs();
-        SupportTicketService.TicketStatistics stats = supportTicketService.getTicketStatistics();
-        
-        model.addAttribute("tickets", tickets);
-        model.addAttribute("statistics", stats);
-        return "dashboard";
+        try {
+            List<SupportTicketDTO> tickets = supportTicketService.getAllTicketsAsDTOs();
+            List<Solution> solutions = supportTicketService.getAllSolutions();
+            
+            model.addAttribute("tickets", tickets);
+            model.addAttribute("solutions", solutions);
+            return "dashboard";
+        } catch (Exception e) {
+            // If there's an error, redirect to basic dashboard
+            return "redirect:/dashboard-basic";
+        }
     }
 
     /**
@@ -42,12 +47,62 @@ public class WebController {
      */
     @GetMapping("/dashboard")
     public String dashboardAlt(Model model) {
+        try {
+            List<SupportTicketDTO> tickets = supportTicketService.getAllTicketsAsDTOs();
+            List<Solution> solutions = supportTicketService.getAllSolutions();
+            
+            model.addAttribute("tickets", tickets);
+            model.addAttribute("solutions", solutions);
+            return "dashboard";
+        } catch (Exception e) {
+            // If there's an error, redirect to basic dashboard
+            return "redirect:/dashboard-basic";
+        }
+    }
+
+    /**
+     * Dashboard test page
+     */
+    @GetMapping("/dashboard-test")
+    public String dashboardTest(Model model) {
         List<SupportTicketDTO> tickets = supportTicketService.getAllTicketsAsDTOs();
-        SupportTicketService.TicketStatistics stats = supportTicketService.getTicketStatistics();
+        List<Solution> solutions = supportTicketService.getAllSolutions();
         
         model.addAttribute("tickets", tickets);
-        model.addAttribute("statistics", stats);
-        return "dashboard";
+        model.addAttribute("solutions", solutions);
+        return "dashboard-test";
+    }
+
+    /**
+     * Simple dashboard page
+     */
+    @GetMapping("/dashboard-simple")
+    public String dashboardSimple(Model model) {
+        List<SupportTicketDTO> tickets = supportTicketService.getAllTicketsAsDTOs();
+        List<Solution> solutions = supportTicketService.getAllSolutions();
+        
+        model.addAttribute("tickets", tickets);
+        model.addAttribute("solutions", solutions);
+        return "dashboard-simple";
+    }
+
+    /**
+     * Basic dashboard test page - completely independent
+     */
+    @GetMapping("/dashboard-basic")
+    public String dashboardBasic(Model model) {
+        // Don't try to load any data - just return a simple working page
+        model.addAttribute("message", "Basic dashboard is working!");
+        return "dashboard-basic";
+    }
+
+    /**
+     * Simple test page - no data loading
+     */
+    @GetMapping("/test")
+    public String test(Model model) {
+        model.addAttribute("message", "Test page is working!");
+        return "test";
     }
 
     /**

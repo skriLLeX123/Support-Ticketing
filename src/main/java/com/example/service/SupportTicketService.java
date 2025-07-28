@@ -45,21 +45,89 @@ public class SupportTicketService {
      * Convert SupportTicket entity to DTO
      */
     private SupportTicketDTO convertToDTO(SupportTicket ticket) {
-        return new SupportTicketDTO(
-                ticket.getTicketId(),
-                ticket.getTitle(),
-                ticket.getDescription(),
-                ticket.getTicketType(),
-                ticket.getSeverity(),
-                ticket.getPartnerName(),
-                ticket.getAccountName(),
-                ticket.getSolution() != null ? ticket.getSolution().getName() : null,
-                ticket.getSupportGroup() != null ? ticket.getSupportGroup().getName() : null,
-                ticket.getAssignee() != null ? ticket.getAssignee().getName() : null,
-                ticket.getCustomersImpacted(),
-                ticket.getCreatedAt(),
-                ticket.getLastUpdated()
-        );
+        try {
+            // Generate formatted ticket ID
+            String formattedTicketId = formatTicketId(ticket.getPartnerName(), ticket.getTicketType(), 1);
+            
+            return new SupportTicketDTO(
+                    ticket.getTicketId(),
+                    formattedTicketId,
+                    ticket.getTitle(),
+                    ticket.getDescription(),
+                    ticket.getTicketType(),
+                    ticket.getSeverity(),
+                    ticket.getPartnerName(),
+                    ticket.getAccountName(),
+                    ticket.getSolution() != null ? ticket.getSolution().getName() : null,
+                    ticket.getSupportGroup() != null ? ticket.getSupportGroup().getName() : null,
+                    ticket.getAssignee() != null ? ticket.getAssignee().getName() : null,
+                    ticket.getCustomersImpacted(),
+                    ticket.getCreatedAt(),
+                    ticket.getLastUpdated()
+            );
+        } catch (Exception e) {
+            // Fallback to basic DTO if formatting fails
+            return new SupportTicketDTO(
+                    ticket.getTicketId(),
+                    "XXXG000001", // Fallback formatted ID
+                    ticket.getTitle(),
+                    ticket.getDescription(),
+                    ticket.getTicketType(),
+                    ticket.getSeverity(),
+                    ticket.getPartnerName(),
+                    ticket.getAccountName(),
+                    ticket.getSolution() != null ? ticket.getSolution().getName() : null,
+                    ticket.getSupportGroup() != null ? ticket.getSupportGroup().getName() : null,
+                    ticket.getAssignee() != null ? ticket.getAssignee().getName() : null,
+                    ticket.getCustomersImpacted(),
+                    ticket.getCreatedAt(),
+                    ticket.getLastUpdated()
+            );
+        }
+    }
+
+    /**
+     * Helper method to format ticket ID (copied from WebController)
+     */
+    private String formatTicketId(String partnerName, TicketType ticketType, int sequence) {
+        String prefix = getPartnerPrefix(partnerName);
+        String typeChar = getTypeChar(ticketType);
+        return String.format("%s%s%06d", prefix, typeChar, sequence);
+    }
+
+    private String getPartnerPrefix(String partnerName) {
+        if (partnerName == null || partnerName.trim().isEmpty()) {
+            return "XXX";
+        }
+        
+        switch (partnerName.toUpperCase()) {
+            case "AMAZON": return "AMZ";
+            case "DOORDASH": return "DOR";
+            case "APPLE": return "APP";
+            case "AMEX": return "AMX";
+            case "DISNEY": return "DIS";
+            case "HULU": return "HUL";
+            case "NETFLIX": return "NET";
+            default: 
+                if (partnerName.length() >= 3) {
+                    return partnerName.substring(0, 3).toUpperCase();
+                } else {
+                    return partnerName.toUpperCase();
+                }
+        }
+    }
+
+    private String getTypeChar(TicketType ticketType) {
+        if (ticketType == null) {
+            return "G";
+        }
+        
+        switch (ticketType) {
+            case TECHNICAL: return "T";
+            case GENERAL: return "G";
+            case FILE_TRANSFER: return "F";
+            default: return "G";
+        }
     }
 
     /**
@@ -197,6 +265,9 @@ public class SupportTicketService {
     public TicketStatistics getTicketStatistics() {
         TicketStatistics stats = new TicketStatistics();
         stats.setTotalTickets(supportTicketRepository.count());
+        stats.setOpenTickets(0); // No status field in entity
+        stats.setResolvedTickets(0); // No status field in entity
+        stats.setTotalSolutions(solutionRepository.count());
         stats.setCriticalTickets(supportTicketRepository.countBySeverity(Severity.CRITICAL));
         stats.setHighTickets(supportTicketRepository.countBySeverity(Severity.HIGH));
         stats.setMediumTickets(supportTicketRepository.countBySeverity(Severity.MEDIUM));
@@ -212,6 +283,9 @@ public class SupportTicketService {
      */
     public static class TicketStatistics {
         private long totalTickets;
+        private long openTickets;
+        private long resolvedTickets;
+        private long totalSolutions;
         private long criticalTickets;
         private long highTickets;
         private long mediumTickets;
@@ -223,6 +297,15 @@ public class SupportTicketService {
         // Getters and Setters
         public long getTotalTickets() { return totalTickets; }
         public void setTotalTickets(long totalTickets) { this.totalTickets = totalTickets; }
+
+        public long getOpenTickets() { return openTickets; }
+        public void setOpenTickets(long openTickets) { this.openTickets = openTickets; }
+
+        public long getResolvedTickets() { return resolvedTickets; }
+        public void setResolvedTickets(long resolvedTickets) { this.resolvedTickets = resolvedTickets; }
+
+        public long getTotalSolutions() { return totalSolutions; }
+        public void setTotalSolutions(long totalSolutions) { this.totalSolutions = totalSolutions; }
 
         public long getCriticalTickets() { return criticalTickets; }
         public void setCriticalTickets(long criticalTickets) { this.criticalTickets = criticalTickets; }

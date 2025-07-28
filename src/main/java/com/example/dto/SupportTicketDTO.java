@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public class SupportTicketDTO {
     private UUID ticketId;
+    private String formattedTicketId;
     private String title;
     private String description;
     private TicketType ticketType;
@@ -22,12 +23,13 @@ public class SupportTicketDTO {
     private LocalDateTime lastUpdated;
 
     // Constructor
-    public SupportTicketDTO(UUID ticketId, String title, String description, 
+    public SupportTicketDTO(UUID ticketId, String formattedTicketId, String title, String description, 
                            TicketType ticketType, Severity severity, String partnerName, 
                            String accountName, String solutionName, String supportGroupName, 
                            String assigneeName, Integer customersImpacted, 
                            LocalDateTime createdAt, LocalDateTime lastUpdated) {
         this.ticketId = ticketId;
+        this.formattedTicketId = formattedTicketId;
         this.title = title;
         this.description = description;
         this.ticketType = ticketType;
@@ -49,6 +51,14 @@ public class SupportTicketDTO {
 
     public void setTicketId(UUID ticketId) {
         this.ticketId = ticketId;
+    }
+
+    public String getFormattedTicketId() {
+        return formattedTicketId;
+    }
+
+    public void setFormattedTicketId(String formattedTicketId) {
+        this.formattedTicketId = formattedTicketId;
     }
 
     public String getTitle() {

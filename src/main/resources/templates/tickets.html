@@ -136,6 +136,13 @@
             left: 0;
         }
 
+        .sidebar.hide {
+            left: -280px;
+            pointer-events: none;
+        }
+
+
+
         .sidebar-close-btn {
             position: absolute;
             top: 1rem;
@@ -156,6 +163,28 @@
 
         .sidebar-close-btn:hover {
             background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Remove blue focus outline from all buttons */
+        .btn:focus,
+        .btn:focus-visible,
+        .btn-close:focus,
+        .btn-close:focus-visible,
+        button:focus,
+        button:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+            border-color: inherit !important;
+        }
+
+        /* Remove focus outline from form controls as well */
+        .form-control:focus,
+        .form-check-input:focus,
+        input[type="checkbox"]:focus,
+        input[type="radio"]:focus {
+            outline: none !important;
+            box-shadow: none !important;
+            border-color: inherit !important;
         }
 
         .sidebar-header {
@@ -227,31 +256,156 @@
         /* Main Content Adjustment */
         .main-content {
             transition: margin-left 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Ensure main content layout is not affected by sidebar */
+        .container-fluid {
+            position: relative;
+            z-index: 1;
+        }
+
+        .row {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .col-lg-9, .col-lg-3, .col-md-12 {
+            position: relative;
+            z-index: 1;
         }
 
         /* Responsive Design */
         @media (min-width: 992px) {
             .sidebar {
-                left: -280px;
+                left: 0;
+                pointer-events: auto;
             }
             
             .main-content {
-                margin-left: 0;
+                margin-left: 280px;
+                position: relative;
+                z-index: 1;
+                transition: margin-left 0.3s ease;
             }
             
-            .sidebar.show {
-                left: 0;
+            .main-content.sidebar-hidden {
+                margin-left: 0 !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: flex-start !important;
+            }
+            
+            /* Center content when sidebar is hidden */
+            .main-content.sidebar-hidden .container-fluid {
+                max-width: 95% !important;
+                width: 95% !important;
+                margin: 2rem auto 0 auto !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
             }
             
             .sidebar-overlay.show {
-                display: block;
+                display: none;
             }
         }
 
         @media (max-width: 991.98px) {
+            .sidebar {
+                left: -280px;
+                pointer-events: none;
+            }
+            
             .main-content {
                 margin-left: 0;
+                position: relative;
+                z-index: 1;
+                transition: margin-left 0.3s ease;
             }
+            
+            .sidebar.show {
+                left: 0;
+                pointer-events: auto;
+            }
+        }
+
+        /* Filter Panel Styles */
+        .filter-panel {
+            position: fixed;
+            top: 60px; /* Reduced gap - closer to navbar */
+            right: -280px;
+            width: 280px;
+            height: calc(100vh - 60px); /* Adjusted for new top position */
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1050;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .filter-panel.show {
+            right: 0;
+        }
+
+        /* Adjust main content when filter panel is open */
+        .main-content.filter-panel-open {
+            margin-right: 280px !important;
+            transition: margin-right 0.3s ease;
+        }
+
+        /* Responsive adjustments for filter panel */
+        @media (max-width: 991.98px) {
+            .main-content.filter-panel-open {
+                margin-right: 0 !important;
+            }
+        }
+
+        .filter-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+            background-color: #f8f9fa;
+        }
+
+        .filter-panel-body {
+            padding: 1rem 0;
+        }
+
+        .filter-section {
+            margin-bottom: 1.5rem;
+            padding: 0 1rem;
+        }
+
+        .filter-section h6 {
+            margin-bottom: 0.75rem;
+            color: #0f1111;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-checkbox {
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-checkbox .form-check-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .filter-actions {
+            position: sticky;
+            bottom: 0;
+            background-color: white;
+            padding: 1rem;
+            border-top: 1px solid #dee2e6;
+            margin-top: 1rem;
         }
 
         /* ag-Grid Customizations */
@@ -269,7 +423,7 @@
             --ag-row-border-color: #e9ecef;
             --ag-cell-horizontal-padding: 8px;
             --ag-cell-vertical-padding: 6px;
-            height: 600px;
+            height: 500px;
             width: 100%;
         }
 
@@ -415,7 +569,8 @@
     <div class="main-content" id="mainContent">
         <div class="container-fluid mt-4">
             <div class="row">
-                <!-- Filter Sidebar -->
+                <!-- Filter Sidebar - HIDDEN -->
+                <!--
                 <div class="col-md-2">
                     <div class="card filter-sidebar">
                         <div class="card-header">
@@ -425,7 +580,7 @@
                             </h6>
                         </div>
                         <div class="card-body">
-                            <!-- Severity Filter -->
+                            Severity Filter
                             <div class="filter-section">
                                 <div class="filter-header">Severity</div>
                                 <div class="filter-checkbox">
@@ -446,7 +601,7 @@
                                 </div>
                             </div>
 
-                            <!-- Ticket Type Filter -->
+                            Ticket Type Filter
                             <div class="filter-section">
                                 <div class="filter-header">Ticket Type</div>
                                 <div class="filter-checkbox">
@@ -463,7 +618,7 @@
                                 </div>
                             </div>
 
-                            <!-- Partner Filter -->
+                            Partner Filter
                             <div class="filter-section">
                                 <div class="filter-header">Partner</div>
                                 <div class="filter-checkbox">
@@ -496,7 +651,7 @@
                                 </div>
                             </div>
 
-                            <!-- Support Group Filter -->
+                            Support Group Filter
                             <div class="filter-section">
                                 <div class="filter-header">Support Group</div>
                                 <div class="filter-checkbox">
@@ -513,7 +668,7 @@
                                 </div>
                             </div>
 
-                            <!-- Status Filter -->
+                            Status Filter
                             <div class="filter-section">
                                 <div class="filter-header">Status</div>
                                 <div class="filter-checkbox">
@@ -536,16 +691,17 @@
                         </div>
                     </div>
                 </div>
+                -->
 
                 <!-- Main Content Area -->
-                <div class="col-md-10">
-                    <!-- Header with Export Button -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h2 class="mb-1">Support Tickets</h2>
-                            <p class="text-muted mb-0">Manage and track support tickets across all partners</p>
-                        </div>
+                <div class="col-md-12">
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-end mb-4">
                         <div class="d-flex gap-2">
+                            <button class="btn" onclick="toggleFilterPanel()" style="font-size: 0.8rem; padding: 0.4rem 0.8rem; background-color: var(--secondary-color); border-color: var(--secondary-color); color: white; border-radius: 8px;">
+                                <i class="fas fa-filter me-2" style="color: #3498db;"></i>
+                                Filter
+                            </button>
                             <button class="btn" onclick="openExportModal()" style="font-size: 0.8rem; padding: 0.4rem 0.8rem; background-color: var(--secondary-color); border-color: var(--secondary-color); color: white; border-radius: 8px;">
                                 <i class="fas fa-download me-2" style="color: #3498db;"></i>
                                 Export Data
@@ -773,6 +929,183 @@
         </div>
     </div>
 
+            <!-- Filter Panel -->
+        <div class="filter-panel" id="filterPanel">
+        <div class="filter-panel-header" style="padding: 0.9rem;">
+            <h5 class="mb-0" style="color: #0f1111; font-size: 0.9rem; font-weight: 600;">
+                <i class="fas fa-filter me-2"></i>
+                Filter Tickets
+            </h5>
+            <button type="button" class="btn-close" onclick="closeFilterPanel()" aria-label="Close"></button>
+        </div>
+        
+        <div class="filter-panel-body">
+            <!-- Severity Filter -->
+            <div class="filter-section">
+                <h6>Severity</h6>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="severity-critical" value="CRITICAL">
+                        <label class="form-check-label" for="severity-critical">Critical</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="severity-high" value="HIGH">
+                        <label class="form-check-label" for="severity-high">High</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="severity-medium" value="MEDIUM">
+                        <label class="form-check-label" for="severity-medium">Medium</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="severity-low" value="LOW">
+                        <label class="form-check-label" for="severity-low">Low</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket Type Filter -->
+            <div class="filter-section">
+                <h6>Ticket Type</h6>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="type-general" value="GENERAL">
+                        <label class="form-check-label" for="type-general">General</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="type-technical" value="TECHNICAL">
+                        <label class="form-check-label" for="type-technical">Technical</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="type-file-transfer" value="FILE_TRANSFER">
+                        <label class="form-check-label" for="type-file-transfer">File Transfer</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partner Filter -->
+            <div class="filter-section">
+                <h6>Partner</h6>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="partner-amazon" value="Amazon">
+                        <label class="form-check-label" for="partner-amazon">Amazon</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="partner-doordash" value="DoorDash">
+                        <label class="form-check-label" for="partner-doordash">DoorDash</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="partner-apple" value="Apple">
+                        <label class="form-check-label" for="partner-apple">Apple</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="partner-amex" value="Amex">
+                        <label class="form-check-label" for="partner-amex">Amex</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="partner-disney" value="Disney">
+                        <label class="form-check-label" for="partner-disney">Disney</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="partner-hulu" value="Hulu">
+                        <label class="form-check-label" for="partner-hulu">Hulu</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="partner-netflix" value="Netflix">
+                        <label class="form-check-label" for="partner-netflix">Netflix</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Group Filter -->
+            <div class="filter-section">
+                <h6>Support Group</h6>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="group-tier1" value="Tier 1 Support">
+                        <label class="form-check-label" for="group-tier1">Tier 1 Support</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="group-tier2" value="Tier 2 Support">
+                        <label class="form-check-label" for="group-tier2">Tier 2 Support</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="group-escalation" value="Escalation Team">
+                        <label class="form-check-label" for="group-escalation">Escalation Team</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Filter -->
+            <div class="filter-section">
+                <h6>Status</h6>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="status-open" value="OPEN">
+                        <label class="form-check-label" for="status-open">Open</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="status-in-progress" value="IN_PROGRESS">
+                        <label class="form-check-label" for="status-in-progress">In Progress</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="status-resolved" value="RESOLVED">
+                        <label class="form-check-label" for="status-resolved">Resolved</label>
+                    </div>
+                </div>
+                <div class="filter-checkbox">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="status-closed" value="CLOSED">
+                        <label class="form-check-label" for="status-closed">Closed</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <div class="d-flex gap-2">
+                <button type="button" class="btn flex-fill" onclick="clearAllFilters()" style="font-size: 0.616rem; padding: 0.308rem 0.616rem; background-color: var(--secondary-color); border-color: var(--secondary-color); color: white; border-radius: 8px;">
+                    <i class="fas fa-times me-1" style="color: #3498db;"></i>
+                    Clear All
+                </button>
+                <button type="button" class="btn flex-fill" onclick="applyFiltersFromPanel()" style="font-size: 0.616rem; padding: 0.308rem 0.616rem; background-color: var(--secondary-color); border-color: var(--secondary-color); color: white; border-radius: 8px;">
+                    <i class="fas fa-check me-1" style="color: #3498db;"></i>
+                    Apply Filters
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -783,23 +1116,43 @@
         // Sidebar Toggle Function
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
             const overlay = document.getElementById('sidebarOverlay');
             
-            // Always slide in when this function is called
-            sidebar.classList.add('show');
-            overlay.classList.add('show');
+            if (window.innerWidth >= 992) {
+                // Desktop behavior: toggle sidebar visibility
+                if (sidebar.classList.contains('hide')) {
+                    sidebar.classList.remove('hide');
+                    mainContent.classList.remove('sidebar-hidden');
+                } else {
+                    sidebar.classList.add('hide');
+                    mainContent.classList.add('sidebar-hidden');
+                }
+            } else {
+                // Mobile behavior: slide in sidebar
+                sidebar.classList.add('show');
+                overlay.classList.add('show');
+            }
         }
 
         // Close Sidebar Function
         function closeSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
             const overlay = document.getElementById('sidebarOverlay');
             
-            sidebar.classList.remove('show');
-            overlay.classList.remove('show');
+            if (window.innerWidth >= 992) {
+                // Desktop behavior: hide sidebar
+                sidebar.classList.add('hide');
+                mainContent.classList.add('sidebar-hidden');
+            } else {
+                // Mobile behavior: slide out sidebar
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
         }
 
-        // Close sidebar when clicking on overlay (mobile)
+        // Initialize page on load
         document.addEventListener('DOMContentLoaded', function() {
             const overlay = document.getElementById('sidebarOverlay');
             if (overlay) {
@@ -808,9 +1161,55 @@
                 });
             }
             
+
+            
             // Set active navigation based on current page
             setActiveNavigation();
         });
+
+        // Filter Panel Functions
+        function toggleFilterPanel() {
+            const filterPanel = document.getElementById('filterPanel');
+            const mainContent = document.getElementById('mainContent');
+            
+            filterPanel.classList.add('show');
+            mainContent.classList.add('filter-panel-open');
+        }
+
+        function closeFilterPanel() {
+            const filterPanel = document.getElementById('filterPanel');
+            const mainContent = document.getElementById('mainContent');
+            
+            filterPanel.classList.remove('show');
+            mainContent.classList.remove('filter-panel-open');
+        }
+
+        function applyFiltersFromPanel() {
+            const filters = {};
+            const filterCheckboxes = document.querySelectorAll('#filterPanel input[type="checkbox"]:checked');
+            
+            filterCheckboxes.forEach(checkbox => {
+                const field = getFilterFieldFromPanel(checkbox.id);
+                if (!filters[field]) {
+                    filters[field] = [];
+                }
+                filters[field].push(checkbox.value);
+            });
+            
+            currentFilters = filters;
+            console.log('Applied filters from panel:', currentFilters);
+            updateGridData();
+            // Removed closeFilterPanel() call - panel should stay open for multiple selections
+        }
+
+        function getFilterFieldFromPanel(checkboxId) {
+            if (checkboxId.includes('severity')) return 'severity';
+            if (checkboxId.includes('type')) return 'ticketType';
+            if (checkboxId.includes('partner')) return 'partnerName';
+            if (checkboxId.includes('group')) return 'supportGroupName';
+            if (checkboxId.includes('status')) return 'status';
+            return '';
+        }
 
         function setActiveNavigation() {
             const currentPath = window.location.pathname;
@@ -825,6 +1224,10 @@
             });
         }
 
+
+
+
+
         // Get tickets data from Thymeleaf
         const ticketsData = /*[[${tickets}]]*/ [];
         console.log('Tickets data loaded:', ticketsData.length, 'tickets');
@@ -833,7 +1236,7 @@
         }
         
         // Global filter state
-        let currentFilters = [];
+        let currentFilters = {};
         
         // ag-Grid configuration
         const gridOptions = {
@@ -1007,7 +1410,7 @@
             rowData: ticketsData,
             pagination: true,
             paginationPageSize: 10,
-            domLayout: 'autoHeight',
+            domLayout: 'normal',
             defaultColDef: {
                 sortable: true,
                 resizable: true,
@@ -1072,25 +1475,37 @@
         }
 
         function setupFilterListeners() {
-            const filterCheckboxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]');
+            // Set up event listeners for filter panel checkboxes
+            const filterCheckboxes = document.querySelectorAll('#filterPanel input[type="checkbox"]');
             filterCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', applyFilters);
-            });
-        }
-
-        function applyFilters() {
-            const filters = [];
-            const filterCheckboxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]:checked');
-            
-            filterCheckboxes.forEach(checkbox => {
-                filters.push({
-                    field: getFilterField(checkbox.id),
-                    value: checkbox.value
+                checkbox.addEventListener('change', function(event) {
+                    // Prevent event bubbling to avoid closing the panel
+                    event.stopPropagation();
+                    // Apply filters immediately when checkbox changes
+                    applyFiltersFromPanel();
+                });
+                
+                // Also prevent click events from bubbling
+                checkbox.addEventListener('click', function(event) {
+                    event.stopPropagation();
                 });
             });
             
-            currentFilters = filters;
-            updateGridData();
+            // Prevent clicks on filter panel body from closing the panel
+            const filterPanelBody = document.querySelector('#filterPanel .filter-panel-body');
+            if (filterPanelBody) {
+                filterPanelBody.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                });
+            }
+            
+            console.log('Filter listeners setup - using sliding filter panel with real-time updates');
+        }
+
+        function applyFilters() {
+            // This function is now handled by applyFiltersFromPanel()
+            // Keeping for backward compatibility but redirecting to new function
+            applyFiltersFromPanel();
         }
 
         function getFilterField(checkboxId) {
@@ -1105,11 +1520,43 @@
         function updateGridData() {
             let filteredData = ticketsData;
             
-            currentFilters.forEach(filter => {
-                filteredData = filteredData.filter(ticket => {
-                    const ticketValue = ticket[filter.field];
-                    return ticketValue && ticketValue.toString().toLowerCase() === filter.value.toLowerCase();
-                });
+            // If no filters are selected, show all data
+            if (Object.keys(currentFilters).length === 0) {
+                gridOptions.api.setRowData(filteredData);
+                updateRowCount();
+                return;
+            }
+            
+            // Apply filters: OR within same field, AND across different fields
+            Object.keys(currentFilters).forEach(field => {
+                const fieldValues = currentFilters[field];
+                if (fieldValues.length > 0) {
+                    const beforeCount = filteredData.length;
+                    filteredData = filteredData.filter(ticket => {
+                        const ticketValue = ticket[field];
+                        if (!ticketValue) return false;
+                        
+                        // Handle different data types
+                        let ticketValueStr = '';
+                        if (typeof ticketValue === 'object' && ticketValue !== null) {
+                            // Handle enum objects
+                            ticketValueStr = ticketValue.toString();
+                        } else {
+                            ticketValueStr = ticketValue.toString();
+                        }
+                        
+                        // Check if ticket value matches any of the selected filter values (OR logic)
+                        const matches = fieldValues.some(filterValue => {
+                            const match = ticketValueStr.toLowerCase() === filterValue.toLowerCase();
+                            if (field === 'severity' || field === 'ticketType') {
+                                console.log(`Comparing ${field}: "${ticketValueStr}" vs "${filterValue}" = ${match}`);
+                            }
+                            return match;
+                        });
+                        return matches;
+                    });
+                    console.log(`Filter ${field}: ${beforeCount} -> ${filteredData.length} tickets`);
+                }
             });
             
             gridOptions.api.setRowData(filteredData);
@@ -1117,10 +1564,12 @@
         }
 
         function clearAllFilters() {
-            const filterCheckboxes = document.querySelectorAll('.filter-checkbox input[type="checkbox"]');
-            filterCheckboxes.forEach(checkbox => checkbox.checked = false);
+            // Clear only the new filter panel checkboxes since old ones are hidden
+            const newFilterCheckboxes = document.querySelectorAll('#filterPanel input[type="checkbox"]');
             
-            currentFilters = [];
+            newFilterCheckboxes.forEach(checkbox => checkbox.checked = false);
+            
+            currentFilters = {};
             gridOptions.api.setRowData(ticketsData);
             updateRowCount();
         }
