@@ -87,6 +87,9 @@
 
         .sidebar-content {
             padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 80px);
         }
 
         .sidebar .nav-link {
@@ -114,6 +117,22 @@
             text-align: center;
         }
 
+        /* Menu item separators */
+        .sidebar .nav-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar .nav-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Admin Menu at Bottom */
+        .admin-menu {
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 0.5rem;
+        }
+
         /* Dashboard Widget Card - Full Height */
         .dashboard-widget-card {
             height: 80vh;
@@ -129,6 +148,26 @@
             flex: 1;
             padding: 1rem;
             overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Show scrollbar only when content overflows */
+        .dashboard-widget-card .card-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .dashboard-widget-card .card-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .dashboard-widget-card .card-body::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .dashboard-widget-card .card-body::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
         }
 
         /* Ticket List Styles */
@@ -356,7 +395,7 @@
 
     <!-- Left Side Navigation -->
     <div class="sidebar" id="sidebar">
-        <button class="sidebar-close-btn" onclick="toggleSidebar()" title="Toggle sidebar">
+        <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close sidebar">
             <i class="fas fa-times"></i>
         </button>
         <div class="sidebar-header">
@@ -385,6 +424,16 @@
                     </a>
                 </li>
             </ul>
+            
+            <!-- Admin Menu at Bottom -->
+            <ul class="nav flex-column admin-menu">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin" id="nav-admin">
+                        <i class="fas fa-cog me-2"></i>
+                        <span>Admin</span>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 
@@ -394,7 +443,7 @@
     <div class="main-content" id="mainContent">
         <div class="container-fluid mt-4">
             <!-- Dashboard Widgets -->
-            <div class="row">
+            <div class="row" style="padding: 2% 5% 5% 5%;">
                 <!-- Solutions Widget -->
                 <div class="col-md-6">
                     <div class="card dashboard-widget-card">
@@ -402,7 +451,7 @@
                             <i class="fas fa-lightbulb"></i>Recent Solutions
                         </div>
                         <div class="card-body">
-                            <div class="list-group list-group-flush" style="height: 100%; overflow-y: auto;">
+                            <div class="list-group list-group-flush">
                                 <div th:each="solution, solutionStat : ${solutions}" th:if="${solutionStat.index < 5}" class="list-group-item d-flex align-items-center solution-item">
                                     <div class="solution-icon me-3">
                                         <i class="fas fa-lightbulb text-warning"></i>
