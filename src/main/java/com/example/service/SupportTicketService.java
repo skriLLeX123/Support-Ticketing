@@ -1,12 +1,17 @@
 package com.example.service;
 
 import com.example.dto.SupportTicketDTO;
+import com.example.dto.SolutionDTO;
 import com.example.entity.SupportTicket;
 import com.example.entity.Solution;
+import com.example.entity.Account;
+import com.example.entity.Partner;
 import com.example.entity.TicketType;
 import com.example.entity.Severity;
 import com.example.repository.SupportTicketRepository;
 import com.example.repository.SolutionRepository;
+import com.example.repository.AccountRepository;
+import com.example.repository.PartnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +28,12 @@ public class SupportTicketService {
 
     @Autowired
     private SolutionRepository solutionRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private PartnerRepository partnerRepository;
 
     /**
      * Get all support tickets
@@ -257,6 +268,39 @@ public class SupportTicketService {
      */
     public List<Solution> getAllSolutions() {
         return solutionRepository.findAll();
+    }
+
+    /**
+     * Get all solutions as DTOs with hierarchical data (Account and Partner information)
+     */
+    public List<SolutionDTO> getAllSolutionsAsDTOs() {
+        List<Solution> solutions = solutionRepository.findAll();
+        return solutions.stream()
+                .map(this::convertSolutionToDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Convert Solution entity to DTO with hierarchical data
+     */
+    private SolutionDTO convertSolutionToDTO(Solution solution) {
+        Account account = solution.getAccount();
+        Partner partner = account != null ? account.getPartner() : null;
+        
+        return new SolutionDTO(
+                solution.getSolutionId(),
+                solution.getName(),
+                solution.getDescription(),
+                solution.getCreatedAt(),
+                solution.getLastUpdated(),
+                account != null ? account.getAccountId() : null,
+                account != null ? account.getName() : null,
+                partner != null ? partner.getPartnerId() : null,
+                partner != null ? partner.getName() : null,
+                partner != null ? partner.getLogoUrl() : null,
+                partner != null ? partner.getMemberCount() : null,
+                partner != null ? partner.getApiCount() : null
+        );
     }
 
     /**

@@ -3,7 +3,6 @@ package com.example.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.annotations.GenericGenerator;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -11,17 +10,17 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "solutions")
-public class Solution {
+@Table(name = "accounts")
+public class Account {
 
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "solution_id", updatable = false, nullable = false)
-    private UUID solutionId;
+    @Column(name = "account_id", updatable = false, nullable = false)
+    private UUID accountId;
 
-    @NotBlank(message = "Solution name is required")
-    @Column(name = "name", nullable = false, unique = true)
+    @NotBlank(message = "Account name is required")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "description", columnDefinition = "TEXT")
@@ -34,32 +33,31 @@ public class Solution {
     private LocalDateTime lastUpdated;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    @JoinColumn(name = "partner_id", nullable = false)
+    private Partner partner;
 
-    @OneToMany(mappedBy = "solution", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonBackReference
-    private Set<SupportTicket> tickets = new HashSet<>();
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Solution> solutions = new HashSet<>();
 
-    public Solution() {
+    public Account() {
         this.createdAt = LocalDateTime.now();
         this.lastUpdated = LocalDateTime.now();
     }
 
-    public Solution(String name, String description, Account account) {
+    public Account(String name, String description, Partner partner) {
         this();
         this.name = name;
         this.description = description;
-        this.account = account;
+        this.partner = partner;
     }
 
     // Getters and Setters
-    public UUID getSolutionId() {
-        return solutionId;
+    public UUID getAccountId() {
+        return accountId;
     }
 
-    public void setSolutionId(UUID solutionId) {
-        this.solutionId = solutionId;
+    public void setAccountId(UUID accountId) {
+        this.accountId = accountId;
     }
 
     public String getName() {
@@ -96,30 +94,30 @@ public class Solution {
         this.lastUpdated = lastUpdated;
     }
 
-    public Account getAccount() {
-        return account;
+    public Partner getPartner() {
+        return partner;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setPartner(Partner partner) {
+        this.partner = partner;
         this.lastUpdated = LocalDateTime.now();
     }
 
-    public Set<SupportTicket> getTickets() {
-        return tickets;
+    public Set<Solution> getSolutions() {
+        return solutions;
     }
 
-    public void setTickets(Set<SupportTicket> tickets) {
-        this.tickets = tickets;
+    public void setSolutions(Set<Solution> solutions) {
+        this.solutions = solutions;
     }
 
     @Override
     public String toString() {
-        return "Solution{" +
-                "solutionId=" + solutionId +
+        return "Account{" +
+                "accountId=" + accountId +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", account=" + (account != null ? account.getName() : "null") +
+                ", partner=" + (partner != null ? partner.getName() : "null") +
                 ", createdAt=" + createdAt +
                 ", lastUpdated=" + lastUpdated +
                 '}';

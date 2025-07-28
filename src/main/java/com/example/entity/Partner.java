@@ -3,7 +3,6 @@ package com.example.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.annotations.GenericGenerator;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -11,21 +10,30 @@ import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "solutions")
-public class Solution {
+@Table(name = "partners")
+public class Partner {
 
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "solution_id", updatable = false, nullable = false)
-    private UUID solutionId;
+    @Column(name = "partner_id", updatable = false, nullable = false)
+    private UUID partnerId;
 
-    @NotBlank(message = "Solution name is required")
+    @NotBlank(message = "Partner name is required")
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "logo_url")
+    private String logoUrl;
+
+    @Column(name = "member_count", nullable = false)
+    private Integer memberCount = 0;
+
+    @Column(name = "api_count", nullable = false)
+    private Integer apiCount = 0;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -33,33 +41,27 @@ public class Solution {
     @Column(name = "last_updated", nullable = false)
     private LocalDateTime lastUpdated;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    @OneToMany(mappedBy = "partner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Account> accounts = new HashSet<>();
 
-    @OneToMany(mappedBy = "solution", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonBackReference
-    private Set<SupportTicket> tickets = new HashSet<>();
-
-    public Solution() {
+    public Partner() {
         this.createdAt = LocalDateTime.now();
         this.lastUpdated = LocalDateTime.now();
     }
 
-    public Solution(String name, String description, Account account) {
+    public Partner(String name, String description) {
         this();
         this.name = name;
         this.description = description;
-        this.account = account;
     }
 
     // Getters and Setters
-    public UUID getSolutionId() {
-        return solutionId;
+    public UUID getPartnerId() {
+        return partnerId;
     }
 
-    public void setSolutionId(UUID solutionId) {
-        this.solutionId = solutionId;
+    public void setPartnerId(UUID partnerId) {
+        this.partnerId = partnerId;
     }
 
     public String getName() {
@@ -80,6 +82,33 @@ public class Solution {
         this.lastUpdated = LocalDateTime.now();
     }
 
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    public Integer getMemberCount() {
+        return memberCount;
+    }
+
+    public void setMemberCount(Integer memberCount) {
+        this.memberCount = memberCount;
+        this.lastUpdated = LocalDateTime.now();
+    }
+
+    public Integer getApiCount() {
+        return apiCount;
+    }
+
+    public void setApiCount(Integer apiCount) {
+        this.apiCount = apiCount;
+        this.lastUpdated = LocalDateTime.now();
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -96,30 +125,23 @@ public class Solution {
         this.lastUpdated = lastUpdated;
     }
 
-    public Account getAccount() {
-        return account;
+    public Set<Account> getAccounts() {
+        return accounts;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
-        this.lastUpdated = LocalDateTime.now();
-    }
-
-    public Set<SupportTicket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(Set<SupportTicket> tickets) {
-        this.tickets = tickets;
+    public void setAccounts(Set<Account> accounts) {
+        this.accounts = accounts;
     }
 
     @Override
     public String toString() {
-        return "Solution{" +
-                "solutionId=" + solutionId +
+        return "Partner{" +
+                "partnerId=" + partnerId +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", account=" + (account != null ? account.getName() : "null") +
+                ", logoUrl='" + logoUrl + '\'' +
+                ", memberCount=" + memberCount +
+                ", apiCount=" + apiCount +
                 ", createdAt=" + createdAt +
                 ", lastUpdated=" + lastUpdated +
                 '}';

@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.dto.SupportTicketDTO;
+import com.example.dto.SolutionDTO;
 import com.example.entity.SupportTicket;
 import com.example.entity.Solution;
 import com.example.entity.SupportGroup;
@@ -31,7 +32,7 @@ public class WebController {
     public String dashboard(Model model) {
         try {
             List<SupportTicketDTO> tickets = supportTicketService.getAllTicketsAsDTOs();
-            List<Solution> solutions = supportTicketService.getAllSolutions();
+            List<SolutionDTO> solutions = supportTicketService.getAllSolutionsAsDTOs();
             
             model.addAttribute("tickets", tickets);
             model.addAttribute("solutions", solutions);
@@ -49,7 +50,7 @@ public class WebController {
     public String dashboardAlt(Model model) {
         try {
             List<SupportTicketDTO> tickets = supportTicketService.getAllTicketsAsDTOs();
-            List<Solution> solutions = supportTicketService.getAllSolutions();
+            List<SolutionDTO> solutions = supportTicketService.getAllSolutionsAsDTOs();
             
             model.addAttribute("tickets", tickets);
             model.addAttribute("solutions", solutions);

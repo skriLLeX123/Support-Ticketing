@@ -25,6 +25,12 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private SupportMemberRepository supportMemberRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private PartnerRepository partnerRepository;
+
     @Override
     public void run(String... args) throws Exception {
         // Initialize sample data only if the tables are empty
@@ -32,16 +38,103 @@ public class DataInitializer implements CommandLineRunner {
             initializeSampleData();
         }
     }
-
+                               
     private void initializeSampleData() {
-        // Create sample solutions
-        Solution solution1 = new Solution("Database", "Resolve database connectivity problems and connection pool issues");
-        Solution solution2 = new Solution("Upload", "Fix file upload functionality for files larger than 10MB with proper validation");
-        Solution solution3 = new Solution("API", "Resolve API integration issues and implement proper rate limiting strategies");
-        Solution solution4 = new Solution("Authentication", "Fix user login and authentication with enhanced security measures");
-        Solution solution5 = new Solution("Performance", "Improve system performance through comprehensive monitoring and optimization");
+        // Create sample partners
+        Partner amazonPartner = new Partner("Amazon", "E-commerce and cloud services partner");
+        amazonPartner.setLogoUrl("https://logo.clearbit.com/amazon.com");
+        amazonPartner.setMemberCount(1250);
+        amazonPartner.setApiCount(45);
+        partnerRepository.save(amazonPartner);
 
-        List<Solution> solutions = Arrays.asList(solution1, solution2, solution3, solution4, solution5);
+        Partner doordashPartner = new Partner("DoorDash", "Food delivery and logistics partner");
+        doordashPartner.setLogoUrl("https://logo.clearbit.com/doordash.com");
+        doordashPartner.setMemberCount(850);
+        doordashPartner.setApiCount(32);
+        partnerRepository.save(doordashPartner);
+
+        Partner uberPartner = new Partner("Uber", "Transportation and delivery partner");
+        uberPartner.setLogoUrl("https://logo.clearbit.com/uber.com");
+        uberPartner.setMemberCount(2100);
+        uberPartner.setApiCount(67);
+        partnerRepository.save(uberPartner);
+
+        Partner disneyPartner = new Partner("Disney", "Entertainment and media streaming partner");
+        disneyPartner.setLogoUrl("https://logo.clearbit.com/disney.com");
+        disneyPartner.setMemberCount(1800);
+        disneyPartner.setApiCount(28);
+        partnerRepository.save(disneyPartner);
+
+        Partner huluPartner = new Partner("Hulu", "Streaming entertainment platform partner");
+        huluPartner.setLogoUrl("https://logo.clearbit.com/hulu.com");
+        huluPartner.setMemberCount(950);
+        huluPartner.setApiCount(22);
+        partnerRepository.save(huluPartner);
+
+        Partner netflixPartner = new Partner("Netflix", "Global streaming entertainment partner");
+        netflixPartner.setLogoUrl("https://logo.clearbit.com/netflix.com");
+        netflixPartner.setMemberCount(3200);
+        netflixPartner.setApiCount(89);
+        partnerRepository.save(netflixPartner);
+
+        // Create sample accounts
+        Account amazonProdAccount = new Account("Amazon-Prod", "Production environment for Amazon integration", amazonPartner);
+        Account amazonDevAccount = new Account("Amazon-Dev", "Development environment for Amazon integration", amazonPartner);
+        accountRepository.save(amazonProdAccount);
+        accountRepository.save(amazonDevAccount);
+
+        Account doordashMainAccount = new Account("DoorDash-Main", "Main production account for DoorDash services", doordashPartner);
+        accountRepository.save(doordashMainAccount);
+
+        Account uberEatsAccount = new Account("Uber-Eats", "Uber Eats delivery platform integration", uberPartner);
+        accountRepository.save(uberEatsAccount);
+
+        // Disney accounts
+        Account disneyStreamAccount = new Account("Disney-Stream", "Disney+ streaming platform integration", disneyPartner);
+        Account disneyContentAccount = new Account("Disney-Content", "Disney content management and distribution", disneyPartner);
+        accountRepository.save(disneyStreamAccount);
+        accountRepository.save(disneyContentAccount);
+
+        // Hulu accounts
+        Account huluStreamAccount = new Account("Hulu-Stream", "Hulu streaming platform integration", huluPartner);
+        Account huluContentAccount = new Account("Hulu-Content", "Hulu content management and analytics", huluPartner);
+        accountRepository.save(huluStreamAccount);
+        accountRepository.save(huluContentAccount);
+
+        // Netflix accounts
+        Account netflixStreamAccount = new Account("Netflix-Stream", "Netflix streaming platform integration", netflixPartner);
+        Account netflixAIAccount = new Account("Netflix-AI", "Netflix recommendation and AI services", netflixPartner);
+        accountRepository.save(netflixStreamAccount);
+        accountRepository.save(netflixAIAccount);
+
+        // Create sample solutions with accounts
+        Solution solution1 = new Solution("Database", "Resolve database connectivity problems and connection pool issues", amazonProdAccount);
+        Solution solution2 = new Solution("Upload", "Fix file upload functionality for files larger than 10MB with proper validation", amazonDevAccount);
+        Solution solution3 = new Solution("API", "Resolve API integration issues and implement proper rate limiting strategies", doordashMainAccount);
+        Solution solution4 = new Solution("Authentication", "Fix user login and authentication with enhanced security measures", uberEatsAccount);
+        Solution solution5 = new Solution("Performance", "Improve system performance through comprehensive monitoring and optimization", amazonProdAccount);
+
+        // Disney solutions
+        Solution solution6 = new Solution("Streaming", "Optimize video streaming performance and reduce buffering issues", disneyStreamAccount);
+        Solution solution7 = new Solution("Content Delivery", "Improve content delivery network and reduce latency for global users", disneyContentAccount);
+        Solution solution8 = new Solution("DRM Protection", "Enhance digital rights management and content security measures", disneyStreamAccount);
+
+        // Hulu solutions
+        Solution solution9 = new Solution("Video Processing", "Optimize video encoding and transcoding for multiple quality levels", huluStreamAccount);
+        Solution solution10 = new Solution("Analytics", "Improve user behavior analytics and content recommendation accuracy", huluContentAccount);
+        Solution solution11 = new Solution("Ad Integration", "Enhance advertisement integration and targeting capabilities", huluStreamAccount);
+
+        // Netflix solutions
+        Solution solution12 = new Solution("Recommendation Engine", "Optimize machine learning algorithms for personalized content recommendations", netflixAIAccount);
+        Solution solution13 = new Solution("Global CDN", "Improve content delivery network performance across multiple regions", netflixStreamAccount);
+        Solution solution14 = new Solution("A/B Testing", "Enhance A/B testing framework for content optimization and user experience", netflixAIAccount);
+        Solution solution15 = new Solution("Subtitle Processing", "Improve subtitle and closed caption processing for multiple languages", netflixStreamAccount);
+
+        List<Solution> solutions = Arrays.asList(
+            solution1, solution2, solution3, solution4, solution5,
+            solution6, solution7, solution8, solution9, solution10,
+            solution11, solution12, solution13, solution14, solution15
+        );
         solutions.forEach(solutionRepository::save);
 
         // Create sample support groups

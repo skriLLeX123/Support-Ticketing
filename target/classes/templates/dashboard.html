@@ -370,6 +370,30 @@
             width: 24px;
             text-align: center;
         }
+
+        .member-count-badge {
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .partner-label, .account-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .separator {
+            margin: 0 0.5rem;
+            color: #6c757d;
+        }
+
+        .solution-description {
+            line-height: 1.4;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 <body>
@@ -452,15 +476,32 @@
                         </div>
                         <div class="card-body">
                             <div class="list-group list-group-flush">
-                                <div th:each="solution, solutionStat : ${solutions}" th:if="${solutionStat.index < 5}" class="list-group-item d-flex align-items-center solution-item">
-                                    <div class="solution-icon me-3">
-                                        <i class="fas fa-lightbulb text-warning"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <div class="solution-title" th:text="${solution.name}">Solution Title</div>
-                                        <div class="solution-meta text-muted">
-                                            <span th:text="${solution.description}">Description</span> • 
-                                            <span th:text="${solution.createdAt}">Date</span>
+                                <div th:each="solution, solutionStat : ${solutions}" th:if="${solutionStat.index < 10}" class="list-group-item solution-item">
+                                    <div class="d-flex align-items-start">
+                                        <div class="solution-icon me-3">
+                                            <img th:if="${solution.partnerLogoUrl != null}" th:src="${solution.partnerLogoUrl}" 
+                                                 class="partner-logo" th:alt="${solution.partnerName}" 
+                                                 th:onerror="'this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';'">
+                                            <i th:if="${solution.partnerLogoUrl == null}" class="fas fa-lightbulb text-warning" style="display: block;"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex align-items-center mb-1">
+                                                <div class="solution-title me-2" th:text="${solution.name}">Solution Title</div>
+                                                <span th:if="${solution.partnerMemberCount != null}" class="member-count-badge">
+                                                    <i class="fas fa-users me-1"></i>
+                                                    <span th:text="${solution.partnerMemberCount}">0</span>
+                                                </span>
+                                            </div>
+                                            <div class="solution-meta text-muted mb-1">
+                                                <span class="partner-label">Partner:</span>
+                                                <span th:text="${solution.partnerName}">Partner Name</span>
+                                                <span class="separator">|</span>
+                                                <span class="account-label">Account:</span>
+                                                <span th:text="${solution.accountName}">Account Name</span>
+                                            </div>
+                                            <div class="solution-description text-muted small" th:text="${solution.description}">
+                                                Solution description
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
