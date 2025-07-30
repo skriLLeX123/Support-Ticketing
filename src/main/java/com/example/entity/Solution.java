@@ -41,6 +41,17 @@ public class Solution {
     @JsonBackReference
     private Set<SupportTicket> tickets = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "solution_environments",
+        joinColumns = @JoinColumn(name = "solution_id"),
+        inverseJoinColumns = @JoinColumn(name = "environment_id")
+    )
+    private Set<Environment> environments = new HashSet<>();
+
+    @OneToMany(mappedBy = "solution", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Api> apis = new HashSet<>();
+
     public Solution() {
         this.createdAt = LocalDateTime.now();
         this.lastUpdated = LocalDateTime.now();
@@ -111,6 +122,22 @@ public class Solution {
 
     public void setTickets(Set<SupportTicket> tickets) {
         this.tickets = tickets;
+    }
+
+    public Set<Environment> getEnvironments() {
+        return environments;
+    }
+
+    public void setEnvironments(Set<Environment> environments) {
+        this.environments = environments;
+    }
+
+    public Set<Api> getApis() {
+        return apis;
+    }
+
+    public void setApis(Set<Api> apis) {
+        this.apis = apis;
     }
 
     @Override

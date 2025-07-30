@@ -24,6 +24,12 @@ public class WebController {
 
     @Autowired
     private SupportTicketService supportTicketService;
+    
+    @Autowired
+    private com.example.repository.EnvironmentRepository environmentRepository;
+    
+    @Autowired
+    private com.example.repository.SolutionRepository solutionRepository;
 
     /**
      * Dashboard page
@@ -95,6 +101,86 @@ public class WebController {
         // Don't try to load any data - just return a simple working page
         model.addAttribute("message", "Basic dashboard is working!");
         return "dashboard-basic";
+    }
+
+    /**
+     * Debug endpoint to check environment status
+     */
+    @GetMapping("/debug/environments")
+    public String debugEnvironments(Model model) {
+        try {
+            long envCount = environmentRepository.count();
+            long solCount = solutionRepository.count();
+            
+            model.addAttribute("environmentCount", envCount);
+            model.addAttribute("solutionCount", solCount);
+            model.addAttribute("message", "Debug info loaded");
+            
+            return "debug-environments";
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "debug-environments";
+        }
+    }
+
+    /**
+     * Force environment associations
+     */
+    @GetMapping("/debug/force-associations")
+    public String forceAssociations(Model model) {
+        try {
+            // Get all environments
+            com.example.entity.Environment prod = environmentRepository.findByType(com.example.entity.Environment.EnvironmentType.PRODUCTION).orElse(null);
+            com.example.entity.Environment dev = environmentRepository.findByType(com.example.entity.Environment.EnvironmentType.DEVELOPMENT).orElse(null);
+            com.example.entity.Environment uat = environmentRepository.findByType(com.example.entity.Environment.EnvironmentType.UAT).orElse(null);
+            com.example.entity.Environment sandbox = environmentRepository.findByType(com.example.entity.Environment.EnvironmentType.SANDBOX).orElse(null);
+            
+            if (prod == null || dev == null || uat == null || sandbox == null) {
+                model.addAttribute("error", "Environments not found");
+                return "debug-environments";
+            }
+            
+            // Get all solutions
+            List<com.example.entity.Solution> solutions = solutionRepository.findAll();
+            int updatedCount = 0;
+            
+            for (com.example.entity.Solution solution : solutions) {
+                // Skip if solution already has environments
+                if (solution.getEnvironments() != null && !solution.getEnvironments().isEmpty()) {
+                    continue;
+                }
+                
+                String solutionName = solution.getName().toLowerCase();
+                java.util.HashSet<com.example.entity.Environment> environments = new java.util.HashSet<>();
+                
+                // Associate environments based on solution characteristics
+                if (solutionName.contains("database")) {
+                    environments.add(prod);
+                    environments.add(dev);
+                    environments.add(uat);
+                    environments.add(sandbox);
+                } else if (solutionName.contains("api")) {
+                    environments.add(prod);
+                    environments.add(dev);
+                } else {
+                    // Default: all solutions get at least dev and uat
+                    environments.add(dev);
+                    environments.add(uat);
+                }
+                
+                // Set the environments for the solution
+                solution.setEnvironments(environments);
+                solutionRepository.save(solution);
+                updatedCount++;
+            }
+            
+            model.addAttribute("message", "Successfully associated environments with " + updatedCount + " solutions");
+            return "debug-environments";
+            
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "debug-environments";
+        }
     }
 
     /**

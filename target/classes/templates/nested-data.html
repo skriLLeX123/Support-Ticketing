@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested Data View - Partner Central</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-bg: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: 600;
+            font-size: 1.4rem;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: white !important;
+        }
+
+        .main-container {
+            padding: 2rem 0;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+
+        .search-container {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            background: white;
+            color: var(--secondary-color);
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .partner-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .partner-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .partner-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .partner-logo {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .partner-info h5 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .partner-info p {
+            margin: 0.25rem 0 0 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .partner-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .partner-content {
+            padding: 1.5rem;
+        }
+
+        .account-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .account-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .solution-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .solution-item {
+            background: var(--light-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .solution-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .solution-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-color);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .solution-info h6 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .solution-info p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+        }
+
+        .environment-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .env-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .env-badge.prod { background: var(--danger-color); color: white; }
+        .env-badge.dev { background: var(--accent-color); color: white; }
+        .env-badge.uat { background: var(--warning-color); color: white; }
+        .env-badge.sandbox { background: var(--success-color); color: white; }
+
+        .api-summary {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+            color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .partner-stats {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#"><i class="fas fa-sitemap me-2"></i>Partner Central</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/dashboard"><i class="fas fa-tachometer-alt me-1"></i>Dashboard</a>
+                <a class="nav-link" href="/tickets"><i class="fas fa-ticket-alt me-1"></i>Tickets</a>
+                <a class="nav-link active" href="/nested-data"><i class="fas fa-sitemap me-1"></i>Data View</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-container">
+        <div class="page-header">
+            <h1 class="page-title"><i class="fas fa-sitemap me-2"></i>Partner Data Overview</h1>
+            <p class="page-subtitle">Simplified view of partners, accounts, solutions, and environments</p>
+        </div>
+
+        <div class="search-container">
+            <div class="row">
+                <div class="col-md-8">
+                    <input type="text" class="form-control search-input" id="searchInput" placeholder="Search partners, accounts, solutions...">
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control search-input" id="environmentFilter">
+                        <option value="">All Environments</option>
+                        <option value="prod">Production</option>
+                        <option value="dev">Development</option>
+                        <option value="uat">UAT</option>
+                        <option value="sandbox">Sandbox</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="partners">Partners</button>
+                <button class="filter-btn" data-filter="accounts">Accounts</button>
+                <button class="filter-btn" data-filter="solutions">Solutions</button>
+            </div>
+        </div>
+
+        <div class="loading-spinner" id="loadingSpinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading partner data...</p>
+        </div>
+
+        <div id="dataContainer" style="display: none;">
+            <div class="data-grid">
+                <!-- Microsoft Partner Card -->
+                <div class="partner-card" data-partner="microsoft">
+                    <div class="partner-header">
+                        <div class="partner-logo">
+                            <i class="fab fa-microsoft"></i>
+                        </div>
+                        <div class="partner-info">
+                            <h5>Microsoft Corporation</h5>
+                            <p>Cloud & Productivity Solutions</p>
+                        </div>
+                    </div>
+                    <div class="partner-content">
+                        <div class="partner-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">2</span>
+                                <span class="stat-label">Accounts</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">4</span>
+                                <span class="stat-label">Solutions</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">16</span>
+                                <span class="stat-label">Environments</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">32</span>
+                                <span class="stat-label">APIs</span>
+                            </div>
+                        </div>
+                        
+                        <div class="account-section">
+                            <div class="account-title">Azure Enterprise</div>
+                            <div class="solution-list">
+                                <div class="solution-item">
+                                    <div class="solution-header">
+                                        <div class="solution-icon">
+                                            <i class="fas fa-server"></i>
+                                        </div>
+                                        <div class="solution-info">
+                                            <h6>Azure Compute Services</h6>
+                                            <p>Virtual Machines & Container Services</p>
+                                        </div>
+                                    </div>
+                                    <div class="environment-list">
+                                        <span class="env-badge prod">PROD</span>
+                                        <span class="env-badge dev">DEV</span>
+                                        <span class="env-badge uat">UAT</span>
+                                        <span class="env-badge sandbox">SB</span>
+                                    </div>
+                                    <div class="api-summary">8 APIs deployed across environments</div>
+                                </div>
+                                
+                                <div class="solution-item">
+                                    <div class="solution-header">
+                                        <div class="solution-icon">
+                                            <i class="fas fa-database"></i>
+                                        </div>
+                                        <div class="solution-info">
+                                            <h6>Azure Storage Solutions</h6>
+                                            <p>Blob, File, and Queue Storage</p>
+                                        </div>
+                                    </div>
+                                    <div class="environment-list">
+                                        <span class="env-badge prod">PROD</span>
+                                        <span class="env-badge dev">DEV</span>
+                                        <span class="env-badge uat">UAT</span>
+                                        <span class="env-badge sandbox">SB</span>
+                                    </div>
+                                    <div class="api-summary">8 APIs deployed across environments</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="account-section">
+                            <div class="account-title">Microsoft 365</div>
+                            <div class="solution-list">
+                                <div class="solution-item">
+                                    <div class="solution-header">
+                                        <div class="solution-icon">
+                                            <i class="fas fa-file-word"></i>
+                                        </div>
+                                        <div class="solution-info">
+                                            <h6>Office Online Services</h6>
+                                            <p>Word, Excel, PowerPoint Online</p>
+                                        </div>
+                                    </div>
+                                    <div class="environment-list">
+                                        <span class="env-badge prod">PROD</span>
+                                        <span class="env-badge dev">DEV</span>
+                                        <span class="env-badge uat">UAT</span>
+                                        <span class="env-badge sandbox">SB</span>
+                                    </div>
+                                    <div class="api-summary">8 APIs deployed across environments</div>
+                                </div>
+                                
+                                <div class="solution-item">
+                                    <div class="solution-header">
+                                        <div class="solution-icon">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                        <div class="solution-info">
+                                            <h6>Teams Communication</h6>
+                                            <p>Chat, Meetings & Collaboration</p>
+                                        </div>
+                                    </div>
+                                    <div class="environment-list">
+                                        <span class="env-badge prod">PROD</span>
+                                        <span class="env-badge dev">DEV</span>
+                                        <span class="env-badge uat">UAT</span>
+                                        <span class="env-badge sandbox">SB</span>
+                                    </div>
+                                    <div class="api-summary">8 APIs deployed across environments</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AWS Partner Card -->
+                <div class="partner-card" data-partner="amazon">
+                    <div class="partner-header">
+                        <div class="partner-logo">
+                            <i class="fab fa-aws"></i>
+                        </div>
+                        <div class="partner-info">
+                            <h5>Amazon Web Services</h5>
+                            <p>Cloud Computing & Infrastructure</p>
+                        </div>
+                    </div>
+                    <div class="partner-content">
+                        <div class="partner-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">1</span>
+                                <span class="stat-label">Accounts</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">2</span>
+                                <span class="stat-label">Solutions</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">8</span>
+                                <span class="stat-label">Environments</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">16</span>
+                                <span class="stat-label">APIs</span>
+                            </div>
+                        </div>
+                        
+                        <div class="account-section">
+                            <div class="account-title">AWS Enterprise</div>
+                            <div class="solution-list">
+                                <div class="solution-item">
+                                    <div class="solution-header">
+                                        <div class="solution-icon">
+                                            <i class="fas fa-server"></i>
+                                        </div>
+                                        <div class="solution-info">
+                                            <h6>EC2 Compute Services</h6>
+                                            <p>Elastic Compute Cloud</p>
+                                        </div>
+                                    </div>
+                                    <div class="environment-list">
+                                        <span class="env-badge prod">PROD</span>
+                                        <span class="env-badge dev">DEV</span>
+                                        <span class="env-badge uat">UAT</span>
+                                        <span class="env-badge sandbox">SB</span>
+                                    </div>
+                                    <div class="api-summary">8 APIs deployed across environments</div>
+                                </div>
+                                
+                                <div class="solution-item">
+                                    <div class="solution-header">
+                                        <div class="solution-icon">
+                                            <i class="fas fa-database"></i>
+                                        </div>
+                                        <div class="solution-info">
+                                            <h6>S3 Storage Solutions</h6>
+                                            <p>Simple Storage Service</p>
+                                        </div>
+                                    </div>
+                                    <div class="environment-list">
+                                        <span class="env-badge prod">PROD</span>
+                                        <span class="env-badge dev">DEV</span>
+                                        <span class="env-badge uat">UAT</span>
+                                        <span class="env-badge sandbox">SB</span>
+                                    </div>
+                                    <div class="api-summary">8 APIs deployed across environments</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.partner-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Environment filter
+        document.getElementById('environmentFilter').addEventListener('change', function(e) {
+            const selectedEnv = e.target.value;
+            const solutionItems = document.querySelectorAll('.solution-item');
+            
+            solutionItems.forEach(item => {
+                const envBadges = item.querySelectorAll('.env-badge');
+                let hasSelectedEnv = false;
+                
+                envBadges.forEach(badge => {
+                    if (selectedEnv === '' || badge.classList.contains(selectedEnv)) {
+                        hasSelectedEnv = true;
+                    }
+                });
+                
+                if (hasSelectedEnv) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                applyFilter(filter);
+            });
+        });
+
+        function applyFilter(filterType) {
+            const partnerCards = document.querySelectorAll('.partner-card');
+            const accountSections = document.querySelectorAll('.account-section');
+            const solutionItems = document.querySelectorAll('.solution-item');
+            
+            // Reset all visibility
+            partnerCards.forEach(card => card.style.display = 'block');
+            accountSections.forEach(section => section.style.display = 'block');
+            solutionItems.forEach(item => item.style.display = 'block');
+            
+            switch(filterType) {
+                case 'partners':
+                    accountSections.forEach(section => section.style.display = 'none');
+                    break;
+                case 'accounts':
+                    solutionItems.forEach(item => item.style.display = 'none');
+                    break;
+                case 'solutions':
+                    // Show everything (default behavior)
+                    break;
+                case 'all':
+                default:
+                    // Show everything
+                    break;
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('dataContainer').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

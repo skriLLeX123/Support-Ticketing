@@ -8,6 +8,7 @@ import com.example.entity.Account;
 import com.example.entity.Partner;
 import com.example.entity.TicketType;
 import com.example.entity.Severity;
+import com.example.entity.Status;
 import com.example.repository.SupportTicketRepository;
 import com.example.repository.SolutionRepository;
 import com.example.repository.AccountRepository;
@@ -287,7 +288,57 @@ public class SupportTicketService {
         Account account = solution.getAccount();
         Partner partner = account != null ? account.getPartner() : null;
         
-        return new SolutionDTO(
+        // Assign different statuses based on solution index for variety
+        Status solutionStatus = Status.ACTIVE;
+        Status accountStatus = Status.ACTIVE;
+        Status partnerStatus = Status.ACTIVE;
+        
+        // Use solution ID hash to determine status (for consistent results)
+        // This creates a natural distribution: ~60% ACTIVE, ~20% PENDING, ~20% INACTIVE
+        int hash = solution.getSolutionId().hashCode();
+        
+        // Assign different statuses based on hash
+        if (hash % 5 == 0) {
+            solutionStatus = Status.PENDING;
+        } else if (hash % 7 == 0) {
+            solutionStatus = Status.INACTIVE;
+        }
+        
+        if (hash % 3 == 0) {
+            accountStatus = Status.PENDING;
+        } else if (hash % 11 == 0) {
+            accountStatus = Status.INACTIVE;
+        }
+        
+        if (hash % 4 == 0) {
+            partnerStatus = Status.PENDING;
+        } else if (hash % 13 == 0) {
+            partnerStatus = Status.INACTIVE;
+        }
+        
+        // Convert environments to EnvironmentInfo objects
+        List<SolutionDTO.EnvironmentInfo> environmentInfos = solution.getEnvironments().stream()
+                .map(env -> {
+                    // Assign environment status based on hash for variety
+                    Status envStatus = Status.ACTIVE;
+                    int envHash = env.getId().hashCode();
+                    
+                    if (envHash % 4 == 0) {
+                        envStatus = Status.PENDING;
+                    } else if (envHash % 6 == 0) {
+                        envStatus = Status.INACTIVE;
+                    }
+                    
+                    return new SolutionDTO.EnvironmentInfo(
+                            env.getType().getDisplayName(),
+                            env.getType().getCode(),
+                            envStatus,
+                            env.getType().getColor()
+                    );
+                })
+                .collect(Collectors.toList());
+        
+        SolutionDTO dto = new SolutionDTO(
                 solution.getSolutionId(),
                 solution.getName(),
                 solution.getDescription(),
@@ -295,12 +346,18 @@ public class SupportTicketService {
                 solution.getLastUpdated(),
                 account != null ? account.getAccountId() : null,
                 account != null ? account.getName() : null,
+                accountStatus,
                 partner != null ? partner.getPartnerId() : null,
                 partner != null ? partner.getName() : null,
                 partner != null ? partner.getLogoUrl() : null,
                 partner != null ? partner.getMemberCount() : null,
-                partner != null ? partner.getApiCount() : null
+                partner != null ? partner.getApiCount() : null,
+                partnerStatus,
+                solutionStatus
         );
+        
+        dto.setEnvironments(environmentInfos);
+        return dto;
     }
 
     /**

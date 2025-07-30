@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,12 +32,23 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PartnerRepository partnerRepository;
 
+    @Autowired
+    private EnvironmentRepository environmentRepository;
+
     @Override
     public void run(String... args) throws Exception {
+        System.out.println("DataInitializer starting...");
+        
         // Initialize sample data only if the tables are empty
         if (supportTicketRepository.count() == 0) {
+            System.out.println("Initializing sample data...");
             initializeSampleData();
         }
+        
+        // Always associate environments with solutions (even for existing data)
+        System.out.println("Calling associateEnvironmentsWithSolutions...");
+        associateEnvironmentsWithSolutions();
+        System.out.println("DataInitializer completed.");
     }
                                
     private void initializeSampleData() {
@@ -136,6 +148,9 @@ public class DataInitializer implements CommandLineRunner {
             solution11, solution12, solution13, solution14, solution15
         );
         solutions.forEach(solutionRepository::save);
+
+        // Associate environments with solutions
+        associateEnvironmentsWithSolutions();
 
         // Create sample support groups
         SupportGroup group1 = new SupportGroup("Technical Support", "Handles technical issues and system problems");
@@ -452,6 +467,115 @@ public class DataInitializer implements CommandLineRunner {
             ticket16, ticket17, ticket18, ticket19, ticket20
         );
         tickets.forEach(supportTicketRepository::save);
+    }
+
+    private void associateEnvironmentsWithSolutions() {
+        System.out.println("Starting environment associations...");
+        // Get all environments
+        Environment prod = environmentRepository.findByType(Environment.EnvironmentType.PRODUCTION).orElse(null);
+        Environment dev = environmentRepository.findByType(Environment.EnvironmentType.DEVELOPMENT).orElse(null);
+        Environment uat = environmentRepository.findByType(Environment.EnvironmentType.UAT).orElse(null);
+        Environment sandbox = environmentRepository.findByType(Environment.EnvironmentType.SANDBOX).orElse(null);
+        
+        System.out.println("Found environments - PROD: " + (prod != null) + ", DEV: " + (dev != null) + ", UAT: " + (uat != null) + ", SANDBOX: " + (sandbox != null));
+        
+        if (prod == null || dev == null || uat == null || sandbox == null) {
+            System.out.println("Environments not found, skipping environment associations");
+            return;
+        }
+        
+        // Get all solutions
+        List<Solution> solutions = solutionRepository.findAll();
+        int updatedCount = 0;
+        
+        for (Solution solution : solutions) {
+            // Skip if solution already has environments
+            if (solution.getEnvironments() != null && !solution.getEnvironments().isEmpty()) {
+                continue;
+            }
+            
+            String solutionName = solution.getName().toLowerCase();
+            HashSet<Environment> environments = new HashSet<>();
+            
+            // Associate environments based on solution characteristics with variety
+            if (solutionName.contains("database")) {
+                // Database solutions get all environments
+                environments.add(prod);
+                environments.add(dev);
+                environments.add(uat);
+                environments.add(sandbox);
+            } else if (solutionName.contains("upload")) {
+                // Upload solutions get prod, dev, and uat
+                environments.add(prod);
+                environments.add(dev);
+                environments.add(uat);
+            } else if (solutionName.contains("api")) {
+                // API solutions get prod and dev
+                environments.add(prod);
+                environments.add(dev);
+            } else if (solutionName.contains("authentication")) {
+                // Authentication solutions get prod, dev, and sandbox
+                environments.add(prod);
+                environments.add(dev);
+                environments.add(sandbox);
+            } else if (solutionName.contains("performance")) {
+                // Performance solutions get prod and uat
+                environments.add(prod);
+                environments.add(uat);
+            } else if (solutionName.contains("streaming")) {
+                // Streaming solutions get all environments
+                environments.add(prod);
+                environments.add(dev);
+                environments.add(uat);
+                environments.add(sandbox);
+            } else if (solutionName.contains("content")) {
+                // Content solutions get prod, dev, and sandbox
+                environments.add(prod);
+                environments.add(dev);
+                environments.add(sandbox);
+            } else if (solutionName.contains("analytics")) {
+                // Analytics solutions get dev, uat, and sandbox
+                environments.add(dev);
+                environments.add(uat);
+                environments.add(sandbox);
+            } else if (solutionName.contains("drm")) {
+                // DRM solutions get prod and uat
+                environments.add(prod);
+                environments.add(uat);
+            } else if (solutionName.contains("recommendation")) {
+                // Recommendation solutions get dev and uat
+                environments.add(dev);
+                environments.add(uat);
+            } else if (solutionName.contains("testing")) {
+                // Testing solutions get uat and sandbox
+                environments.add(uat);
+                environments.add(sandbox);
+            } else if (solutionName.contains("delivery") || solutionName.contains("cdn")) {
+                // Delivery/CDN solutions get prod, dev, and uat
+                environments.add(prod);
+                environments.add(dev);
+                environments.add(uat);
+            } else if (solutionName.contains("subtitle") || solutionName.contains("processing")) {
+                // Processing solutions get dev and sandbox
+                environments.add(dev);
+                environments.add(sandbox);
+            } else {
+                // Default: all solutions get at least dev and uat
+                environments.add(dev);
+                environments.add(uat);
+            }
+            
+            // Set the environments for the solution
+            solution.setEnvironments(environments);
+            solutionRepository.save(solution);
+            updatedCount++;
+        }
+        
+        if (updatedCount > 0) {
+            System.out.println("Successfully associated environments with " + updatedCount + " solutions");
+        } else {
+            System.out.println("All solutions already have environment associations");
+        }
     }
 
     private SupportTicket createTicketWithId(String prefix, String typeChar, String sequence,

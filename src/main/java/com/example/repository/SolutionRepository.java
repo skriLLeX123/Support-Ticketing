@@ -1,5 +1,6 @@
 package com.example.repository;
 
+import com.example.entity.Account;
 import com.example.entity.Solution;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -25,4 +26,9 @@ public interface SolutionRepository extends JpaRepository<Solution, UUID> {
      * Find solutions by name containing (case-insensitive)
      */
     List<Solution> findByNameContainingIgnoreCase(String name);
+    
+    /**
+     * Find solutions by account
+     */
+    List<Solution> findByAccount(Account account);
 } 
