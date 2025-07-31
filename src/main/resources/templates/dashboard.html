@@ -506,11 +506,10 @@
         }
 
         /* Solution Tiles Styling */
-        .solutions-tiles-container {
+        .card-body {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            max-height: 60vh;
             overflow-y: auto;
         }
 
@@ -681,7 +680,6 @@
                                     <input type="text" class="form-control" id="solutionSearch" placeholder="Search by partner name...">
                             </div>
                             </div>
-                            <div class="solutions-tiles-container" id="solutionsList">
                                 <div th:each="solution, solutionStat : ${solutions}" th:if="${solutionStat.index < 10}" class="solution-tile">
                                     <div class="solution-tile-content">
                                         <div class="solution-tile-header">
@@ -735,7 +733,6 @@
                                                 <span class="text-muted">No environments available yet</span>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end mt-3">
@@ -881,7 +878,7 @@
             if (searchInput) {
                 searchInput.addEventListener('input', function(e) {
                     const searchTerm = e.target.value.toLowerCase();
-                    const solutionTiles = document.querySelectorAll('#solutionsList .solution-tile');
+                    const solutionTiles = document.querySelectorAll('.card-body .solution-tile');
                     
                     solutionTiles.forEach(tile => {
                         const partnerNameElement = tile.querySelector('.partner-label + span');
