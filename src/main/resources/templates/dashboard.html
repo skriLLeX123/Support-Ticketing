@@ -12,9 +12,25 @@
     
     <style>
         :root {
-            --primary-color: #3498db;
-            --secondary-color: #6c757d;
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
             --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-gray: #ecf0f1;
+            --border-color: #bdc3c7;
+            --text-muted: #7f8c8d;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.4;
+            font-size: 0.7875rem;
+            color: #0f1111;
+            margin: 0;
+            padding: 0;
         }
 
         .navbar-brand {
@@ -23,9 +39,9 @@
         }
 
         .card-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #e1e8ed;
-            padding: 0.75rem 1rem;
+            background-color: white;
+            border-bottom: none;
+            padding: 1rem 1rem;
             font-weight: 600;
             color: #000000;
             font-size: 0.7875rem;
@@ -53,11 +69,12 @@
             left: -280px;
             width: 280px;
             height: 100vh;
-            background-color: #2c3e50;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
             z-index: 1050;
             transition: left 0.3s ease;
             overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
         }
 
         .sidebar.show {
@@ -135,15 +152,23 @@
 
         /* Dashboard Widget Card - Full Height */
         .dashboard-widget-card {
-            height: 75vh;
+            height: 63.75vh;
             display: flex;
             flex-direction: column;
             margin-bottom: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
         }
         
         /* Ensure widgets are properly spaced */
         .col-md-6 {
-            padding: 0 0.5rem;
+            padding: 0 1.035rem;
+        }
+        
+        /* Center the widgets row vertically */
+        .row {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
         }
 
         .dashboard-widget-card .card-header {
@@ -189,19 +214,15 @@
         .ticket-item {
             transition: all 0.2s ease;
             cursor: pointer;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
+            border-bottom: 1px solid #e9ecef;
             margin-bottom: 0.75rem;
-            padding: 1rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            background-color: white;
+            padding: 1rem 0;
+            background-color: transparent;
         }
 
         .ticket-item:hover {
             background-color: #f8f9fa;
-            border-color: #3498db;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            transform: translateY(-1px);
+            border-bottom-color: #3498db;
         }
 
         .ticket-icon {
@@ -211,11 +232,13 @@
         }
 
         .partner-logo {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
+            width: 31px;
+            height: 31px;
+            border-radius: 5px;
             object-fit: cover;
         }
+
+
 
         .severity-badge {
             font-size: 0.7rem;
@@ -258,7 +281,7 @@
             line-height: 1.4;
             margin-top: 0.5rem;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -308,17 +331,34 @@
         /* Main Content Adjustment */
         .main-content {
             transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Responsive Design */
         @media (min-width: 992px) {
             .sidebar {
+                left: -280px;
+            }
+            
+            .sidebar.show {
                 left: 0;
             }
             
             .main-content {
-                margin-left: 280px;
+                margin-left: 0;
             }
+            
+                    .main-content.sidebar-open {
+            margin-left: 280px;
+        }
+        
+        .main-content .container-fluid {
+            max-width: 80%;
+            margin: 0 auto;
+        }
             
             .sidebar-overlay.show {
                 display: none;
@@ -446,7 +486,6 @@
             display: inline-flex;
             flex-wrap: wrap;
             gap: 4px;
-            margin-left: 4px;
         }
 
         .env-pill {
@@ -525,22 +564,29 @@
         }
 
         .solution-tile {
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1.28rem;
+            align-items: center;
             transition: all 0.2s ease;
             cursor: pointer;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
+            border-bottom: 1px solid #e9ecef;
             margin-bottom: 0.75rem;
-            padding: 1rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            background-color: white;
+            padding: 1rem 0;
+            background-color: transparent;
+        }
+
+
+
+        .solution-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
                 .solution-tile:hover {
             background-color: #f8f9fa;
-            border-color: #3498db;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            transform: translateY(-1px);
+            border-bottom-color: #3498db;
         }
         
         /* Ensure hidden solution tiles are actually hidden */
@@ -654,6 +700,18 @@
                         <span>Solutions</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/partner-dashboard" id="nav-partner-dashboard">
+                        <i class="fas fa-handshake me-2"></i>
+                        <span>Partner Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/hierarchical" id="nav-hierarchical">
+                        <i class="fas fa-sitemap me-2"></i>
+                        <span>Hierarchical View</span>
+                    </a>
+                </li>
             </ul>
             
             <!-- Admin Menu at Bottom -->
@@ -672,79 +730,40 @@
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <div class="main-content" id="mainContent">
-        <div class="container-fluid mt-4">
+        <div class="container-fluid">
             <!-- Dashboard Widgets -->
-            <div class="row" style="padding: 1% 2% 2% 2%;">
+            <div class="row">
                 <!-- Solutions Widget -->
                 <div class="col-md-6">
                     <div class="card dashboard-widget-card">
                         <div class="card-header">
                             <i class="fas fa-code"></i>Solutions
-                            </div>
+                        </div>
                         <div class="card-body">
-                            <!-- Search Box for Solutions -->
-                            <div class="mb-3">
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-search"></i>
-                                    </span>
-                                    <input type="text" class="form-control" id="solutionSearch" placeholder="Search by partner name...">
-                            </div>
-                            </div>
                             <div class="solution-list-container">
                                 <div th:each="solution, solutionStat : ${solutions}" th:if="${solutionStat.index < 10}" 
-                                     class="d-flex align-items-start solution-tile" 
+                                     class="solution-tile" 
                                      th:data-solution-id="${solution.solutionId}">
-                                    <div class="solution-icon me-3">
+                                    <div class="solution-icon">
                                         <img th:if="${solution.partnerLogoUrl != null}" th:src="${solution.partnerLogoUrl}" 
                                              class="partner-logo" th:alt="${solution.partnerName}" 
                                              th:onerror="'this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';'">
                                         <i th:if="${solution.partnerLogoUrl == null}" class="fas fa-lightbulb text-warning"></i>
                                     </div>
-                                    <div class="flex-grow-1">
+                                    <div class="solution-content">
                                         <div class="d-flex justify-content-between align-items-start">
-                                            <div>
+                                            <div class="flex-grow-1">
                                                 <div class="solution-title" th:text="${solution.name}">Solution Name</div>
                                                 <div class="solution-meta text-muted small">
                                                     <span class="partner-label">Partner:</span>
                                                     <span th:text="${solution.partnerName}">Partner Name</span>
-                                                    <span th:if="${solution.partnerStatus.toString() != 'ACTIVE'}" class="status-icon" th:classappend="${'status-' + solution.partnerStatus.toString().toLowerCase()}">
-                                                        <i th:if="${solution.partnerStatus.toString() == 'PENDING'}" class="fas fa-exclamation"></i>
-                                                        <i th:if="${solution.partnerStatus.toString() == 'INACTIVE'}" class="fas fa-exclamation"></i>
-                                                    </span>
                                                     <span class="separator">→</span>
                                                     <span class="account-label">Account:</span>
                                                     <span th:text="${solution.accountName}">Account Name</span>
-                                                    <span th:if="${solution.accountStatus.toString() != 'ACTIVE'}" class="status-icon" th:classappend="${'status-' + solution.accountStatus.toString().toLowerCase()}">
-                                                        <i th:if="${solution.accountStatus.toString() == 'PENDING'}" class="fas fa-exclamation"></i>
-                                                        <i th:if="${solution.accountStatus.toString() == 'INACTIVE'}" class="fas fa-exclamation"></i>
-                                                    </span>
                                                 </div>
                                             </div>
-                                            <span th:if="${solution.status.toString() != 'ACTIVE'}" class="status-icon" th:classappend="${'status-' + solution.status.toString().toLowerCase()}">
-                                                <i th:if="${solution.status.toString() == 'PENDING'}" class="fas fa-exclamation"></i>
-                                                <i th:if="${solution.status.toString() == 'INACTIVE'}" class="fas fa-exclamation"></i>
-                                            </span>
                                         </div>
-                                        <div class="solution-meta text-muted mt-2" th:if="${solution.environments != null and !solution.environments.isEmpty()}">
-                                            <span class="env-label">Env:</span>
-                                            <div class="env-pills-container">
-                                                <span th:each="env, envStat : ${solution.environments}" 
-                                                      class="env-pill" 
-                                                      th:classappend="${'env-' + env.code.toLowerCase()}"
-                                                      th:title="${env.name}">
-                                                    <span class="env-pill-text" th:text="${env.code}">ENV</span>
-                                                    <span th:if="${env.status.toString() != 'ACTIVE'}" class="env-status-icon" th:classappend="${'status-' + env.status.toString().toLowerCase()}">
-                                                        <i th:if="${env.status.toString() == 'PENDING'}" class="fas fa-exclamation"></i>
-                                                        <i th:if="${env.status.toString() == 'INACTIVE'}" class="fas fa-exclamation"></i>
-                                                    </span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="solution-meta text-muted mt-2" th:if="${solution.environments == null or solution.environments.isEmpty()}">
-                                            <span class="env-label">Env:</span>
-                                            <span class="text-muted">No environments available yet</span>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -784,9 +803,7 @@
                                             </div>
                                             <span class="type-badge" th:text="${ticket.ticketType}">Type</span>
                                         </div>
-                                        <div class="ticket-description mt-2" th:text="${ticket.description}" th:id="'desc-' + ${ticket.ticketId}">Ticket Description</div>
-                                        <a href="#" class="view-more-link" th:if="${ticket.description != null and #strings.length(ticket.description) > 100}" 
-                                           th:data-ticket-id="${ticket.ticketId}">View More</a>
+
                                     </div>
                                 </div>
                             </div>
@@ -808,19 +825,30 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
+            const mainContent = document.getElementById('mainContent');
             
-            // Always slide in when this function is called
             sidebar.classList.add('show');
             overlay.classList.add('show');
+            
+            // Add sidebar-open class to main content on desktop
+            if (window.innerWidth >= 992) {
+                mainContent.classList.add('sidebar-open');
+            }
         }
 
         // Close Sidebar Function
         function closeSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
+            const mainContent = document.getElementById('mainContent');
             
             sidebar.classList.remove('show');
             overlay.classList.remove('show');
+            
+            // Remove sidebar-open class from main content on desktop
+            if (window.innerWidth >= 992) {
+                mainContent.classList.remove('sidebar-open');
+            }
         }
 
 

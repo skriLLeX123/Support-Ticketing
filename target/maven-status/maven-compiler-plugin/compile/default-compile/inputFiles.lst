@@ -8,6 +8,7 @@
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/repository/SolutionRepository.java
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/repository/SupportGroupRepository.java
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/service/NestedDataService.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/dto/ApiDTO.java
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/entity/Solution.java
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/repository/SupportMemberRepository.java
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/entity/Environment.java
@@ -23,6 +24,7 @@
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/repository/PartnerRepository.java
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/repository/EnvironmentRepository.java
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/dto/NestedDataDTO.java
+/Users/bhushannavgire/IdeaProjects/src/main/java/com/example/dto/PartnerDTO.java
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/dto/SupportTicketDTO.java
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/entity/Status.java
 /Users/bhushannavgire/IdeaProjects/src/main/java/com/example/config/DataInitializer.java

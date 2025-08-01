@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hierarchical View - Partner Central</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #6c757d;
+            --accent-color: #3498db;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-bg: #f8f9fa;
+            --border-color: #e9ecef;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+        }
+
+        .search-box {
+            border-radius: 20px;
+            border: 1px solid #e9ecef;
+            padding: 8px 16px;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 1050;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar.show {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-title {
+            color: white;
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .sidebar-content {
+            padding: 1rem 0;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1.5rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: white;
+        }
+
+        .sidebar-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .main-content {
+            margin-left: 0;
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                margin-left: 280px;
+            }
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .hierarchical-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .partner-tile {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .partner-tile:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .partner-header {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .partner-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .partner-logo {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .partner-details h4 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .partner-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .expand-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .partner-tile.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .partner-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .partner-tile.expanded .partner-content {
+            max-height: 2000px;
+        }
+
+        .accounts-section {
+            padding: 1.5rem;
+            background: var(--light-bg);
+        }
+
+        .account-tile {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .account-tile:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .account-header {
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .account-info h5 {
+            margin: 0;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+
+        .account-meta {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+
+        .account-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .account-tile.expanded .account-content {
+            max-height: 1000px;
+        }
+
+        .solutions-grid {
+            padding: 1rem;
+            background: var(--light-bg);
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .solution-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .solution-card:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .solution-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .solution-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .solution-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .solution-meta {
+            font-size: 0.8rem;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+
+        .status-active {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-pending {
+            background-color: var(--warning-color);
+            color: #212529;
+        }
+
+        .status-inactive {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .search-section {
+            margin-bottom: 2rem;
+        }
+
+        .search-input {
+            border-radius: 25px;
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+            
+            .page-header {
+                padding: 1.5rem;
+            }
+            
+            .hierarchical-container {
+                padding: 1rem;
+            }
+            
+            .solutions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <!-- Hamburger Menu Button -->
+            <button class="btn btn-link text-light" id="sidebarToggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-sitemap me-1"></i>Partner Central
+            </a>
+            <div class="d-flex">
+                <input type="text" class="form-control search-box me-2" id="globalSearch" placeholder="Search partners...">
+                <button class="btn btn-outline-light" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Left Side Navigation -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close sidebar">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="sidebar-header">
+            <h5 class="sidebar-title">
+                <i class="fas fa-bars me-2"></i>Navigation
+            </h5>
+        </div>
+        <div class="sidebar-content">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard" id="nav-dashboard">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/hierarchical" id="nav-hierarchical">
+                        <i class="fas fa-sitemap me-2"></i>
+                        <span>Hierarchical View</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tickets" id="nav-ticketing">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        <span>Ticketing</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/solutions" id="nav-solutions">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <span>Solutions</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- Admin Menu at Bottom -->
+            <ul class="nav flex-column admin-menu">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin" id="nav-admin">
+                        <i class="fas fa-cog me-2"></i>
+                        <span>Admin</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-content" id="mainContent">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Hierarchical View</h1>
+            <p class="page-subtitle">Explore partners, accounts, and solutions in a structured view</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-number" th:text="${partnerCount}">12</div>
+                <div class="stat-label">Total Partners</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${accountCount}">48</div>
+                <div class="stat-label">Total Accounts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${solutionCount}">156</div>
+                <div class="stat-label">Total Solutions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${activeSolutions}">142</div>
+                <div class="stat-label">Active Solutions</div>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="text" class="form-control search-input" id="partnerSearch" placeholder="Search partners, accounts, or solutions...">
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-outline-primary" onclick="expandAll()">
+                        <i class="fas fa-expand-alt me-1"></i>Expand All
+                    </button>
+                    <button class="btn btn-outline-secondary ms-2" onclick="collapseAll()">
+                        <i class="fas fa-compress-alt me-1"></i>Collapse All
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hierarchical Container -->
+        <div class="hierarchical-container">
+            <!-- Partners List -->
+            <div th:each="partner : ${partners}" class="partner-tile" th:data-partner-id="${partner.partnerId}">
+                <div class="partner-header" onclick="togglePartner(this)">
+                    <div class="partner-info">
+                        <div class="partner-logo">
+                            <img th:if="${partner.logoUrl != null}" th:src="${partner.logoUrl}" 
+                                 th:alt="${partner.name}" class="w-100 h-100 rounded"
+                                 th:onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <i th:if="${partner.logoUrl == null}" class="fas fa-building"></i>
+                        </div>
+                        <div class="partner-details">
+                            <h4 th:text="${partner.name}">Partner Name</h4>
+                            <div class="partner-stats">
+                                <span th:text="${partner.accountCount} + ' Accounts'">5 Accounts</span>
+                                <span th:text="${partner.solutionCount} + ' Solutions'">12 Solutions</span>
+                                                                 <span th:if="${partner.status != null and partner.status.toString() != 'ACTIVE'}" 
+                                       class="status-badge" 
+                                       th:classappend="${'status-' + partner.status.toString().toLowerCase()}"
+                                       th:text="${partner.status}">PENDING</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="expand-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+                
+                <div class="partner-content">
+                    <div class="accounts-section">
+                        <h5 class="mb-3">Accounts</h5>
+                        <!-- Accounts List -->
+                        <div th:each="account : ${partner.accounts}" class="account-tile" th:data-account-id="${account.accountId}">
+                            <div class="account-header" onclick="toggleAccount(this)">
+                                <div class="account-info">
+                                    <h5 th:text="${account.name}">Account Name</h5>
+                                    <div class="account-meta">
+                                        <span th:text="${account.solutionCount} + ' Solutions'">3 Solutions</span>
+                                                                                 <span th:if="${account.status != null and account.status.toString() != 'ACTIVE'}" 
+                                               class="status-badge" 
+                                               th:classappend="${'status-' + account.status.toString().toLowerCase()}"
+                                               th:text="${account.status}">PENDING</span>
+                                    </div>
+                                </div>
+                                <div class="expand-icon">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="account-content">
+                                <div class="solutions-grid">
+                                    <!-- Solutions List -->
+                                    <div th:each="solution : ${account.solutions}" class="solution-card" th:data-solution-id="${solution.solutionId}">
+                                        <div class="solution-header">
+                                            <div class="solution-icon">
+                                                <i class="fas fa-lightbulb"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="solution-title" th:text="${solution.name}">Solution Name</h6>
+                                                <div class="solution-meta">
+                                                    <div th:text="${solution.environmentCount} + ' Environments'">2 Environments</div>
+                                                                                                         <span th:if="${solution.status != null and solution.status.toString() != 'ACTIVE'}" 
+                                                           class="status-badge" 
+                                                           th:classappend="${'status-' + solution.status.toString().toLowerCase()}"
+                                                           th:text="${solution.status}">PENDING</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script th:inline="javascript">
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.add('show');
+            overlay.classList.add('show');
+        }
+
+        // Close Sidebar Function
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+
+        // Toggle Partner Expansion
+        function togglePartner(header) {
+            const partnerTile = header.closest('.partner-tile');
+            partnerTile.classList.toggle('expanded');
+        }
+
+        // Toggle Account Expansion
+        function toggleAccount(header) {
+            const accountTile = header.closest('.account-tile');
+            accountTile.classList.toggle('expanded');
+        }
+
+        // Expand All Partners and Accounts
+        function expandAll() {
+            document.querySelectorAll('.partner-tile').forEach(tile => {
+                tile.classList.add('expanded');
+            });
+            document.querySelectorAll('.account-tile').forEach(tile => {
+                tile.classList.add('expanded');
+            });
+        }
+
+        // Collapse All Partners and Accounts
+        function collapseAll() {
+            document.querySelectorAll('.partner-tile').forEach(tile => {
+                tile.classList.remove('expanded');
+            });
+            document.querySelectorAll('.account-tile').forEach(tile => {
+                tile.classList.remove('expanded');
+            });
+        }
+
+        // Search Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('partnerSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    
+                    // Search through partners, accounts, and solutions
+                    document.querySelectorAll('.partner-tile').forEach(partnerTile => {
+                        const partnerText = partnerTile.textContent.toLowerCase();
+                        const hasMatch = partnerText.includes(searchTerm);
+                        
+                        if (hasMatch) {
+                            partnerTile.style.display = 'block';
+                            // Auto-expand matching partners
+                            if (searchTerm !== '') {
+                                partnerTile.classList.add('expanded');
+                            }
+                        } else {
+                            partnerTile.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            // Close sidebar when clicking on overlay (mobile)
+            const overlay = document.getElementById('sidebarOverlay');
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    closeSidebar();
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

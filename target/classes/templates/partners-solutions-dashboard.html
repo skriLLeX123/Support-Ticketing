@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partners & Solutions Dashboard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-gray: #ecf0f1;
+            --border-color: #bdc3c7;
+            --text-muted: #7f8c8d;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.4;
+            font-size: 0.7875rem;
+            color: #0f1111;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: none;
+            padding: 1rem 1rem;
+            font-weight: 600;
+            color: #000000;
+            font-size: 0.7875rem;
+        }
+
+        .card-header i {
+            color: var(--accent-color);
+            margin-right: 0.75rem;
+        }
+        
+        .search-box {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+        }
+        
+        .search-box::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            z-index: 1050;
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar.show {
+            left: 0;
+        }
+
+        .sidebar-close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-title {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .sidebar-content {
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 80px);
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1rem;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .admin-menu {
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+        }
+
+        .type-badge {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            background-color: #e9ecef;
+            color: #495057;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Sidebar Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* Main Content Adjustment */
+        .main-content {
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive Design */
+        @media (min-width: 992px) {
+            .sidebar {
+                left: -280px;
+            }
+            
+            .sidebar.show {
+                left: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .main-content.sidebar-open {
+                margin-left: 280px;
+            }
+            
+            .main-content .container-fluid {
+                max-width: 80%;
+                margin: 0 auto;
+            }
+            
+            .sidebar-overlay.show {
+                display: none;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar {
+                left: -280px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar.show {
+                left: 0;
+            }
+
+            /* Mobile responsive fixes */
+            .dashboard-widget-card {
+                height: auto !important;
+                min-height: 400px;
+            }
+
+            .partner-list-container, .solution-list-container, .api-list-container {
+                max-height: 300px;
+                min-height: 200px;
+            }
+
+            .col-md-4 {
+                margin-bottom: 1rem;
+            }
+
+            .card-body {
+                padding: 0.75rem;
+            }
+
+            .partner-item, .solution-item, .api-item {
+                padding: 0.75rem 0;
+                padding-left: 0.75rem;
+            }
+
+            .partner-logo {
+                width: 24px;
+                height: 24px;
+            }
+
+            .column-header h6 {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .main-content .container-fluid {
+                max-width: 100%;
+                margin: 0;
+                padding: 0 0.5rem;
+            }
+
+            .dashboard-widget-card {
+                height: auto !important;
+                min-height: 350px;
+            }
+
+            .partner-list-container, .solution-list-container, .api-list-container {
+                max-height: 250px;
+                min-height: 150px;
+            }
+        }
+
+        /* iPad Pro specific fixes */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .dashboard-widget-card {
+                height: 35vh !important;
+            }
+
+            .partner-list-container, .solution-list-container, .api-list-container {
+                height: calc(100% - 60px);
+                max-height: none;
+                min-height: 200px;
+            }
+
+            .main-content .container-fluid {
+                max-width: 95%;
+                margin: 0 auto;
+            }
+
+            .card-body {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Dashboard Widget Styles */
+        .stat-item {
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .ticket-item, .solution-item {
+            transition: background-color 0.2s ease;
+            border-radius: 4px;
+        }
+
+        .ticket-item:hover, .solution-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .ticket-title, .solution-title {
+            font-weight: 600;
+            font-size: 0.7875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .ticket-meta, .solution-meta {
+            font-size: 0.75rem;
+        }
+
+        /* Dashboard Widget Card - Full Height */
+        .dashboard-widget-card {
+            height: 55vh;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Ensure widgets are properly spaced */
+        .col-md-6 {
+            padding: 0 1.035rem;
+        }
+        
+        /* Center the widgets row vertically */
+        .row {
+            display: flex;
+            align-items: flex-start;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .dashboard-widget-card .card-header {
+            flex-shrink: 0;
+        }
+
+        .dashboard-widget-card .card-body {
+            flex: 1;
+            padding: 1rem;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        /* Partner List Styles */
+        .partner-list-container {
+            padding: 0;
+        }
+
+        /* Solution List Styles */
+        .solution-list-container {
+            padding: 0;
+        }
+
+        .partner-item {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 0.75rem;
+            padding: 1rem 0;
+            padding-left: 1rem;
+            background-color: transparent;
+        }
+
+        .partner-item:hover {
+            background-color: #f8f9fa;
+            border-bottom-color: #3498db;
+        }
+
+        .solution-item {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 0.75rem;
+            padding: 1rem 0;
+            padding-left: 1rem;
+            background-color: transparent;
+        }
+
+        .solution-item:hover {
+            background-color: #f8f9fa;
+            border-bottom-color: #3498db;
+        }
+
+        .partner-icon, .solution-icon {
+            width: 24px;
+            text-align: center;
+            margin-top: 0.25rem;
+        }
+
+        .partner-logo {
+            width: 31px;
+            height: 31px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .partner-title, .solution-title {
+            font-weight: 600;
+            font-size: 0.7875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .partner-meta, .solution-meta {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+
+        /* Remove blue border from search inputs */
+        #partnerSearch:focus, #solutionSearch:focus {
+            border-color: #ced4da;
+            box-shadow: none;
+        }
+
+        /* Column separator styling */
+        .border-end {
+            border-right: none !important;
+            padding-right: 1rem !important;
+        }
+
+        .col-md-6:last-child {
+            padding-left: 1rem !important;
+        }
+
+        .col-md-4 {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        /* Column headers */
+        .column-header h6 {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .column-header i {
+            color: var(--accent-color);
+        }
+
+        /* Ensure vertical alignment of content */
+        .card-body .row {
+            align-items: stretch;
+            height: 100%;
+        }
+
+        .col-md-4 {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .partner-list-container, .solution-list-container, .api-list-container {
+            height: calc(100% - 80px);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar for column containers */
+        .partner-list-container::-webkit-scrollbar,
+        .solution-list-container::-webkit-scrollbar,
+        .api-list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .partner-list-container::-webkit-scrollbar-track,
+        .solution-list-container::-webkit-scrollbar-track,
+        .api-list-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .partner-list-container::-webkit-scrollbar-thumb,
+        .solution-list-container::-webkit-scrollbar-thumb,
+        .api-list-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .partner-list-container::-webkit-scrollbar-thumb:hover,
+        .solution-list-container::-webkit-scrollbar-thumb:hover,
+        .api-list-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .api-item {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 0.75rem;
+            padding: 1rem 0;
+            padding-left: 1rem;
+            background-color: transparent;
+        }
+
+        .api-item:hover {
+            background-color: #f8f9fa;
+            border-bottom-color: #3498db;
+        }
+
+        .api-icon {
+            width: 24px;
+            text-align: center;
+            margin-top: 0.25rem;
+        }
+
+        .api-title {
+            font-weight: 600;
+            font-size: 0.7875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .api-meta {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <!-- Hamburger Menu Button -->
+            <button class="btn btn-link text-light" id="sidebarToggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-headset me-1"></i>Support Ticket System
+            </a>
+            <div class="d-flex">
+                <input type="text" class="form-control search-box me-2" id="globalSearch" placeholder="Search...">
+                <button class="btn btn-outline-light" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Left Side Navigation -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close-btn" onclick="closeSidebar()" title="Close sidebar">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="sidebar-header">
+            <h5 class="sidebar-title">
+                <i class="fas fa-bars me-2"></i>Navigation
+            </h5>
+        </div>
+        <div class="sidebar-content">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard" id="nav-dashboard">
+                        <i class="fas fa-tachometer-alt me-2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tickets" id="nav-ticketing">
+                        <i class="fas fa-ticket-alt me-2"></i>
+                        <span>Ticketing</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/solutions" id="nav-solutions">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <span>Solutions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/partner-dashboard" id="nav-partner-dashboard">
+                        <i class="fas fa-handshake me-2"></i>
+                        <span>Partner Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/hierarchical" id="nav-hierarchical">
+                        <i class="fas fa-sitemap me-2"></i>
+                        <span>Hierarchical View</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="/partners-solutions-dashboard" id="nav-partners-solutions">
+                        <i class="fas fa-chart-line me-2"></i>
+                        <span>Partners & Solutions</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <!-- Admin Menu at Bottom -->
+            <ul class="nav flex-column admin-menu">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin" id="nav-admin">
+                        <i class="fas fa-cog me-2"></i>
+                        <span>Admin</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-content" id="mainContent">
+        <div class="container-fluid">
+            <!-- Dashboard Widgets -->
+            <div class="row">
+                <!-- Combined Partners & Solutions Widget -->
+                <div class="col-12">
+                    <div class="card dashboard-widget-card">
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Partners Column -->
+                                <div class="col-md-4">
+                                    <div class="column-header mb-3">
+                                        <h6 class="mb-0"><i class="fas fa-handshake me-2"></i>Partners</h6>
+                                    </div>
+                                    <div class="partner-list-container">
+                                        <div th:each="partner, partnerStat : ${partners}" th:if="${partnerStat.index < 10}" 
+                                             class="d-flex align-items-start partner-item" 
+                                             th:data-partner-id="${partner.partnerId}">
+                                            <div class="partner-icon me-3">
+                                                <img th:if="${partner.logoUrl != null}" th:src="${partner.logoUrl}" 
+                                                     class="partner-logo" th:alt="${partner.name}" 
+                                                     th:onerror="'this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';'">
+                                                <i th:if="${partner.logoUrl == null}" class="fas fa-building text-warning"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <div class="partner-title" th:text="${partner.name}">Partner Name</div>
+                                                        <div class="partner-meta text-muted small" th:text="${partner.description}">
+                                                            Partner description goes here
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end mt-3">
+                                            <a href="/partners" class="btn btn-sm btn-outline-primary">View All Partners</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Solutions Column -->
+                                <div class="col-md-4">
+                                    <div class="column-header mb-3">
+                                        <h6 class="mb-0"><i class="fas fa-code me-2"></i>Solutions</h6>
+                                    </div>
+                                    <div class="solution-list-container">
+                                        <div th:each="solution, solutionStat : ${solutions}" th:if="${solutionStat.index < 10}" 
+                                             class="d-flex align-items-start solution-item" 
+                                             th:data-solution-id="${solution.solutionId}">
+                                            <div class="solution-icon me-3">
+                                                <img th:if="${solution.partnerLogoUrl != null}" th:src="${solution.partnerLogoUrl}" 
+                                                     class="partner-logo" th:alt="${solution.partnerName}" 
+                                                     th:onerror="'this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';'">
+                                                <i th:if="${solution.partnerLogoUrl == null}" class="fas fa-lightbulb text-warning"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <div class="solution-title" th:text="${solution.name}">Solution Name</div>
+                                                        <div class="solution-meta text-muted small">
+                                                            <span class="partner-label">Partner:</span>
+                                                            <span th:text="${solution.partnerName}">Partner Name</span>
+                                                            <span class="separator">→</span>
+                                                            <span class="account-label">Account:</span>
+                                                            <span th:text="${solution.accountName}">Account Name</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end mt-3">
+                                            <a href="/solutions" class="btn btn-sm btn-outline-primary">View All Solutions</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- APIs Column -->
+                                <div class="col-md-4">
+                                    <div class="column-header mb-3">
+                                        <h6 class="mb-0"><i class="fas fa-plug me-2"></i>APIs</h6>
+                                    </div>
+                                    <div class="api-list-container">
+                                        <div th:each="api, apiStat : ${apis}" th:if="${apiStat.index < 10}" 
+                                             class="d-flex align-items-start api-item" 
+                                             th:data-api-id="${api.apiId}">
+                                            <div class="api-icon me-3">
+                                                <i class="fas fa-cogs text-success"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <div class="api-title" th:text="${api.name}">API Name</div>
+                                                        <div class="api-meta text-muted small" th:text="${api.description}">
+                                                            API description goes here
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end mt-3">
+                                            <a href="/apis" class="btn btn-sm btn-outline-primary">View All APIs</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Sidebar Toggle Function
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const mainContent = document.getElementById('mainContent');
+            
+            sidebar.classList.add('show');
+            overlay.classList.add('show');
+            
+            // Add sidebar-open class to main content on desktop
+            if (window.innerWidth >= 992) {
+                mainContent.classList.add('sidebar-open');
+            }
+        }
+
+        // Close Sidebar Function
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const mainContent = document.getElementById('mainContent');
+            
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+            
+            // Remove sidebar-open class from main content on desktop
+            if (window.innerWidth >= 992) {
+                mainContent.classList.remove('sidebar-open');
+            }
+        }
+
+        // Close sidebar when clicking overlay
+        document.getElementById('sidebarOverlay').addEventListener('click', closeSidebar);
+
+        // Close sidebar on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeSidebar();
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 992) {
+                document.getElementById('sidebarOverlay').classList.remove('show');
+            }
+        });
+
+        // Partner item click handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const partnerItems = document.querySelectorAll('.partner-item');
+            partnerItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const partnerId = this.getAttribute('data-partner-id');
+                    if (partnerId) {
+                        window.location.href = `/partner/${partnerId}`;
+                    }
+                });
+            });
+        });
+
+        // Solution item click handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const solutionItems = document.querySelectorAll('.solution-item');
+            solutionItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const solutionId = this.getAttribute('data-solution-id');
+                    if (solutionId) {
+                        window.location.href = `/solution/${solutionId}`;
+                    }
+                });
+            });
+        });
+
+        // API item click handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiItems = document.querySelectorAll('.api-item');
+            apiItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const apiId = this.getAttribute('data-api-id');
+                    if (apiId) {
+                        window.location.href = `/api/${apiId}`;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
