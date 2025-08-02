@@ -164,6 +164,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 2rem 0;
         }
 
         /* Responsive Design */
@@ -186,6 +187,11 @@
             
             .main-content .container-fluid {
                 max-width: 80%;
+                margin: 0 auto;
+            }
+
+            .main-content.sidebar-open .container-fluid {
+                max-width: 96%;
                 margin: 0 auto;
             }
             
@@ -216,10 +222,13 @@
             .partner-list-container, .solution-list-container, .api-list-container {
                 max-height: 300px;
                 min-height: 200px;
+                height: auto;
             }
 
             .col-md-4 {
                 margin-bottom: 1rem;
+                height: auto;
+                display: block;
             }
 
             .card-body {
@@ -227,13 +236,13 @@
             }
 
             .partner-item, .solution-item, .api-item {
-                padding: 0.75rem 0;
-                padding-left: 0.75rem;
+                padding: 0.75rem;
             }
 
             .partner-logo {
                 width: 24px;
                 height: 24px;
+                border-radius: 50%;
             }
 
             .column-header h6 {
@@ -256,6 +265,12 @@
             .partner-list-container, .solution-list-container, .api-list-container {
                 max-height: 250px;
                 min-height: 150px;
+                height: auto;
+            }
+
+            .col-md-4 {
+                height: auto;
+                display: block;
             }
         }
 
@@ -266,9 +281,16 @@
             }
 
             .partner-list-container, .solution-list-container, .api-list-container {
-                height: calc(100% - 60px);
+                height: 280px;
                 max-height: none;
                 min-height: 200px;
+                flex: 1;
+            }
+
+            .col-md-4 {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
             }
 
             .main-content .container-fluid {
@@ -321,7 +343,7 @@
 
         /* Dashboard Widget Card - Full Height */
         .dashboard-widget-card {
-            height: 55vh;
+            height: 60vh;
             display: flex;
             flex-direction: column;
             margin-bottom: 0;
@@ -336,8 +358,9 @@
         /* Center the widgets row vertically */
         .row {
             display: flex;
-            align-items: flex-start;
-            height: 100%;
+            align-items: center;
+            justify-content: center;
+            height: 70%;
             overflow: hidden;
         }
 
@@ -367,8 +390,7 @@
             cursor: pointer;
             border-bottom: 1px solid #e9ecef;
             margin-bottom: 0.75rem;
-            padding: 1rem 0;
-            padding-left: 1rem;
+            padding: 1rem;
             background-color: transparent;
         }
 
@@ -382,8 +404,7 @@
             cursor: pointer;
             border-bottom: 1px solid #e9ecef;
             margin-bottom: 0.75rem;
-            padding: 1rem 0;
-            padding-left: 1rem;
+            padding: 1rem;
             background-color: transparent;
         }
 
@@ -401,7 +422,7 @@
         .partner-logo {
             width: 31px;
             height: 31px;
-            border-radius: 5px;
+            border-radius: 50%;
             object-fit: cover;
         }
 
@@ -435,6 +456,9 @@
         .col-md-4 {
             padding-left: 1rem !important;
             padding-right: 1rem !important;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Column headers */
@@ -461,36 +485,47 @@
         }
 
         .partner-list-container, .solution-list-container, .api-list-container {
-            height: calc(100% - 80px);
+            height: 14rem; /* Height for exactly 4 rows: 4 * (2rem padding + 0.75rem margin + 0.75rem content) */
             overflow-y: auto;
             overflow-x: hidden;
+            flex: 1;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+            -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
         }
 
-        /* Custom scrollbar for column containers */
+        /* Hide scrollbars for all browsers */
         .partner-list-container::-webkit-scrollbar,
         .solution-list-container::-webkit-scrollbar,
         .api-list-container::-webkit-scrollbar {
-            width: 6px;
+            display: none; /* Hide scrollbar for Chrome/Safari */
         }
 
-        .partner-list-container::-webkit-scrollbar-track,
-        .solution-list-container::-webkit-scrollbar-track,
-        .api-list-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
+        /* Column Separator Styles */
+        .col-md-4:not(:last-child) {
+            border-right: 2px dashed #e9ecef;
+            position: relative;
+            padding-right: 1rem;
         }
 
-        .partner-list-container::-webkit-scrollbar-thumb,
-        .solution-list-container::-webkit-scrollbar-thumb,
-        .api-list-container::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 3px;
+        .col-md-4:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0.5rem;
+            width: 2px;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                #e9ecef 0px,
+                #e9ecef 8px,
+                transparent 8px,
+                transparent 16px
+            );
+            border-radius: 1px;
         }
 
-        .partner-list-container::-webkit-scrollbar-thumb:hover,
-        .solution-list-container::-webkit-scrollbar-thumb:hover,
-        .api-list-container::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
+        .col-md-4:last-child {
+            padding-left: 1rem;
         }
 
         .api-item {
@@ -498,8 +533,7 @@
             cursor: pointer;
             border-bottom: 1px solid #e9ecef;
             margin-bottom: 0.75rem;
-            padding: 1rem 0;
-            padding-left: 1rem;
+            padding: 1rem;
             background-color: transparent;
         }
 
@@ -524,6 +558,123 @@
             font-size: 0.75rem;
             color: #6c757d;
         }
+
+        /* Search Styles */
+        .search-container {
+            position: relative;
+        }
+
+        .search-container .input-group {
+            width: 100%;
+            margin: 0;
+        }
+
+        .search-container .form-control:focus {
+            border-color: #dee2e6;
+            box-shadow: none;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            width: 100%;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .search-results .card {
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background-color: white;
+            margin-top: 5px;
+        }
+
+        .search-result-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid #f8f9fa;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            background-color: white;
+        }
+
+        .search-result-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-type {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+
+        .search-result-title {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.25rem;
+        }
+
+        .search-result-meta {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+
+        .search-result-icon {
+            width: 20px;
+            text-align: center;
+            margin-right: 0.5rem;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0.1rem 0.2rem;
+            border-radius: 2px;
+        }
+
+        /* Debug styles to ensure search results are visible */
+        #searchResults {
+            border: 2px solid red !important;
+            background-color: white !important;
+        }
+        
+        #searchResultsContent {
+            border: 1px solid blue !important;
+            background-color: white !important;
+        }
+
+        /* Smooth filtering transitions */
+        .partner-item,
+        .solution-item,
+        .api-item {
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Ensure hidden items don't take up space */
+        .partner-item[style*="display: none"],
+        .solution-item[style*="display: none"],
+        .api-item[style*="display: none"] {
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+        }
+
+        /* View All Button Styles - Reduced size by 20% and added margin-right */
+        .btn.btn-sm.btn-outline-primary {
+            font-size: 0.8em; /* Reduced by 20% from default btn-sm */
+            padding: 0.4rem 0.8rem; /* Reduced by 20% from default btn-sm padding */
+            margin-right: 1rem; /* Added margin-right */
+        }
+
+
     </style>
 </head>
 <body>
@@ -614,6 +765,35 @@
 
     <div class="main-content" id="mainContent">
         <div class="container-fluid">
+            <!-- Search Bar -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="search-container">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" class="form-control" id="globalSearchInput" 
+                                   placeholder="Search by Partner, Solution, or API name..." 
+                                   autocomplete="off">
+                            <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <button class="btn btn-outline-primary" type="button" id="testSearchBtn">
+                                <i class="fas fa-search"></i> Test
+                            </button>
+                        </div>
+                        <div class="search-results mt-2" id="searchResults" style="display: none;">
+                            <div class="card">
+                                <div class="card-body p-2">
+                                    <div id="searchResultsContent"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Dashboard Widgets -->
             <div class="row">
                 <!-- Combined Partners & Solutions Widget -->
@@ -673,11 +853,14 @@
                                                     <div class="flex-grow-1">
                                                         <div class="solution-title" th:text="${solution.name}">Solution Name</div>
                                                         <div class="solution-meta text-muted small">
-                                                            <span class="partner-label">Partner:</span>
-                                                            <span th:text="${solution.partnerName}">Partner Name</span>
-                                                            <span class="separator">→</span>
-                                                            <span class="account-label">Account:</span>
-                                                            <span th:text="${solution.accountName}">Account Name</span>
+                                                            <span th:text="${solution.description}">Solution description goes here</span>
+                                                            <div class="mt-1">
+                                                                <span class="partner-label">Partner:</span>
+                                                                <span th:text="${solution.partnerName}">Partner Name</span>
+                                                                <span class="separator">→</span>
+                                                                <span class="account-label">Account:</span>
+                                                                <span th:text="${solution.accountName}">Account Name</span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -695,9 +878,15 @@
                                         <h6 class="mb-0"><i class="fas fa-plug me-2"></i>APIs</h6>
                                     </div>
                                     <div class="api-list-container">
+                                        <div th:if="${#lists.isEmpty(apis)}" class="text-muted text-center py-3">
+                                            <i class="fas fa-info-circle me-2"></i>No APIs available
+                                        </div>
                                         <div th:each="api, apiStat : ${apis}" th:if="${apiStat.index < 10}" 
                                              class="d-flex align-items-start api-item" 
-                                             th:data-api-id="${api.apiId}">
+                                             th:data-api-id="${api.apiId}"
+                                             th:data-api-name="${api.name}"
+                                             th:data-partner-name="${api.partnerName}"
+                                             th:data-solution-name="${api.solutionName}">
                                             <div class="api-icon me-3">
                                                 <i class="fas fa-cogs text-success"></i>
                                             </div>
@@ -705,8 +894,8 @@
                                                 <div class="d-flex justify-content-between align-items-start">
                                                     <div class="flex-grow-1">
                                                         <div class="api-title" th:text="${api.name}">API Name</div>
-                                                        <div class="api-meta text-muted small" th:text="${api.description}">
-                                                            API description goes here
+                                                        <div class="api-meta text-muted small">
+                                                            <span th:text="${api.description}">API description goes here</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -812,6 +1001,436 @@
                         window.location.href = `/api/${apiId}`;
                     }
                 });
+            });
+
+            // Global Search Functionality
+            const searchInput = document.getElementById('globalSearchInput');
+            const searchResults = document.getElementById('searchResults');
+            const searchResultsContent = document.getElementById('searchResultsContent');
+            const clearSearchBtn = document.getElementById('clearSearchBtn');
+            const testSearchBtn = document.getElementById('testSearchBtn');
+
+            // Get actual data from the page
+            function getSearchData() {
+                const partners = [];
+                const solutions = [];
+                const apis = [];
+
+                // Extract partner data from DOM
+                const partnerItems = document.querySelectorAll('.partner-item');
+                console.log('Found partner items:', partnerItems.length);
+                partnerItems.forEach((item, index) => {
+                    const partnerId = item.getAttribute('data-partner-id');
+                    const nameElement = item.querySelector('.partner-title');
+                    const descriptionElement = item.querySelector('.partner-meta');
+                    
+                    console.log(`Partner ${index}:`, { 
+                        partnerId, 
+                        nameElement: nameElement?.textContent, 
+                        descriptionElement: descriptionElement?.textContent,
+                        nameElementExists: !!nameElement,
+                        descriptionElementExists: !!descriptionElement
+                    });
+                    
+                    if (nameElement && descriptionElement) {
+                        const partnerData = {
+                            id: partnerId,
+                            name: nameElement.textContent.trim(),
+                            description: descriptionElement.textContent.trim(),
+                            type: 'partner'
+                        };
+                        console.log(`Adding partner:`, partnerData);
+                        partners.push(partnerData);
+                    } else {
+                        console.log(`Skipping partner ${index} - missing elements`);
+                    }
+                });
+
+                // Extract solution data from DOM
+                const solutionItems = document.querySelectorAll('.solution-item');
+                console.log('Found solution items:', solutionItems.length);
+                solutionItems.forEach((item, index) => {
+                    const solutionId = item.getAttribute('data-solution-id');
+                    const nameElement = item.querySelector('.solution-title');
+                    const partnerElement = item.querySelector('.solution-meta .partner-label + span'); // Partner name after partner-label
+                    const accountElement = item.querySelector('.solution-meta .account-label + span'); // Account name after account-label
+                    
+                    console.log(`Solution ${index}:`, { solutionId, nameElement: nameElement?.textContent, partnerElement: partnerElement?.textContent, accountElement: accountElement?.textContent });
+                    
+                    if (nameElement && partnerElement && accountElement) {
+                        solutions.push({
+                            id: solutionId,
+                            name: nameElement.textContent.trim(),
+                            partner: partnerElement.textContent.trim(),
+                            account: accountElement.textContent.trim(),
+                            type: 'solution'
+                        });
+                    }
+                });
+
+                // Extract API data from DOM
+                const apiItems = document.querySelectorAll('.api-item');
+                console.log('Found API items:', apiItems.length);
+                apiItems.forEach((item, index) => {
+                    const apiId = item.getAttribute('data-api-id');
+                    const nameElement = item.querySelector('.api-title');
+                    const descriptionElement = item.querySelector('.api-meta');
+                    
+                    console.log(`API ${index}:`, { apiId, nameElement: nameElement?.textContent, descriptionElement: descriptionElement?.textContent });
+                    
+                    if (nameElement && descriptionElement) {
+                        apis.push({
+                            id: apiId,
+                            name: nameElement.textContent.trim(),
+                            description: descriptionElement.textContent.trim(),
+                            type: 'api'
+                        });
+                    }
+                });
+
+                // If no data found, add fallback sample data for testing
+                if (partners.length === 0 && solutions.length === 0 && apis.length === 0) {
+                    console.log('No data found in DOM, using fallback data');
+                    partners.push(
+                        { id: '1', name: 'Amazon', description: 'E-commerce and cloud services partner', type: 'partner' },
+                        { id: '2', name: 'DoorDash', description: 'Food delivery and logistics partner', type: 'partner' },
+                        { id: '3', name: 'Uber', description: 'Transportation and delivery partner', type: 'partner' }
+                    );
+                    solutions.push(
+                        { id: '1', name: 'Database', partner: 'Amazon', account: 'Amazon-Prod', type: 'solution' },
+                        { id: '2', name: 'Upload', partner: 'Amazon', account: 'Amazon-Dev', type: 'solution' },
+                        { id: '3', name: 'API', partner: 'DoorDash', account: 'DoorDash-Main', type: 'solution' }
+                    );
+                    apis.push(
+                        { id: '1', name: 'User Management API', description: 'Handles user authentication and profile management', type: 'api' },
+                        { id: '2', name: 'Payment Gateway API', description: 'Processes payments and manages billing', type: 'api' },
+                        { id: '3', name: 'Notification Service API', description: 'Sends email, SMS, and push notifications', type: 'api' }
+                    );
+                }
+
+                console.log('Extracted search data:', { partners, solutions, apis });
+                return { partners, solutions, apis };
+            }
+
+            function highlightText(text, searchTerm) {
+                if (!searchTerm) return text;
+                const regex = new RegExp(`(${searchTerm})`, 'gi');
+                return text.replace(regex, '<span class="highlight">$1</span>');
+            }
+
+            function performSearch(searchTerm) {
+                if (!searchTerm || searchTerm.length < 2) {
+                    // Show all items when search is cleared
+                    showAllItems();
+                    searchResults.style.display = 'none';
+                    return;
+                }
+
+                console.log('Filtering items for:', searchTerm);
+                const searchLower = searchTerm.toLowerCase();
+
+                // Hide all "View All" buttons when filtering
+                const viewAllButtons = document.querySelectorAll('a[href="/partners"], a[href="/solutions"], a[href="/apis"]');
+                viewAllButtons.forEach(btn => {
+                    if (btn.textContent.includes('View All')) {
+                        btn.style.display = 'none';
+                    }
+                });
+
+                // Filter partner items - completely remove non-matching ones
+                const partnerItems = document.querySelectorAll('.partner-item');
+                partnerItems.forEach(item => {
+                    const nameElement = item.querySelector('.partner-title');
+                    const descriptionElement = item.querySelector('.partner-meta');
+                    
+                    if (nameElement && descriptionElement) {
+                        const name = nameElement.textContent.toLowerCase();
+                        const description = descriptionElement.textContent.toLowerCase();
+                        const isMatch = name.includes(searchLower) || description.includes(searchLower);
+                        
+                        // Completely remove non-matching items from layout
+                        if (isMatch) {
+                            item.style.display = 'flex';
+                            item.style.visibility = 'visible';
+                            item.style.opacity = '1';
+                            item.style.height = 'auto';
+                            item.style.margin = '';
+                            item.style.padding = '';
+                        } else {
+                            item.style.display = 'none';
+                            item.style.visibility = 'hidden';
+                            item.style.opacity = '0';
+                            item.style.height = '0';
+                            item.style.margin = '0';
+                            item.style.padding = '0';
+                            item.style.overflow = 'hidden';
+                        }
+                        
+                        console.log(`Partner "${nameElement.textContent}": ${isMatch ? 'SHOW' : 'HIDE'}`);
+                    }
+                });
+
+                // Filter solution items - completely remove non-matching ones
+                const solutionItems = document.querySelectorAll('.solution-item');
+                const matchingSolutions = new Set(); // Track matching solutions for API filtering
+                
+                solutionItems.forEach(item => {
+                    const nameElement = item.querySelector('.solution-title');
+                    const partnerElement = item.querySelector('.solution-meta .partner-label + span');
+                    
+                    if (nameElement && partnerElement) {
+                        const name = nameElement.textContent.toLowerCase();
+                        const partner = partnerElement.textContent.toLowerCase();
+                        const isMatch = name.includes(searchLower) || partner.includes(searchLower);
+                        
+                        // Completely remove non-matching items from layout
+                        if (isMatch) {
+                            item.style.display = 'flex';
+                            item.style.visibility = 'visible';
+                            item.style.opacity = '1';
+                            item.style.height = 'auto';
+                            item.style.margin = '';
+                            item.style.padding = '';
+                            // Track this matching solution for API filtering
+                            matchingSolutions.add(name);
+                        } else {
+                            item.style.display = 'none';
+                            item.style.visibility = 'hidden';
+                            item.style.opacity = '0';
+                            item.style.height = '0';
+                            item.style.margin = '0';
+                            item.style.padding = '0';
+                            item.style.overflow = 'hidden';
+                        }
+                        
+                        console.log(`Solution "${nameElement.textContent}": ${isMatch ? 'SHOW' : 'HIDE'}`);
+                    }
+                });
+
+                // Filter API items - completely remove non-matching ones
+                const apiItems = document.querySelectorAll('.api-item');
+                apiItems.forEach(item => {
+                    const nameElement = item.querySelector('.api-title');
+                    const descriptionElement = item.querySelector('.api-meta');
+                    
+                    if (nameElement && descriptionElement) {
+                        const name = nameElement.textContent.toLowerCase();
+                        const description = descriptionElement.textContent.toLowerCase();
+                        
+                        // Get partner and solution names from data attributes
+                        const partnerName = item.getAttribute('data-partner-name')?.toLowerCase() || '';
+                        const solutionName = item.getAttribute('data-solution-name')?.toLowerCase() || '';
+                        
+                        // Check if API matches search term directly OR if it's associated with a matching partner/solution
+                        const directMatch = name.includes(searchLower) || description.includes(searchLower);
+                        const partnerMatch = partnerName.includes(searchLower);
+                        const solutionMatch = solutionName && matchingSolutions.has(solutionName);
+                        const isMatch = directMatch || partnerMatch || solutionMatch;
+                        
+                        // Completely remove non-matching items from layout
+                        if (isMatch) {
+                            item.style.display = 'flex';
+                            item.style.visibility = 'visible';
+                            item.style.opacity = '1';
+                            item.style.height = 'auto';
+                            item.style.margin = '';
+                            item.style.padding = '';
+                        } else {
+                            item.style.display = 'none';
+                            item.style.visibility = 'hidden';
+                            item.style.opacity = '0';
+                            item.style.height = '0';
+                            item.style.margin = '0';
+                            item.style.padding = '0';
+                            item.style.overflow = 'hidden';
+                        }
+                        
+                        console.log(`API "${nameElement.textContent}": ${isMatch ? 'SHOW' : 'HIDE'} (direct: ${directMatch}, solution: ${solutionMatch})`);
+                    }
+                });
+
+                // Hide search results dropdown since we're filtering the actual items
+                searchResults.style.display = 'none';
+            }
+
+            function showAllItems() {
+                console.log('Showing all items');
+                
+                // Show all "View All" buttons
+                const viewAllButtons = document.querySelectorAll('a[href="/partners"], a[href="/solutions"], a[href="/apis"]');
+                viewAllButtons.forEach(btn => {
+                    if (btn.textContent.includes('View All')) {
+                        btn.style.display = 'block';
+                    }
+                });
+                
+                // Show all partner items
+                const partnerItems = document.querySelectorAll('.partner-item');
+                partnerItems.forEach(item => {
+                    item.style.display = 'flex';
+                    item.style.visibility = 'visible';
+                    item.style.opacity = '1';
+                    item.style.height = 'auto';
+                    item.style.margin = '';
+                    item.style.padding = '';
+                    item.style.overflow = '';
+                    item.style.backgroundColor = '';
+                    item.style.borderLeft = '';
+                });
+
+                // Show all solution items
+                const solutionItems = document.querySelectorAll('.solution-item');
+                solutionItems.forEach(item => {
+                    item.style.display = 'flex';
+                    item.style.visibility = 'visible';
+                    item.style.opacity = '1';
+                    item.style.height = 'auto';
+                    item.style.margin = '';
+                    item.style.padding = '';
+                    item.style.overflow = '';
+                    item.style.backgroundColor = '';
+                    item.style.borderLeft = '';
+                });
+
+                // Show all API items
+                const apiItems = document.querySelectorAll('.api-item');
+                apiItems.forEach(item => {
+                    item.style.display = 'flex';
+                    item.style.visibility = 'visible';
+                    item.style.opacity = '1';
+                    item.style.height = 'auto';
+                    item.style.margin = '';
+                    item.style.padding = '';
+                    item.style.overflow = '';
+                    item.style.backgroundColor = '';
+                    item.style.borderLeft = '';
+                });
+            }
+
+            function displaySearchResults(results) {
+                console.log('Displaying search results:', results.length, 'items');
+                console.log('Search results element:', searchResults);
+                console.log('Search results content element:', searchResultsContent);
+                
+                if (results.length === 0) {
+                    searchResultsContent.innerHTML = '<div class="p-3 text-muted">No results found</div>';
+                    searchResults.style.display = 'block';
+                    console.log('No results found - showing message');
+                    return;
+                }
+
+                const resultsHtml = results.map(result => {
+                    let icon, typeLabel, metaInfo;
+                    
+                    switch(result.type) {
+                        case 'partner':
+                            icon = 'fas fa-handshake text-primary';
+                            typeLabel = 'Partner';
+                            metaInfo = result.displayDescription;
+                            break;
+                        case 'solution':
+                            icon = 'fas fa-code text-success';
+                            typeLabel = 'Solution';
+                            metaInfo = `Partner: ${result.displayPartner} → Account: ${result.account}`;
+                            break;
+                        case 'api':
+                            icon = 'fas fa-plug text-warning';
+                            typeLabel = 'API';
+                            metaInfo = result.displayDescription;
+                            break;
+                    }
+
+                    return `
+                        <div class="search-result-item" data-type="${result.type}" data-id="${result.id}">
+                            <div class="d-flex align-items-start">
+                                <i class="${icon} search-result-icon"></i>
+                                <div class="flex-grow-1">
+                                    <div class="search-result-type">${typeLabel}</div>
+                                    <div class="search-result-title">${result.displayName}</div>
+                                    <div class="search-result-meta">${metaInfo}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                searchResultsContent.innerHTML = resultsHtml;
+                searchResults.style.display = 'block';
+                console.log('Search results displayed, HTML length:', resultsHtml.length);
+                console.log('Search results visibility:', searchResults.style.display);
+
+                // Add click handlers to search results
+                const resultItems = searchResultsContent.querySelectorAll('.search-result-item');
+                resultItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        const type = this.getAttribute('data-type');
+                        const id = this.getAttribute('data-id');
+                        
+                        // Navigate based on type
+                        switch(type) {
+                            case 'partner':
+                                window.location.href = `/partner/${id}`;
+                                break;
+                            case 'solution':
+                                window.location.href = `/solution/${id}`;
+                                break;
+                            case 'api':
+                                window.location.href = `/api/${id}`;
+                                break;
+                        }
+                    });
+                });
+            }
+
+            // Search input event listener
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.trim();
+                performSearch(searchTerm);
+            });
+
+            // Clear search button
+            clearSearchBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                showAllItems();
+                searchResults.style.display = 'none';
+                searchInput.focus();
+            });
+
+            // Test search button
+            testSearchBtn.addEventListener('click', function() {
+                console.log('Test search button clicked');
+                
+                // Test DOM element detection
+                console.log('DOM Elements found:');
+                console.log('- Partner items:', document.querySelectorAll('.partner-item').length);
+                console.log('- Solution items:', document.querySelectorAll('.solution-item').length);
+                console.log('- API items:', document.querySelectorAll('.api-item').length);
+                
+                // Test filtering for "Amazon"
+                console.log('=== Testing filter for "Amazon" ===');
+                performSearch('Amazon');
+                
+                // Clear after 3 seconds
+                setTimeout(() => {
+                    console.log('=== Clearing filter ===');
+                    searchInput.value = '';
+                    showAllItems();
+                }, 3000);
+            });
+
+            // Hide search results when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!searchInput.contains(event.target) && !searchResults.contains(event.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
+
+            // Handle escape key
+            searchInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    searchResults.style.display = 'none';
+                    this.blur();
+                }
             });
         });
     </script>

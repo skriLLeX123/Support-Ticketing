@@ -152,11 +152,15 @@
 
         /* Dashboard Widget Card - Full Height */
         .dashboard-widget-card {
-            height: 63.75vh;
+            height: 70vh;
             display: flex;
             flex-direction: column;
-            margin-bottom: 1rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin: 2rem 1rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 0 15px 50px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            background-color: white;
+            position: relative;
+            z-index: 1;
         }
         
         /* Ensure widgets are properly spaced */
@@ -169,6 +173,7 @@
             min-height: 100vh;
             display: flex;
             align-items: center;
+            padding: 2rem 0;
         }
 
         .dashboard-widget-card .card-header {
@@ -204,17 +209,62 @@
         /* Ticket List Styles */
         .ticket-list-container {
             padding: 0;
+            max-height: 14rem; /* Height for exactly 4 rows: 4 * (2rem padding + 0.75rem margin + 0.75rem content) */
+            overflow-y: auto;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+            -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+        }
+
+        .ticket-list-container::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for Chrome/Safari */
         }
 
         /* Solution List Styles */
         .solution-list-container {
             padding: 0;
+            max-height: 14rem; /* Height for exactly 4 rows: 4 * (2rem padding + 0.75rem margin + 0.75rem content) */
+            overflow-y: auto;
+            scrollbar-width: none; /* Hide scrollbar for Firefox */
+            -ms-overflow-style: none; /* Hide scrollbar for IE/Edge */
+        }
+
+        .solution-list-container::-webkit-scrollbar {
+            display: none; /* Hide scrollbar for Chrome/Safari */
+        }
+
+        /* Column Separator Styles */
+        .col-md-6:first-child {
+            border-right: 2px dashed #e9ecef;
+            position: relative;
+            padding-right: 1rem;
+        }
+
+        .col-md-6:first-child::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0.5rem;
+            width: 2px;
+            height: 100%;
+            background: repeating-linear-gradient(
+                to bottom,
+                #e9ecef 0px,
+                #e9ecef 8px,
+                transparent 8px,
+                transparent 16px
+            );
+            border-radius: 1px;
+        }
+
+        .col-md-6:last-child {
+            padding-left: 1rem;
         }
 
         .ticket-item {
             transition: all 0.2s ease;
             cursor: pointer;
             border-bottom: 1px solid #e9ecef;
+            border-bottom-width: 0.8px; /* Reduced by 20% from 1px */
             margin-bottom: 0.75rem;
             padding: 1rem 0;
             background-color: transparent;
@@ -335,6 +385,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: visible;
+            padding: 2rem 0;
         }
 
         /* Responsive Design */
@@ -358,6 +410,9 @@
         .main-content .container-fluid {
             max-width: 80%;
             margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
             
             .sidebar-overlay.show {
@@ -445,7 +500,7 @@
             margin: 0 0.5rem;
             color: #495057;
         }
-
+        
         /* Remove blue border from solution search input */
         #solutionSearch:focus {
             outline: none;
@@ -571,6 +626,7 @@
             transition: all 0.2s ease;
             cursor: pointer;
             border-bottom: 1px solid #e9ecef;
+            border-bottom-width: 0.8px; /* Reduced by 20% from 1px */
             margin-bottom: 0.75rem;
             padding: 1rem 0;
             background-color: transparent;
@@ -647,6 +703,15 @@
         .dashboard-widget-card .solution-item h6 {
             font-size: 0.9em; /* 10% reduction from default h6 size */
         }
+
+        /* View All Button Styles - Reduced size by 20% and added margin-right */
+        .btn.btn-sm.btn-outline-primary {
+            font-size: 0.8em; /* Reduced by 20% from default btn-sm */
+            padding: 0.4rem 0.8rem; /* Reduced by 20% from default btn-sm padding */
+            margin-right: 1rem; /* Added margin-right */
+        }
+
+
     </style>
 </head>
 <body>
@@ -738,7 +803,7 @@
                     <div class="card dashboard-widget-card">
                         <div class="card-header">
                             <i class="fas fa-code"></i>Solutions
-                        </div>
+                            </div>
                         <div class="card-body">
                             <div class="solution-list-container">
                                 <div th:each="solution, solutionStat : ${solutions}" th:if="${solutionStat.index < 10}" 
@@ -749,38 +814,41 @@
                                              class="partner-logo" th:alt="${solution.partnerName}" 
                                              th:onerror="'this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';'">
                                         <i th:if="${solution.partnerLogoUrl == null}" class="fas fa-lightbulb text-warning"></i>
-                                    </div>
+                            </div>
                                     <div class="solution-content">
                                         <div class="d-flex justify-content-between align-items-start">
                                             <div class="flex-grow-1">
                                                 <div class="solution-title" th:text="${solution.name}">Solution Name</div>
                                                 <div class="solution-meta text-muted small">
-                                                    <span class="partner-label">Partner:</span>
-                                                    <span th:text="${solution.partnerName}">Partner Name</span>
-                                                    <span class="separator">→</span>
-                                                    <span class="account-label">Account:</span>
-                                                    <span th:text="${solution.accountName}">Account Name</span>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                    <span th:text="${solution.description}">Solution description goes here</span>
+                                                    <div class="mt-1">
+                                                        <span class="partner-label">Partner:</span>
+                                                        <span th:text="${solution.partnerName}">Partner Name</span>
+                                                        <span class="separator">→</span>
+                                                        <span class="account-label">Account:</span>
+                                                        <span th:text="${solution.accountName}">Account Name</span>
+                                                    </div>
+                            </div>
+                            </div>
+                        </div>
 
-                                    </div>
-                                </div>
+                            </div>
+                            </div>
                             </div>
                             <div class="d-flex justify-content-end mt-3">
                                 <a href="/solutions" class="btn btn-sm btn-outline-primary">View All</a>
-                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
                 <!-- Tickets Widget -->
                 <div class="col-md-6">
                     <div class="card dashboard-widget-card">
-                        <div class="card-header">
+                                <div class="card-header">
                             <i class="fas fa-align-left"></i>Recent Tickets
-                        </div>
-                        <div class="card-body">
+                                </div>
+                                <div class="card-body">
                             <div class="ticket-list-container">
                                 <div th:each="ticket, ticketStat : ${tickets}" th:if="${ticketStat.index < 10}" 
                                      class="d-flex align-items-start ticket-item" 
@@ -790,7 +858,7 @@
                                              class="partner-logo" 
                                              th:onerror="'this.style.display=\'none\''" 
                                              th:alt="${ticket.partnerName}">
-                                    </div>
+                                            </div>
                                     <div class="flex-grow-1">
                                         <div class="d-flex justify-content-between align-items-start">
                                             <div>
@@ -799,19 +867,19 @@
                                                     <span th:text="${ticket.formattedTicketId != null ? ticket.formattedTicketId : ticket.ticketId}">Ticket ID</span> · 
                                                     <span th:text="${ticket.partnerName}">Partner</span> · 
                                                     <span class="severity-badge" th:text="${ticket.severity}" th:classappend="${'severity-' + ticket.severity.toString().toLowerCase()}">Severity</span>
-                                                </div>
+                                            </div>
                                             </div>
                                             <span class="type-badge" th:text="${ticket.ticketType}">Type</span>
                                         </div>
-
-                                    </div>
-                                </div>
-                            </div>
+                                        
+                                            </div>
+                                            </div>
+                                        </div>
                             <div class="d-flex justify-content-end mt-3">
                                 <a href="/tickets" class="btn btn-sm btn-outline-primary">View All</a>
-                            </div>
-                        </div>
-                    </div>
+                                    </div>
+                                        </div>
+                                        </div>
                 </div>
             </div>
         </div>
@@ -866,8 +934,8 @@
             
                     const ticketId = this.getAttribute('data-ticket-id');
                     if (ticketId) {
-                        window.location.href = `/ticket/${ticketId}`;
-                    }
+                window.location.href = `/ticket/${ticketId}`;
+            }
                 });
             });
 
@@ -937,9 +1005,9 @@
                     
                     if (solutionTiles.length === 0) {
                         console.error('No solution tiles found!');
-                        return;
-                    }
-                    
+                return;
+            }
+
                     solutionTiles.forEach((tile, index) => {
                         // Get all text content from the tile for searching
                         const tileText = tile.textContent.toLowerCase();
