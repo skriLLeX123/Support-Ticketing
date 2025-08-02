@@ -2,6 +2,8 @@ package com.example.entity;
 
 import jakarta.persistence.*;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "environments")
@@ -24,11 +26,8 @@ public class Environment {
     @Column(nullable = false)
     private boolean active = true;
     
-    @ManyToMany(mappedBy = "environments")
-    private List<Solution> solutions;
-    
     @OneToMany(mappedBy = "environment", cascade = CascadeType.ALL)
-    private List<Api> apis;
+    private Set<SolutionEnvironment> solutionEnvironments = new HashSet<>();
     
     public enum EnvironmentType {
         PRODUCTION("Production", "prod", "#e74c3c"),
@@ -109,19 +108,11 @@ public class Environment {
         this.active = active;
     }
     
-    public List<Solution> getSolutions() {
-        return solutions;
+    public Set<SolutionEnvironment> getSolutionEnvironments() {
+        return solutionEnvironments;
     }
     
-    public void setSolutions(List<Solution> solutions) {
-        this.solutions = solutions;
-    }
-    
-    public List<Api> getApis() {
-        return apis;
-    }
-    
-    public void setApis(List<Api> apis) {
-        this.apis = apis;
+    public void setSolutionEnvironments(Set<SolutionEnvironment> solutionEnvironments) {
+        this.solutionEnvironments = solutionEnvironments;
     }
 }

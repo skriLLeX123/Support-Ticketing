@@ -96,8 +96,8 @@ public class HierarchicalViewService {
                 null // Solution doesn't have status
         );
 
-        // Count environments for this solution from the relationship
-        solutionDTO.setEnvironmentCount(solution.getEnvironments().size());
+        // Count environments for this solution from the new relationship
+        solutionDTO.setEnvironmentCount(solution.getSolutionEnvironments().size());
 
         return solutionDTO;
     }

@@ -1,15 +1,21 @@
 package com.example.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "apis")
 public class Api {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
     
     @Column(nullable = false)
     private String name;
@@ -33,13 +39,8 @@ public class Api {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "environment_id", nullable = false)
-    private Environment environment;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "solution_id", nullable = false)
-    private Solution solution;
+    @OneToMany(mappedBy = "api", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<EnvApi> envApis = new HashSet<>();
     
     public enum HttpMethod {
         GET("GET", "#2e7d32", "#e8f5e8"),
@@ -72,25 +73,25 @@ public class Api {
     }
     
     // Constructors
-    public Api() {}
-    
-    public Api(String name, String endpoint, HttpMethod method, String description, Environment environment, Solution solution) {
-        this.name = name;
-        this.endpoint = endpoint;
-        this.method = method;
-        this.description = description;
-        this.environment = environment;
-        this.solution = solution;
+    public Api() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
     
+    public Api(String name, String endpoint, HttpMethod method, String description) {
+        this();
+        this.name = name;
+        this.endpoint = endpoint;
+        this.method = method;
+        this.description = description;
+    }
+    
     // Getters and Setters
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
     
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
     
@@ -100,6 +101,7 @@ public class Api {
     
     public void setName(String name) {
         this.name = name;
+        this.updatedAt = LocalDateTime.now();
     }
     
     public String getEndpoint() {
@@ -108,6 +110,7 @@ public class Api {
     
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+        this.updatedAt = LocalDateTime.now();
     }
     
     public HttpMethod getMethod() {
@@ -116,6 +119,7 @@ public class Api {
     
     public void setMethod(HttpMethod method) {
         this.method = method;
+        this.updatedAt = LocalDateTime.now();
     }
     
     public String getDescription() {
@@ -124,6 +128,7 @@ public class Api {
     
     public void setDescription(String description) {
         this.description = description;
+        this.updatedAt = LocalDateTime.now();
     }
     
     public boolean isActive() {
@@ -132,6 +137,7 @@ public class Api {
     
     public void setActive(boolean active) {
         this.active = active;
+        this.updatedAt = LocalDateTime.now();
     }
     
     public LocalDateTime getCreatedAt() {
@@ -150,24 +156,30 @@ public class Api {
         this.updatedAt = updatedAt;
     }
     
-    public Environment getEnvironment() {
-        return environment;
+    public Set<EnvApi> getEnvApis() {
+        return envApis;
     }
     
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
-    
-    public Solution getSolution() {
-        return solution;
-    }
-    
-    public void setSolution(Solution solution) {
-        this.solution = solution;
+    public void setEnvApis(Set<EnvApi> envApis) {
+        this.envApis = envApis;
     }
     
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+    
+    @Override
+    public String toString() {
+        return "Api{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", endpoint='" + endpoint + '\'' +
+                ", method=" + method +
+                ", description='" + description + '\'' +
+                ", active=" + active +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import com.example.entity.Environment;
 
 @Service
 public class SupportTicketService {
@@ -317,8 +318,9 @@ public class SupportTicketService {
         }
         
         // Convert environments to EnvironmentInfo objects
-        List<SolutionDTO.EnvironmentInfo> environmentInfos = solution.getEnvironments().stream()
-                .map(env -> {
+        List<SolutionDTO.EnvironmentInfo> environmentInfos = solution.getSolutionEnvironments().stream()
+                .map(solutionEnv -> {
+                    Environment env = solutionEnv.getEnvironment();
                     // Assign environment status based on hash for variety
                     Status envStatus = Status.ACTIVE;
                     int envHash = env.getId().hashCode();

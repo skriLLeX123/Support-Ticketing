@@ -124,7 +124,7 @@ public class WebController {
     }
 
     /**
-     * Force environment associations
+     * Debug endpoint to force environment associations
      */
     @GetMapping("/debug/force-associations")
     public String forceAssociations(Model model) {
@@ -136,45 +136,16 @@ public class WebController {
             com.example.entity.Environment sandbox = environmentRepository.findByType(com.example.entity.Environment.EnvironmentType.SANDBOX).orElse(null);
             
             if (prod == null || dev == null || uat == null || sandbox == null) {
-                model.addAttribute("error", "Environments not found");
+                model.addAttribute("error", "One or more environments not found");
                 return "debug-environments";
             }
             
-            // Get all solutions
             List<com.example.entity.Solution> solutions = solutionRepository.findAll();
             int updatedCount = 0;
             
-            for (com.example.entity.Solution solution : solutions) {
-                // Skip if solution already has environments
-                if (solution.getEnvironments() != null && !solution.getEnvironments().isEmpty()) {
-                    continue;
-                }
-                
-                String solutionName = solution.getName().toLowerCase();
-                java.util.HashSet<com.example.entity.Environment> environments = new java.util.HashSet<>();
-                
-                // Associate environments based on solution characteristics
-                if (solutionName.contains("database")) {
-                    environments.add(prod);
-                    environments.add(dev);
-                    environments.add(uat);
-                    environments.add(sandbox);
-                } else if (solutionName.contains("api")) {
-                    environments.add(prod);
-                    environments.add(dev);
-                } else {
-                    // Default: all solutions get at least dev and uat
-                    environments.add(dev);
-                    environments.add(uat);
-                }
-                
-                // Set the environments for the solution
-                solution.setEnvironments(environments);
-                solutionRepository.save(solution);
-                updatedCount++;
-            }
-            
-            model.addAttribute("message", "Successfully associated environments with " + updatedCount + " solutions");
+            // Note: This debug endpoint is no longer needed since we have proper data initialization
+            // The new structure uses SolutionEnvironment entities instead of direct associations
+            model.addAttribute("message", "Debug endpoint disabled - use proper data initialization instead");
             return "debug-environments";
             
         } catch (Exception e) {

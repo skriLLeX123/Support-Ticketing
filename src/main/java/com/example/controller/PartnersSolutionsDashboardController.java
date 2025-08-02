@@ -5,8 +5,14 @@ import com.example.dto.SolutionDashboardDTO;
 import com.example.dto.ApiDashboardDTO;
 import com.example.entity.Partner;
 import com.example.entity.Solution;
+import com.example.entity.Api;
+import com.example.entity.SolutionEnvironment;
+import com.example.entity.EnvApi;
 import com.example.repository.PartnerRepository;
 import com.example.repository.SolutionRepository;
+import com.example.repository.ApiRepository;
+import com.example.repository.SolutionEnvironmentRepository;
+import com.example.repository.EnvApiRepository;
 import com.example.service.SupportTicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,6 +36,15 @@ public class PartnersSolutionsDashboardController {
     @Autowired
     private SupportTicketService supportTicketService;
 
+    @Autowired
+    private ApiRepository apiRepository;
+
+    @Autowired
+    private SolutionEnvironmentRepository solutionEnvironmentRepository;
+
+    @Autowired
+    private EnvApiRepository envApiRepository;
+
     @GetMapping("/partners-solutions-dashboard")
     public String partnersSolutionsDashboard(Model model) {
         // Get all partners and convert to DTOs
@@ -44,8 +59,8 @@ public class PartnersSolutionsDashboardController {
                 .map(this::convertSolutionToDTO)
                 .collect(Collectors.toList());
 
-        // Create sample API data
-        List<ApiDashboardDTO> apis = createSampleApiData();
+        // Get real API data from database using new structure
+        List<ApiDashboardDTO> apis = getApiDataFromDatabase();
 
         // Calculate statistics
         long partnerCount = partners.size();
@@ -91,48 +106,39 @@ public class PartnersSolutionsDashboardController {
         );
     }
 
-    private List<ApiDashboardDTO> createSampleApiData() {
+    private List<ApiDashboardDTO> getApiDataFromDatabase() {
+        List<Api> allApis = apiRepository.findAll();
         List<ApiDashboardDTO> apis = new ArrayList<>();
         
-        apis.add(new ApiDashboardDTO(
-            UUID.randomUUID(),
-            "User Management API",
-            "Handles user authentication, registration, and profile management",
-            "v2.1.0",
-            "ACTIVE"
-        ));
-        
-        apis.add(new ApiDashboardDTO(
-            UUID.randomUUID(),
-            "Payment Gateway API",
-            "Processes payments and manages billing information",
-            "v1.8.3",
-            "ACTIVE"
-        ));
-        
-        apis.add(new ApiDashboardDTO(
-            UUID.randomUUID(),
-            "Notification Service API",
-            "Sends email, SMS, and push notifications",
-            "v3.0.1",
-            "ACTIVE"
-        ));
-        
-        apis.add(new ApiDashboardDTO(
-            UUID.randomUUID(),
-            "Analytics API",
-            "Provides data analytics and reporting capabilities",
-            "v2.5.2",
-            "ACTIVE"
-        ));
-        
-        apis.add(new ApiDashboardDTO(
-            UUID.randomUUID(),
-            "File Storage API",
-            "Manages file uploads, downloads, and storage",
-            "v1.9.0",
-            "ACTIVE"
-        ));
+        for (Api api : allApis) {
+            String solutionName = null;
+            String partnerName = null;
+            
+            // Get solution and partner information through EnvApi relationship
+            List<EnvApi> envApis = envApiRepository.findByApiId(api.getId());
+            if (!envApis.isEmpty()) {
+                EnvApi envApi = envApis.get(0); // Get first association
+                SolutionEnvironment solutionEnv = envApi.getSolutionEnvironment();
+                if (solutionEnv != null && solutionEnv.getSolution() != null) {
+                    Solution solution = solutionEnv.getSolution();
+                    solutionName = solution.getName();
+                    
+                    if (solution.getAccount() != null && 
+                        solution.getAccount().getPartner() != null) {
+                        partnerName = solution.getAccount().getPartner().getName();
+                    }
+                }
+            }
+            
+            apis.add(new ApiDashboardDTO(
+                api.getId(),
+                api.getName(),
+                api.getDescription(),
+                solutionName, // Add solution name for association
+                partnerName,  // Add partner name for association
+                api.isActive() ? "ACTIVE" : "INACTIVE"
+            ));
+        }
         
         return apis;
     }

@@ -8,12 +8,23 @@ public class ApiDashboardDTO {
     private String description;
     private String version;
     private String status;
+    private String solutionName;
+    private String partnerName;
 
     public ApiDashboardDTO(UUID apiId, String name, String description, String version, String status) {
         this.apiId = apiId;
         this.name = name;
         this.description = description;
         this.version = version;
+        this.status = status;
+    }
+
+    public ApiDashboardDTO(UUID apiId, String name, String description, String solutionName, String partnerName, String status) {
+        this.apiId = apiId;
+        this.name = name;
+        this.description = description;
+        this.solutionName = solutionName;
+        this.partnerName = partnerName;
         this.status = status;
     }
 
@@ -56,5 +67,21 @@ public class ApiDashboardDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getSolutionName() {
+        return solutionName;
+    }
+
+    public void setSolutionName(String solutionName) {
+        this.solutionName = solutionName;
+    }
+
+    public String getPartnerName() {
+        return partnerName;
+    }
+
+    public void setPartnerName(String partnerName) {
+        this.partnerName = partnerName;
     }
 } 

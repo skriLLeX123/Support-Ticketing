@@ -41,16 +41,8 @@ public class Solution {
     @JsonBackReference
     private Set<SupportTicket> tickets = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "solution_environments",
-        joinColumns = @JoinColumn(name = "solution_id"),
-        inverseJoinColumns = @JoinColumn(name = "environment_id")
-    )
-    private Set<Environment> environments = new HashSet<>();
-
     @OneToMany(mappedBy = "solution", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Api> apis = new HashSet<>();
+    private Set<SolutionEnvironment> solutionEnvironments = new HashSet<>();
 
     public Solution() {
         this.createdAt = LocalDateTime.now();
@@ -71,6 +63,15 @@ public class Solution {
 
     public void setSolutionId(UUID solutionId) {
         this.solutionId = solutionId;
+    }
+
+    // Alias for Spring Data JPA compatibility
+    public UUID getId() {
+        return solutionId;
+    }
+
+    public void setId(UUID id) {
+        this.solutionId = id;
     }
 
     public String getName() {
@@ -124,20 +125,31 @@ public class Solution {
         this.tickets = tickets;
     }
 
+    public Set<SolutionEnvironment> getSolutionEnvironments() {
+        return solutionEnvironments;
+    }
+
+    public void setSolutionEnvironments(Set<SolutionEnvironment> solutionEnvironments) {
+        this.solutionEnvironments = solutionEnvironments;
+    }
+
+    // Helper methods to access environments
     public Set<Environment> getEnvironments() {
+        Set<Environment> environments = new HashSet<>();
+        for (SolutionEnvironment se : solutionEnvironments) {
+            environments.add(se.getEnvironment());
+        }
         return environments;
     }
 
     public void setEnvironments(Set<Environment> environments) {
-        this.environments = environments;
-    }
-
-    public Set<Api> getApis() {
-        return apis;
-    }
-
-    public void setApis(Set<Api> apis) {
-        this.apis = apis;
+        this.solutionEnvironments.clear();
+        for (Environment environment : environments) {
+            SolutionEnvironment se = new SolutionEnvironment();
+            se.setSolution(this);
+            se.setEnvironment(environment);
+            this.solutionEnvironments.add(se);
+        }
     }
 
     @Override

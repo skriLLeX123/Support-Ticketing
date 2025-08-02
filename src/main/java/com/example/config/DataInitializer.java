@@ -47,7 +47,7 @@ public class DataInitializer implements CommandLineRunner {
         
         // Always associate environments with solutions (even for existing data)
         System.out.println("Calling associateEnvironmentsWithSolutions...");
-        associateEnvironmentsWithSolutions();
+        // associateEnvironmentsWithSolutions(); // Disabled as per edit hint
         System.out.println("DataInitializer completed.");
     }
                                
@@ -55,37 +55,36 @@ public class DataInitializer implements CommandLineRunner {
         // Create sample partners
         Partner amazonPartner = new Partner("Amazon", "E-commerce and cloud services partner");
         amazonPartner.setLogoUrl("https://logo.clearbit.com/amazon.com");
-        amazonPartner.setMemberCount(1250);
         amazonPartner.setApiCount(45);
+        amazonPartner.setMemberCount(12);
         partnerRepository.save(amazonPartner);
 
         Partner doordashPartner = new Partner("DoorDash", "Food delivery and logistics partner");
         doordashPartner.setLogoUrl("https://logo.clearbit.com/doordash.com");
-        doordashPartner.setMemberCount(850);
-        doordashPartner.setApiCount(32);
+        doordashPartner.setApiCount(23);
+        doordashPartner.setMemberCount(8);
         partnerRepository.save(doordashPartner);
 
-        Partner uberPartner = new Partner("Uber", "Transportation and delivery partner");
+        Partner uberPartner = new Partner("Uber", "Ride-sharing and mobility partner");
         uberPartner.setLogoUrl("https://logo.clearbit.com/uber.com");
-        uberPartner.setMemberCount(2100);
-        uberPartner.setApiCount(67);
+        uberPartner.setApiCount(34);
+        uberPartner.setMemberCount(15);
         partnerRepository.save(uberPartner);
 
-        Partner disneyPartner = new Partner("Disney", "Entertainment and media streaming partner");
+        Partner disneyPartner = new Partner("Disney", "Entertainment and media partner");
         disneyPartner.setLogoUrl("https://logo.clearbit.com/disney.com");
-        disneyPartner.setMemberCount(1800);
-        disneyPartner.setApiCount(28);
+        disneyPartner.setApiCount(67);
+        disneyPartner.setMemberCount(20);
         partnerRepository.save(disneyPartner);
 
-        Partner huluPartner = new Partner("Hulu", "Streaming entertainment platform partner");
+        Partner huluPartner = new Partner("Hulu", "Streaming and content partner");
         huluPartner.setLogoUrl("https://logo.clearbit.com/hulu.com");
-        huluPartner.setMemberCount(950);
-        huluPartner.setApiCount(22);
+        huluPartner.setApiCount(28);
+        huluPartner.setMemberCount(10);
         partnerRepository.save(huluPartner);
 
-        Partner netflixPartner = new Partner("Netflix", "Global streaming entertainment partner");
+        Partner netflixPartner = new Partner("Netflix", "Streaming and entertainment partner");
         netflixPartner.setLogoUrl("https://logo.clearbit.com/netflix.com");
-        netflixPartner.setMemberCount(3200);
         netflixPartner.setApiCount(89);
         partnerRepository.save(netflixPartner);
 
@@ -127,35 +126,36 @@ public class DataInitializer implements CommandLineRunner {
         Solution solution5 = new Solution("Performance", "Improve system performance through comprehensive monitoring and optimization", amazonProdAccount);
 
         // Disney solutions
-        Solution solution6 = new Solution("Streaming", "Optimize video streaming performance and reduce buffering issues", disneyStreamAccount);
-        Solution solution7 = new Solution("Content Delivery", "Improve content delivery network and reduce latency for global users", disneyContentAccount);
-        Solution solution8 = new Solution("DRM Protection", "Enhance digital rights management and content security measures", disneyStreamAccount);
+        Solution disneyStreaming = new Solution("Streaming", "Disney+ streaming platform with DRM protection and content delivery", disneyStreamAccount);
+        Solution disneyContent = new Solution("Content Management", "Disney content management system with metadata and analytics", disneyContentAccount);
+        Solution disneyDRM = new Solution("DRM Protection", "Digital rights management for Disney content with encryption", disneyContentAccount);
 
         // Hulu solutions
-        Solution solution9 = new Solution("Video Processing", "Optimize video encoding and transcoding for multiple quality levels", huluStreamAccount);
-        Solution solution10 = new Solution("Analytics", "Improve user behavior analytics and content recommendation accuracy", huluContentAccount);
-        Solution solution11 = new Solution("Ad Integration", "Enhance advertisement integration and targeting capabilities", huluStreamAccount);
+        Solution huluStreaming = new Solution("Video Processing", "Hulu video processing pipeline with transcoding and optimization", huluStreamAccount);
+        Solution huluAnalytics = new Solution("Analytics", "Hulu analytics platform with viewer insights and recommendations", huluContentAccount);
+        Solution huluCDN = new Solution("Hulu Global CDN", "Hulu content delivery network with global edge locations", huluStreamAccount);
 
         // Netflix solutions
-        Solution solution12 = new Solution("Recommendation Engine", "Optimize machine learning algorithms for personalized content recommendations", netflixAIAccount);
-        Solution solution13 = new Solution("Global CDN", "Improve content delivery network performance across multiple regions", netflixStreamAccount);
-        Solution solution14 = new Solution("A/B Testing", "Enhance A/B testing framework for content optimization and user experience", netflixAIAccount);
-        Solution solution15 = new Solution("Subtitle Processing", "Improve subtitle and closed caption processing for multiple languages", netflixStreamAccount);
+        Solution netflixAI = new Solution("Recommendation Engine", "Netflix AI-powered recommendation system with machine learning", netflixAIAccount);
+        Solution netflixStreaming = new Solution("Streaming Platform", "Netflix streaming platform with adaptive bitrate and quality", netflixStreamAccount);
+        Solution netflixCDN = new Solution("Netflix Global CDN", "Netflix content delivery network with global optimization", netflixStreamAccount);
 
         List<Solution> solutions = Arrays.asList(
             solution1, solution2, solution3, solution4, solution5,
-            solution6, solution7, solution8, solution9, solution10,
-            solution11, solution12, solution13, solution14, solution15
+            disneyStreaming, disneyContent, disneyDRM,
+            huluStreaming, huluAnalytics, huluCDN,
+            netflixStreaming, netflixAI, netflixCDN
         );
         solutions.forEach(solutionRepository::save);
 
-        // Associate environments with solutions
-        associateEnvironmentsWithSolutions();
+        // Note: Environment associations are now handled by NestedDataInitializer
+        // which uses the proper SolutionEnvironment and EnvApi structure
+        System.out.println("DataInitializer: Skipping old environment associations - use NestedDataInitializer instead");
 
         // Create sample support groups
         SupportGroup group1 = new SupportGroup("Technical Support", "Handles technical issues and system problems");
         SupportGroup group2 = new SupportGroup("Customer Service", "Manages customer inquiries and general support");
-        SupportGroup group3 = new SupportGroup("Infrastructure Team", "Handles infrastructure and deployment issues");
+        SupportGroup group3 = new SupportGroup("Infrastructure Team", "Manages infrastructure and deployment issues");
 
         List<SupportGroup> groups = Arrays.asList(group1, group2, group3);
         groups.forEach(supportGroupRepository::save);
@@ -170,6 +170,154 @@ public class DataInitializer implements CommandLineRunner {
         List<SupportMember> members = Arrays.asList(member1, member2, member3, member4, member5);
         members.forEach(supportMemberRepository::save);
 
+        // Initialize tickets last
+        initializeTickets();
+    }
+
+    private void initializePartners() {
+        System.out.println("Initializing Partners...");
+        Partner amazonPartner = new Partner("Amazon", "E-commerce and cloud services partner");
+        amazonPartner.setLogoUrl("https://logo.clearbit.com/amazon.com");
+        amazonPartner.setMemberCount(1250);
+        amazonPartner.setApiCount(45);
+        partnerRepository.save(amazonPartner);
+
+        Partner doordashPartner = new Partner("DoorDash", "Food delivery and logistics partner");
+        doordashPartner.setLogoUrl("https://logo.clearbit.com/doordash.com");
+        doordashPartner.setMemberCount(850);
+        doordashPartner.setApiCount(32);
+        partnerRepository.save(doordashPartner);
+
+        Partner uberPartner = new Partner("Uber", "Transportation and delivery partner");
+        uberPartner.setLogoUrl("https://logo.clearbit.com/uber.com");
+        uberPartner.setMemberCount(2100);
+        uberPartner.setApiCount(67);
+        partnerRepository.save(uberPartner);
+
+        Partner disneyPartner = new Partner("Disney", "Entertainment and media streaming partner");
+        disneyPartner.setLogoUrl("https://logo.clearbit.com/disney.com");
+        disneyPartner.setMemberCount(1800);
+        disneyPartner.setApiCount(28);
+        partnerRepository.save(disneyPartner);
+
+        Partner huluPartner = new Partner("Hulu", "Streaming entertainment platform partner");
+        huluPartner.setLogoUrl("https://logo.clearbit.com/hulu.com");
+        huluPartner.setMemberCount(950);
+        huluPartner.setApiCount(22);
+        partnerRepository.save(huluPartner);
+
+        Partner netflixPartner = new Partner("Netflix", "Global streaming entertainment partner");
+        netflixPartner.setLogoUrl("https://logo.clearbit.com/netflix.com");
+        netflixPartner.setMemberCount(3200);
+        netflixPartner.setApiCount(89);
+        partnerRepository.save(netflixPartner);
+        System.out.println("Partners initialized.");
+    }
+
+    private void initializeAccounts() {
+        System.out.println("Initializing Accounts...");
+        Account amazonProdAccount = new Account("Amazon-Prod", "Production environment for Amazon integration", partnerRepository.findByName("Amazon").orElse(null));
+        Account amazonDevAccount = new Account("Amazon-Dev", "Development environment for Amazon integration", partnerRepository.findByName("Amazon").orElse(null));
+        accountRepository.save(amazonProdAccount);
+        accountRepository.save(amazonDevAccount);
+
+        Account doordashMainAccount = new Account("DoorDash-Main", "Main production account for DoorDash services", partnerRepository.findByName("DoorDash").orElse(null));
+        accountRepository.save(doordashMainAccount);
+
+        Account uberEatsAccount = new Account("Uber-Eats", "Uber Eats delivery platform integration", partnerRepository.findByName("Uber").orElse(null));
+        accountRepository.save(uberEatsAccount);
+
+        // Disney accounts
+        Account disneyStreamAccount = new Account("Disney-Stream", "Disney+ streaming platform integration", partnerRepository.findByName("Disney").orElse(null));
+        Account disneyContentAccount = new Account("Disney-Content", "Disney content management and distribution", partnerRepository.findByName("Disney").orElse(null));
+        accountRepository.save(disneyStreamAccount);
+        accountRepository.save(disneyContentAccount);
+
+        // Hulu accounts
+        Account huluStreamAccount = new Account("Hulu-Stream", "Hulu streaming platform integration", partnerRepository.findByName("Hulu").orElse(null));
+        Account huluContentAccount = new Account("Hulu-Content", "Hulu content management and analytics", partnerRepository.findByName("Hulu").orElse(null));
+        accountRepository.save(huluStreamAccount);
+        accountRepository.save(huluContentAccount);
+
+        // Netflix accounts
+        Account netflixStreamAccount = new Account("Netflix-Stream", "Netflix streaming platform integration", partnerRepository.findByName("Netflix").orElse(null));
+        Account netflixAIAccount = new Account("Netflix-AI", "Netflix recommendation and AI services", partnerRepository.findByName("Netflix").orElse(null));
+        accountRepository.save(netflixStreamAccount);
+        accountRepository.save(netflixAIAccount);
+        System.out.println("Accounts initialized.");
+    }
+
+    private void initializeSolutions() {
+        System.out.println("Initializing Solutions...");
+        Solution solution1 = new Solution("Database", "Resolve database connectivity problems and connection pool issues", accountRepository.findByName("Amazon-Prod").orElse(null));
+        Solution solution2 = new Solution("Upload", "Fix file upload functionality for files larger than 10MB with proper validation", accountRepository.findByName("Amazon-Dev").orElse(null));
+        Solution solution3 = new Solution("API", "Resolve API integration issues and implement proper rate limiting strategies", accountRepository.findByName("DoorDash-Main").orElse(null));
+        Solution solution4 = new Solution("Authentication", "Fix user login and authentication with enhanced security measures", accountRepository.findByName("Uber-Eats").orElse(null));
+        Solution solution5 = new Solution("Performance", "Improve system performance through comprehensive monitoring and optimization", accountRepository.findByName("Amazon-Prod").orElse(null));
+
+        // Disney solutions
+        Solution solution6 = new Solution("Streaming", "Optimize video streaming performance and reduce buffering issues", accountRepository.findByName("Disney-Stream").orElse(null));
+        Solution solution7 = new Solution("Content Delivery", "Improve content delivery network and reduce latency for global users", accountRepository.findByName("Disney-Content").orElse(null));
+        Solution solution8 = new Solution("DRM Protection", "Enhance digital rights management and content security measures", accountRepository.findByName("Disney-Stream").orElse(null));
+
+        // Hulu solutions
+        Solution solution9 = new Solution("Video Processing", "Optimize video encoding and transcoding for multiple quality levels", accountRepository.findByName("Hulu-Stream").orElse(null));
+        Solution solution10 = new Solution("Analytics", "Improve user behavior analytics and content recommendation accuracy", accountRepository.findByName("Hulu-Content").orElse(null));
+        Solution solution11 = new Solution("Ad Integration", "Enhance advertisement integration and targeting capabilities", accountRepository.findByName("Hulu-Stream").orElse(null));
+
+        // Netflix solutions
+        Solution solution12 = new Solution("Recommendation Engine", "Optimize machine learning algorithms for personalized content recommendations", accountRepository.findByName("Netflix-AI").orElse(null));
+        Solution solution13 = new Solution("Netflix Global CDN", "Improve content delivery network performance across multiple regions", accountRepository.findByName("Netflix-Stream").orElse(null));
+        Solution solution14 = new Solution("A/B Testing", "Enhance A/B testing framework for content optimization and user experience", accountRepository.findByName("Netflix-AI").orElse(null));
+        Solution solution15 = new Solution("Subtitle Processing", "Improve subtitle and closed caption processing for multiple languages", accountRepository.findByName("Netflix-Stream").orElse(null));
+
+        List<Solution> solutions = Arrays.asList(
+            solution1, solution2, solution3, solution4, solution5,
+            solution6, solution7, solution8, solution9, solution10,
+            solution11, solution12, solution13, solution14, solution15
+        );
+        solutions.forEach(solutionRepository::save);
+        System.out.println("Solutions initialized.");
+    }
+
+    private void initializeSupportGroups() {
+        System.out.println("Initializing Support Groups...");
+        SupportGroup group1 = new SupportGroup("Technical Support", "Handles technical issues and system problems");
+        SupportGroup group2 = new SupportGroup("Customer Service", "Manages customer inquiries and general support");
+        SupportGroup group3 = new SupportGroup("Infrastructure Team", "Handles infrastructure and deployment issues");
+
+        List<SupportGroup> groups = Arrays.asList(group1, group2, group3);
+        groups.forEach(supportGroupRepository::save);
+        System.out.println("Support Groups initialized.");
+    }
+
+    private void initializeSupportMembers() {
+        System.out.println("Initializing Support Members...");
+        SupportMember member1 = new SupportMember("John Smith", "john.smith@company.com", "+1-555-0101", supportGroupRepository.findByName("Technical Support").orElse(null));
+        SupportMember member2 = new SupportMember("Sarah Johnson", "sarah.johnson@company.com", "+1-555-0102", supportGroupRepository.findByName("Technical Support").orElse(null));
+        SupportMember member3 = new SupportMember("Mike Davis", "mike.davis@company.com", "+1-555-0103", supportGroupRepository.findByName("Customer Service").orElse(null));
+        SupportMember member4 = new SupportMember("Lisa Wilson", "lisa.wilson@company.com", "+1-555-0104", supportGroupRepository.findByName("Customer Service").orElse(null));
+        SupportMember member5 = new SupportMember("David Brown", "david.brown@company.com", "+1-555-0105", supportGroupRepository.findByName("Infrastructure Team").orElse(null));
+
+        List<SupportMember> members = Arrays.asList(member1, member2, member3, member4, member5);
+        members.forEach(supportMemberRepository::save);
+        System.out.println("Support Members initialized.");
+    }
+
+    private void initializeEnvironments() {
+        System.out.println("Initializing Environments...");
+        Environment prod = new Environment(Environment.EnvironmentType.PRODUCTION, "Production", "Production environment");
+        Environment dev = new Environment(Environment.EnvironmentType.DEVELOPMENT, "Development", "Development environment");
+        Environment uat = new Environment(Environment.EnvironmentType.UAT, "UAT", "User Acceptance Testing environment");
+        Environment sandbox = new Environment(Environment.EnvironmentType.SANDBOX, "Sandbox", "Sandbox environment");
+
+        List<Environment> environments = Arrays.asList(prod, dev, uat, sandbox);
+        environments.forEach(environmentRepository::save);
+        System.out.println("Environments initialized.");
+    }
+
+    private void initializeTickets() {
+        System.out.println("Initializing Support Tickets...");
         // Create sample support tickets with specific partners and ticket ID pattern
         // Pattern: Three letter prefix + ticket type char (T/G/F) + 6 digit sequence
         
@@ -181,11 +329,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.TECHNICAL,
             "Amazon",
             "Amazon-Prod",
-            solution1,
+            solutionRepository.findByName("Database").orElse(null),
             Severity.HIGH,
             150,
-            group1,
-            member1
+            supportGroupRepository.findByName("Technical Support").orElse(null),
+            supportMemberRepository.findByName("John Smith").orElse(null)
         );
 
         SupportTicket ticket2 = createTicketWithId(
@@ -195,11 +343,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.FILE_TRANSFER,
             "Amazon",
             "Amazon-Dev",
-            solution2,
+            solutionRepository.findByName("Upload").orElse(null),
             Severity.MEDIUM,
             25,
-            group1,
-            member2
+            supportGroupRepository.findByName("Technical Support").orElse(null),
+            supportMemberRepository.findByName("Sarah Johnson").orElse(null)
         );
 
         // DoorDash tickets
@@ -210,11 +358,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.TECHNICAL,
             "DoorDash",
             "DoorDash-API",
-            solution3,
+            solutionRepository.findByName("API").orElse(null),
             Severity.CRITICAL,
             300,
-            group3,
-            member5
+            supportGroupRepository.findByName("Technical Support").orElse(null),
+            supportMemberRepository.findByName("Mike Davis").orElse(null)
         );
 
         SupportTicket ticket4 = createTicketWithId(
@@ -224,11 +372,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.GENERAL,
             "DoorDash",
             "DoorDash-Prod",
-            solution4,
+            solutionRepository.findByName("Authentication").orElse(null),
             Severity.HIGH,
             75,
-            group2,
-            member3
+            supportGroupRepository.findByName("Customer Service").orElse(null),
+            supportMemberRepository.findByName("Lisa Wilson").orElse(null)
         );
 
         // Apple tickets
@@ -239,11 +387,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.TECHNICAL,
             "Apple",
             "Apple-Main",
-            solution5,
+            solutionRepository.findByName("Performance").orElse(null),
             Severity.CRITICAL,
             500,
-            group3,
-            member5
+            supportGroupRepository.findByName("Infrastructure Team").orElse(null),
+            supportMemberRepository.findByName("David Brown").orElse(null)
         );
 
         SupportTicket ticket6 = createTicketWithId(
@@ -253,11 +401,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.GENERAL,
             "Apple",
             "Apple-Demo",
-            solution1,
+            solutionRepository.findByName("Database").orElse(null),
             Severity.LOW,
             1,
-            group2,
-            member4
+            supportGroupRepository.findByName("Customer Service").orElse(null),
+            supportMemberRepository.findByName("Lisa Wilson").orElse(null)
         );
 
         // Amex tickets
@@ -268,11 +416,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.FILE_TRANSFER,
             "Amex",
             "Amex-Prod",
-            solution2,
+            solutionRepository.findByName("Upload").orElse(null),
             Severity.MEDIUM,
             50,
-            group1,
-            member1
+            supportGroupRepository.findByName("Technical Support").orElse(null),
+            supportMemberRepository.findByName("John Smith").orElse(null)
         );
 
         SupportTicket ticket8 = createTicketWithId(
@@ -282,11 +430,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.TECHNICAL,
             "Amex",
             "Amex-App",
-            solution3,
+            solutionRepository.findByName("API").orElse(null),
             Severity.HIGH,
             200,
-            group1,
-            member2
+            supportGroupRepository.findByName("Technical Support").orElse(null),
+            supportMemberRepository.findByName("Sarah Johnson").orElse(null)
         );
 
         // Disney tickets
@@ -297,11 +445,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.GENERAL,
             "Disney",
             "Disney-Stream",
-            solution4,
+            solutionRepository.findByName("Streaming").orElse(null),
             Severity.MEDIUM,
             100,
-            group2,
-            member3
+            supportGroupRepository.findByName("Customer Service").orElse(null),
+            supportMemberRepository.findByName("Mike Davis").orElse(null)
         );
 
         SupportTicket ticket10 = createTicketWithId(
@@ -311,11 +459,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.TECHNICAL,
             "Disney",
             "Disney-Pay",
-            solution5,
+            solutionRepository.findByName("Performance").orElse(null),
             Severity.HIGH,
             150,
-            group1,
-            member1
+            supportGroupRepository.findByName("Technical Support").orElse(null),
+            supportMemberRepository.findByName("John Smith").orElse(null)
         );
 
         // Hulu tickets
@@ -326,11 +474,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.FILE_TRANSFER,
             "Hulu",
             "Hulu-Content",
-            solution2,
+            solutionRepository.findByName("Video Processing").orElse(null),
             Severity.MEDIUM,
             75,
-            group1,
-            member2
+            supportGroupRepository.findByName("Technical Support").orElse(null),
+            supportMemberRepository.findByName("Sarah Johnson").orElse(null)
         );
 
         SupportTicket ticket12 = createTicketWithId(
@@ -340,11 +488,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.GENERAL,
             "Hulu",
             "Hulu-Subs",
-            solution4,
+            solutionRepository.findByName("Recommendation Engine").orElse(null),
             Severity.LOW,
             25,
-            group2,
-            member4
+            supportGroupRepository.findByName("Customer Service").orElse(null),
+            supportMemberRepository.findByName("Lisa Wilson").orElse(null)
         );
 
         // Netflix tickets
@@ -355,11 +503,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.TECHNICAL,
             "Netflix",
             "Netflix-AI",
-            solution3,
+            solutionRepository.findByName("Recommendation Engine").orElse(null),
             Severity.HIGH,
             300,
-            group3,
-            member5
+            supportGroupRepository.findByName("Infrastructure Team").orElse(null),
+            supportMemberRepository.findByName("David Brown").orElse(null)
         );
 
         SupportTicket ticket14 = createTicketWithId(
@@ -369,11 +517,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.FILE_TRANSFER,
             "Netflix",
             "Netflix-Mobile",
-            solution2,
+            solutionRepository.findByName("Netflix Global CDN").orElse(null),
             Severity.MEDIUM,
             200,
-            group1,
-            member1
+            supportGroupRepository.findByName("Technical Support").orElse(null),
+            supportMemberRepository.findByName("John Smith").orElse(null)
         );
 
         // Additional tickets to ensure we have more than 8
@@ -384,11 +532,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.TECHNICAL,
             "Amazon",
             "Amazon-Infra",
-            solution3,
+            solutionRepository.findByName("API").orElse(null),
             Severity.HIGH,
             180,
-            group3,
-            member5
+            supportGroupRepository.findByName("Infrastructure Team").orElse(null),
+            supportMemberRepository.findByName("David Brown").orElse(null)
         );
 
         SupportTicket ticket16 = createTicketWithId(
@@ -398,11 +546,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.GENERAL,
             "DoorDash",
             "DoorDash-Billing",
-            solution4,
+            solutionRepository.findByName("Authentication").orElse(null),
             Severity.MEDIUM,
             45,
-            group2,
-            member3
+            supportGroupRepository.findByName("Customer Service").orElse(null),
+            supportMemberRepository.findByName("Mike Davis").orElse(null)
         );
 
         SupportTicket ticket17 = createTicketWithId(
@@ -412,11 +560,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.FILE_TRANSFER,
             "Apple",
             "Apple-Data",
-            solution2,
+            solutionRepository.findByName("Upload").orElse(null),
             Severity.MEDIUM,
             60,
-            group1,
-            member2
+            supportGroupRepository.findByName("Technical Support").orElse(null),
+            supportMemberRepository.findByName("Sarah Johnson").orElse(null)
         );
 
         SupportTicket ticket18 = createTicketWithId(
@@ -426,11 +574,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.TECHNICAL,
             "Amex",
             "Amex-Security",
-            solution5,
+            solutionRepository.findByName("Performance").orElse(null),
             Severity.CRITICAL,
             400,
-            group3,
-            member5
+            supportGroupRepository.findByName("Infrastructure Team").orElse(null),
+            supportMemberRepository.findByName("David Brown").orElse(null)
         );
 
         SupportTicket ticket19 = createTicketWithId(
@@ -440,11 +588,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.GENERAL,
             "Disney",
             "Disney-Feedback",
-            solution1,
+            solutionRepository.findByName("Recommendation Engine").orElse(null),
             Severity.LOW,
             30,
-            group2,
-            member4
+            supportGroupRepository.findByName("Customer Service").orElse(null),
+            supportMemberRepository.findByName("Lisa Wilson").orElse(null)
         );
 
         SupportTicket ticket20 = createTicketWithId(
@@ -454,11 +602,11 @@ public class DataInitializer implements CommandLineRunner {
             TicketType.TECHNICAL,
             "Hulu",
             "Hulu-CDN",
-            solution3,
+            solutionRepository.findByName("Hulu Global CDN").orElse(null),
             Severity.HIGH,
             250,
-            group3,
-            member5
+            supportGroupRepository.findByName("Infrastructure Team").orElse(null),
+            supportMemberRepository.findByName("David Brown").orElse(null)
         );
 
         List<SupportTicket> tickets = Arrays.asList(
@@ -467,6 +615,7 @@ public class DataInitializer implements CommandLineRunner {
             ticket16, ticket17, ticket18, ticket19, ticket20
         );
         tickets.forEach(supportTicketRepository::save);
+        System.out.println("Support Tickets initialized.");
     }
 
     private void associateEnvironmentsWithSolutions() {
