@@ -1,6 +1,8 @@
 package com.example.dto;
 
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ApiDashboardDTO {
     private UUID apiId;
@@ -10,6 +12,10 @@ public class ApiDashboardDTO {
     private String status;
     private String solutionName;
     private String partnerName;
+    private List<String> partnerLogos;
+    private List<String> partnerNames;
+    private List<String> solutionNames;
+    private int partnerUsageCount;
 
     public ApiDashboardDTO(UUID apiId, String name, String description, String version, String status) {
         this.apiId = apiId;
@@ -17,6 +23,10 @@ public class ApiDashboardDTO {
         this.description = description;
         this.version = version;
         this.status = status;
+        this.partnerLogos = new ArrayList<>();
+        this.partnerNames = new ArrayList<>();
+        this.solutionNames = new ArrayList<>();
+        this.partnerUsageCount = 0;
     }
 
     public ApiDashboardDTO(UUID apiId, String name, String description, String solutionName, String partnerName, String status) {
@@ -26,6 +36,10 @@ public class ApiDashboardDTO {
         this.solutionName = solutionName;
         this.partnerName = partnerName;
         this.status = status;
+        this.partnerLogos = new ArrayList<>();
+        this.partnerNames = new ArrayList<>();
+        this.solutionNames = new ArrayList<>();
+        this.partnerUsageCount = 0;
     }
 
     // Getters and Setters
@@ -83,5 +97,37 @@ public class ApiDashboardDTO {
 
     public void setPartnerName(String partnerName) {
         this.partnerName = partnerName;
+    }
+
+    public List<String> getPartnerLogos() {
+        return partnerLogos;
+    }
+
+    public void setPartnerLogos(List<String> partnerLogos) {
+        this.partnerLogos = partnerLogos;
+    }
+
+    public int getPartnerUsageCount() {
+        return partnerUsageCount;
+    }
+
+    public void setPartnerUsageCount(int partnerUsageCount) {
+        this.partnerUsageCount = partnerUsageCount;
+    }
+
+    public List<String> getPartnerNames() {
+        return partnerNames;
+    }
+
+    public void setPartnerNames(List<String> partnerNames) {
+        this.partnerNames = partnerNames;
+    }
+
+    public List<String> getSolutionNames() {
+        return solutionNames;
+    }
+
+    public void setSolutionNames(List<String> solutionNames) {
+        this.solutionNames = solutionNames;
     }
 } 

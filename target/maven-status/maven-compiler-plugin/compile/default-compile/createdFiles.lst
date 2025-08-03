@@ -37,6 +37,7 @@ com/example/dto/NestedDataDTO$SolutionDTO.class
 com/example/entity/Account.class
 com/example/dto/ApiDashboardDTO.class
 com/example/repository/SolutionRepository.class
+com/example/dto/AssociationDTO.class
 com/example/entity/Severity.class
 com/example/service/SupportTicketService$TicketStatistics.class
 com/example/repository/EnvApiRepository.class

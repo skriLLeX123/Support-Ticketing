@@ -378,11 +378,49 @@
         /* Partner List Styles */
         .partner-list-container {
             padding: 0;
+            height: 400px;
+            overflow-y: auto;
+            transition: height 0.3s ease;
+        }
+
+        .partner-list-container.expanded {
+            height: 600px;
+        }
+
+        .partner-list-container.collapsed {
+            height: 200px;
         }
 
         /* Solution List Styles */
         .solution-list-container {
             padding: 0;
+            height: 400px;
+            overflow-y: auto;
+            transition: height 0.3s ease;
+        }
+
+        .solution-list-container.expanded {
+            height: 600px;
+        }
+
+        .solution-list-container.collapsed {
+            height: 200px;
+        }
+
+        /* API List Styles */
+        .api-list-container {
+            padding: 0;
+            height: 400px;
+            overflow-y: auto;
+            transition: height 0.3s ease;
+        }
+
+        .api-list-container.expanded {
+            height: 600px;
+        }
+
+        .api-list-container.collapsed {
+            height: 200px;
         }
 
         .partner-item {
@@ -517,9 +555,9 @@
             background: repeating-linear-gradient(
                 to bottom,
                 #e9ecef 0px,
-                #e9ecef 8px,
-                transparent 8px,
-                transparent 16px
+                #e9ecef 4px,
+                transparent 4px,
+                transparent 8px
             );
             border-radius: 1px;
         }
@@ -572,6 +610,19 @@
         .search-container .form-control:focus {
             border-color: #dee2e6;
             box-shadow: none;
+        }
+
+        /* Search Type Selector Styling */
+        .search-type-selector {
+            border-right: none;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        .search-type-selector + .form-control {
+            border-left: none;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
         }
 
         .search-results {
@@ -773,12 +824,21 @@
                             <span class="input-group-text">
                                 <i class="fas fa-search"></i>
                             </span>
+                            <select class="form-select search-type-selector" id="searchTypeSelector" style="max-width: 120px;">
+                                <option value="all">All Types</option>
+                                <option value="partner">Partner</option>
+                                <option value="solution">Solution</option>
+                                <option value="api">API</option>
+                            </select>
                             <input type="text" class="form-control" id="globalSearchInput" 
-                                   placeholder="Search by Partner, Solution, or API name..." 
+                                   placeholder="Enter search term..." 
                                    autocomplete="off">
                             <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn">
                                 <i class="fas fa-times"></i>
                             </button>
+                            <a href="/associations" class="btn btn-info" title="View all API associations">
+                                <i class="fas fa-project-diagram"></i>
+                            </a>
                             <button class="btn btn-outline-primary" type="button" id="testSearchBtn">
                                 <i class="fas fa-search"></i> Test
                             </button>
@@ -803,11 +863,14 @@
                             <div class="row">
                                 <!-- Partners Column -->
                                 <div class="col-md-4">
-                                    <div class="column-header mb-3">
+                                    <div class="column-header mb-3 d-flex justify-content-between align-items-center">
                                         <h6 class="mb-0"><i class="fas fa-handshake me-2"></i>Partners</h6>
+                                        <button class="btn btn-sm btn-link p-0" onclick="toggleColumn('partners')">
+                                            <i class="fas fa-expand-alt" id="partners-expand-icon"></i>
+                                        </button>
                                     </div>
-                                    <div class="partner-list-container">
-                                        <div th:each="partner, partnerStat : ${partners}" th:if="${partnerStat.index < 10}" 
+                                    <div class="partner-list-container" id="partners-container">
+                                        <div th:each="partner : ${partners}" 
                                              class="d-flex align-items-start partner-item" 
                                              th:data-partner-id="${partner.partnerId}">
                                             <div class="partner-icon me-3">
@@ -827,21 +890,24 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-end mt-3">
-                                            <a href="/partners" class="btn btn-sm btn-outline-primary">View All Partners</a>
-                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- Solutions Column -->
                                 <div class="col-md-4">
-                                    <div class="column-header mb-3">
+                                    <div class="column-header mb-3 d-flex justify-content-between align-items-center">
                                         <h6 class="mb-0"><i class="fas fa-code me-2"></i>Solutions</h6>
+                                        <button class="btn btn-sm btn-link p-0" onclick="toggleColumn('solutions')">
+                                            <i class="fas fa-expand-alt" id="solutions-expand-icon"></i>
+                                        </button>
                                     </div>
-                                    <div class="solution-list-container">
-                                        <div th:each="solution, solutionStat : ${solutions}" th:if="${solutionStat.index < 10}" 
+                                    <div class="solution-list-container" id="solutions-container">
+                                        <div th:each="solution : ${solutions}" 
                                              class="d-flex align-items-start solution-item" 
-                                             th:data-solution-id="${solution.solutionId}">
+                                             th:data-solution-id="${solution.solutionId}"
+                                             th:data-solution-name="${solution.name}"
+                                             th:data-partner-name="${solution.partnerName}"
+                                             th:data-account-name="${solution.accountName}">
                                             <div class="solution-icon me-3">
                                                 <img th:if="${solution.partnerLogoUrl != null}" th:src="${solution.partnerLogoUrl}" 
                                                      class="partner-logo" th:alt="${solution.partnerName}" 
@@ -866,29 +932,31 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="d-flex justify-content-end mt-3">
-                                            <a href="/solutions" class="btn btn-sm btn-outline-primary">View All Solutions</a>
-                                        </div>
                                     </div>
                                 </div>
 
                                 <!-- APIs Column -->
                                 <div class="col-md-4">
-                                    <div class="column-header mb-3">
+                                    <div class="column-header mb-3 d-flex justify-content-between align-items-center">
                                         <h6 class="mb-0"><i class="fas fa-plug me-2"></i>APIs</h6>
+                                        <button class="btn btn-sm btn-link p-0" onclick="toggleColumn('apis')">
+                                            <i class="fas fa-expand-alt" id="apis-expand-icon"></i>
+                                        </button>
                                     </div>
-                                    <div class="api-list-container">
+                                    <div class="api-list-container" id="apis-container">
                                         <div th:if="${#lists.isEmpty(apis)}" class="text-muted text-center py-3">
                                             <i class="fas fa-info-circle me-2"></i>No APIs available
                                         </div>
-                                        <div th:each="api, apiStat : ${apis}" th:if="${apiStat.index < 10}" 
+                                        <div th:each="api : ${apis}" 
                                              class="d-flex align-items-start api-item" 
                                              th:data-api-id="${api.apiId}"
                                              th:data-api-name="${api.name}"
                                              th:data-partner-name="${api.partnerName}"
-                                             th:data-solution-name="${api.solutionName}">
+                                             th:data-solution-name="${api.solutionName}"
+                                             th:data-partner-names="${api.partnerNames != null ? #strings.replace(#strings.replace(api.partnerNames.toString(), '[', ''), ']', '') : ''}"
+                                             th:data-solution-names="${api.solutionNames != null ? #strings.replace(#strings.replace(api.solutionNames.toString(), '[', ''), ']', '') : ''}">
                                             <div class="api-icon me-3">
-                                                <i class="fas fa-cogs text-success"></i>
+                                                <img src="https://img.icons8.com/?size=100&id=UR9WNLMA7zim&format=png&color=000000" alt="API Icon" style="width: 32px; height: 32px; border-radius: 8px; object-fit: cover; padding: 4px;">
                                             </div>
                                             <div class="flex-grow-1">
                                                 <div class="d-flex justify-content-between align-items-start">
@@ -897,12 +965,22 @@
                                                         <div class="api-meta text-muted small">
                                                             <span th:text="${api.description}">API description goes here</span>
                                                         </div>
+                                                        <!-- Partner Logos Section -->
+                                                        <div th:if="${api.partnerUsageCount > 0}" class="partner-logos-section mt-2">
+                                                            <div class="d-flex align-items-center">
+                                                                <small class="text-muted me-2" th:text="${api.partnerUsageCount} + ' partner(s)'">0 partner(s)</small>
+                                                                <div class="partner-logos">
+                                                                    <img th:each="logo : ${api.partnerLogos}" 
+                                                                         th:src="${logo}" 
+                                                                         alt="Partner Logo" 
+                                                                         class="partner-logo me-1"
+                                                                         style="width: 23px; height: 23px; border-radius: 4px; object-fit: cover;">
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-3">
-                                            <a href="/apis" class="btn btn-sm btn-outline-primary">View All APIs</a>
                                         </div>
                                     </div>
                                 </div>
@@ -1003,9 +1081,35 @@
                 });
             });
 
-            // Global Search Functionality
-            const searchInput = document.getElementById('globalSearchInput');
-            const searchResults = document.getElementById('searchResults');
+                    // Global Search Functionality
+        const searchInput = document.getElementById('globalSearchInput');
+        const searchTypeSelector = document.getElementById('searchTypeSelector');
+        const searchResults = document.getElementById('searchResults');
+
+        // Column Expand/Collapse Functionality
+        function toggleColumn(columnType) {
+            const container = document.getElementById(columnType + '-container');
+            const expandIcon = document.getElementById(columnType + '-expand-icon');
+            
+            if (container.classList.contains('expanded')) {
+                // Collapse
+                container.classList.remove('expanded');
+                container.classList.add('collapsed');
+                expandIcon.classList.remove('fa-compress-alt');
+                expandIcon.classList.add('fa-expand-alt');
+            } else if (container.classList.contains('collapsed')) {
+                // Expand
+                container.classList.remove('collapsed');
+                container.classList.add('expanded');
+                expandIcon.classList.remove('fa-expand-alt');
+                expandIcon.classList.add('fa-compress-alt');
+            } else {
+                // Default state - expand
+                container.classList.add('expanded');
+                expandIcon.classList.remove('fa-expand-alt');
+                expandIcon.classList.add('fa-compress-alt');
+            }
+        }
             const searchResultsContent = document.getElementById('searchResultsContent');
             const clearSearchBtn = document.getElementById('clearSearchBtn');
             const testSearchBtn = document.getElementById('testSearchBtn');
@@ -1126,7 +1230,114 @@
                     return;
                 }
 
-                console.log('Filtering items for:', searchTerm);
+                const searchType = searchTypeSelector.value;
+                console.log('Searching for:', searchTerm, 'Type:', searchType);
+
+                // Show loading state
+                showLoadingState();
+
+                // Call backend search API
+                fetch(`/dashboard-search?query=${encodeURIComponent(searchTerm)}&searchType=${searchType}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Search results:', data);
+                        applySearchResults(data, searchTerm, searchType);
+                    })
+                    .catch(error => {
+                        console.error('Search error:', error);
+                        // Fallback to DOM search if API fails
+                        performDomSearch(searchTerm, searchType);
+                    });
+            }
+
+            function showLoadingState() {
+                // Hide all "View All" buttons when filtering
+                const viewAllButtons = document.querySelectorAll('a[href="/partners"], a[href="/solutions"], a[href="/apis"]');
+                viewAllButtons.forEach(btn => {
+                    if (btn.textContent.includes('View All')) {
+                        btn.style.display = 'none';
+                    }
+                });
+
+                // Hide all items initially
+                const allItems = document.querySelectorAll('.partner-item, .solution-item, .api-item');
+                allItems.forEach(item => {
+                    item.style.display = 'none';
+                    item.style.visibility = 'hidden';
+                    item.style.opacity = '0';
+                    item.style.height = '0';
+                    item.style.margin = '0';
+                    item.style.padding = '0';
+                    item.style.overflow = 'hidden';
+                });
+            }
+
+            function applySearchResults(data, searchTerm, searchType) {
+                const searchLower = searchTerm.toLowerCase();
+                
+                // Create sets for matching items
+                const matchingPartners = new Set();
+                const matchingSolutions = new Set();
+                const matchingApis = new Set();
+                const relatedPartners = new Set();
+                const relatedSolutions = new Set();
+                const relatedApis = new Set();
+                const apiSpecificPartners = new Set();
+                const apiSpecificSolutions = new Set();
+
+                // Process backend search results
+                if (data.partners) {
+                    data.partners.forEach(partner => {
+                        matchingPartners.add(partner.name.toLowerCase());
+                        relatedPartners.add(partner.name.toLowerCase());
+                    });
+                }
+
+                if (data.solutions) {
+                    data.solutions.forEach(solution => {
+                        matchingSolutions.add(solution.name.toLowerCase());
+                        relatedSolutions.add(solution.name.toLowerCase());
+                        if (solution.partnerName) {
+                            relatedPartners.add(solution.partnerName.toLowerCase());
+                        }
+                    });
+                }
+
+                if (data.apis) {
+                    data.apis.forEach(api => {
+                        matchingApis.add(api.name.toLowerCase());
+                        relatedApis.add(api.name.toLowerCase());
+                        
+                        if (api.associatedPartners) {
+                            api.associatedPartners.forEach(partner => {
+                                if (searchType === 'api') {
+                                    apiSpecificPartners.add(partner.toLowerCase());
+                                } else {
+                                    relatedPartners.add(partner.toLowerCase());
+                                }
+                            });
+                        }
+                        
+                        if (api.associatedSolutions) {
+                            api.associatedSolutions.forEach(solution => {
+                                if (searchType === 'api') {
+                                    apiSpecificSolutions.add(solution.toLowerCase());
+                                } else {
+                                    relatedSolutions.add(solution.toLowerCase());
+                                }
+                            });
+                        }
+                    });
+                }
+
+                // Apply filtering to DOM items based on backend results
+                applyDomFiltering(matchingPartners, matchingSolutions, matchingApis, 
+                                relatedPartners, relatedSolutions, relatedApis,
+                                apiSpecificPartners, apiSpecificSolutions, searchType);
+            }
+
+            function performDomSearch(searchTerm, searchType) {
+                console.log('Performing DOM search as fallback');
                 const searchLower = searchTerm.toLowerCase();
 
                 // Hide all "View All" buttons when filtering
@@ -1137,18 +1348,153 @@
                     }
                 });
 
-                // Filter partner items - completely remove non-matching ones
+                // Step 1: Find all matching items and their relationships
+                const matchingPartners = new Set();
+                const matchingSolutions = new Set();
+                const matchingApis = new Set();
+                const relatedPartners = new Set();
+                const relatedSolutions = new Set();
+                const relatedApis = new Set();
+                const apiSpecificPartners = new Set();
+                const apiSpecificSolutions = new Set();
+
+                // Filter partner items and track matches
+                const partnerItems = document.querySelectorAll('.partner-item');
+                if (searchType === 'all' || searchType === 'partner') {
+                    partnerItems.forEach(item => {
+                        const nameElement = item.querySelector('.partner-title');
+                        const descriptionElement = item.querySelector('.partner-meta');
+                        
+                        if (nameElement && descriptionElement) {
+                            const name = nameElement.textContent.toLowerCase();
+                            const description = descriptionElement.textContent.toLowerCase();
+                            const isMatch = name.includes(searchLower) || description.includes(searchLower);
+                            
+                            if (isMatch) {
+                                matchingPartners.add(name);
+                                relatedPartners.add(name);
+                            }
+                        }
+                    });
+                }
+
+                // Filter solution items and track matches
+                const solutionItems = document.querySelectorAll('.solution-item');
+                if (searchType === 'all' || searchType === 'solution') {
+                    solutionItems.forEach(item => {
+                        const nameElement = item.querySelector('.solution-title');
+                        const partnerElement = item.querySelector('.solution-meta .partner-label + span');
+                        
+                        if (nameElement) {
+                            const name = nameElement.textContent.toLowerCase();
+                            const partner = partnerElement ? partnerElement.textContent.toLowerCase() : '';
+                            
+                            // Also check data attributes for more reliable matching
+                            const dataSolutionName = item.getAttribute('data-solution-name')?.toLowerCase() || '';
+                            const dataPartnerName = item.getAttribute('data-partner-name')?.toLowerCase() || '';
+                            const dataAccountName = item.getAttribute('data-account-name')?.toLowerCase() || '';
+                            
+                            const isMatch = name.includes(searchLower) || 
+                                           dataSolutionName.includes(searchLower) ||
+                                           partner.includes(searchLower) || 
+                                           dataPartnerName.includes(searchLower) ||
+                                           dataAccountName.includes(searchLower);
+                            
+                            if (isMatch) {
+                                matchingSolutions.add(name);
+                                relatedSolutions.add(name);
+                                // If solution matches, also include its partner
+                                if (partner) {
+                                    relatedPartners.add(partner);
+                                }
+                                if (dataPartnerName) {
+                                    relatedPartners.add(dataPartnerName);
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Filter API items and track matches
+                const apiItems = document.querySelectorAll('.api-item');
+                if (searchType === 'all' || searchType === 'api') {
+                    apiItems.forEach(item => {
+                        const nameElement = item.querySelector('.api-title');
+                        const descriptionElement = item.querySelector('.api-meta');
+                        
+                        if (nameElement && descriptionElement) {
+                            const name = nameElement.textContent.toLowerCase();
+                            const description = descriptionElement.textContent.toLowerCase();
+                            
+                            // Get partner and solution names from data attributes
+                            const partnerName = item.getAttribute('data-partner-name')?.toLowerCase() || '';
+                            const solutionName = item.getAttribute('data-solution-name')?.toLowerCase() || '';
+                            
+                            const directMatch = name.includes(searchLower) || description.includes(searchLower);
+                            const partnerMatch = partnerName.includes(searchLower);
+                            const solutionMatch = solutionName.includes(searchLower);
+                            const isMatch = directMatch || partnerMatch || solutionMatch;
+                            
+                                                    if (isMatch) {
+                            matchingApis.add(name);
+                            relatedApis.add(name);
+                            
+                            // If API matches, get ALL partners and solutions that use this API
+                            // Get partner names from data attributes (if available)
+                            const partnerNamesData = item.getAttribute('data-partner-names');
+                            const solutionNamesData = item.getAttribute('data-solution-names');
+                            
+                            if (partnerNamesData && partnerNamesData.trim() !== '') {
+                                const partnerNames = partnerNamesData.split(',').map(name => name.trim());
+                                partnerNames.forEach(pName => {
+                                    if (pName && pName !== 'null') {
+                                        apiSpecificPartners.add(pName.toLowerCase());
+                                    }
+                                });
+                            }
+                            
+                            if (solutionNamesData && solutionNamesData.trim() !== '') {
+                                const solutionNames = solutionNamesData.split(',').map(name => name.trim());
+                                solutionNames.forEach(sName => {
+                                    if (sName && sName !== 'null') {
+                                        apiSpecificSolutions.add(sName.toLowerCase());
+                                    }
+                                });
+                            }
+                            
+                            // Also include the direct partner association (for backward compatibility)
+                            if (partnerName) {
+                                apiSpecificPartners.add(partnerName);
+                            }
+                            if (solutionName) {
+                                apiSpecificSolutions.add(solutionName);
+                            }
+                        }
+                        }
+                    });
+                }
+
+                // Step 2: Apply cross-column filtering using the centralized function
+
+                // Apply filtering to DOM items
+                applyDomFiltering(matchingPartners, matchingSolutions, matchingApis, 
+                                relatedPartners, relatedSolutions, relatedApis,
+                                apiSpecificPartners, apiSpecificSolutions, searchType);
+            }
+
+            function applyDomFiltering(matchingPartners, matchingSolutions, matchingApis, 
+                                    relatedPartners, relatedSolutions, relatedApis,
+                                    apiSpecificPartners, apiSpecificSolutions, searchType) {
+                
+                // Show/hide partner items based on matches
                 const partnerItems = document.querySelectorAll('.partner-item');
                 partnerItems.forEach(item => {
                     const nameElement = item.querySelector('.partner-title');
-                    const descriptionElement = item.querySelector('.partner-meta');
-                    
-                    if (nameElement && descriptionElement) {
+                    if (nameElement) {
                         const name = nameElement.textContent.toLowerCase();
-                        const description = descriptionElement.textContent.toLowerCase();
-                        const isMatch = name.includes(searchLower) || description.includes(searchLower);
+                        // For API searches, use apiSpecificPartners; for other searches, use relatedPartners
+                        const isMatch = searchType === 'api' ? apiSpecificPartners.has(name) : relatedPartners.has(name);
                         
-                        // Completely remove non-matching items from layout
                         if (isMatch) {
                             item.style.display = 'flex';
                             item.style.visibility = 'visible';
@@ -1170,20 +1516,43 @@
                     }
                 });
 
-                // Filter solution items - completely remove non-matching ones
+                // Show/hide solution items based on matches
                 const solutionItems = document.querySelectorAll('.solution-item');
-                const matchingSolutions = new Set(); // Track matching solutions for API filtering
-                
                 solutionItems.forEach(item => {
                     const nameElement = item.querySelector('.solution-title');
                     const partnerElement = item.querySelector('.solution-meta .partner-label + span');
                     
-                    if (nameElement && partnerElement) {
+                    if (nameElement) {
                         const name = nameElement.textContent.toLowerCase();
-                        const partner = partnerElement.textContent.toLowerCase();
-                        const isMatch = name.includes(searchLower) || partner.includes(searchLower);
+                        const partner = partnerElement ? partnerElement.textContent.toLowerCase() : '';
                         
-                        // Completely remove non-matching items from layout
+                        // Also check data attributes for more reliable matching
+                        const dataSolutionName = item.getAttribute('data-solution-name')?.toLowerCase() || '';
+                        const dataPartnerName = item.getAttribute('data-partner-name')?.toLowerCase() || '';
+                        
+                        // For API searches, only show solutions that are directly associated with the matching API
+                        // For solution searches, only show solutions that directly match
+                        // For other searches, show solutions that directly match OR are from partners that have matching APIs
+                        const directMatch = searchType === 'api' ? 
+                            (apiSpecificSolutions.has(name) || apiSpecificSolutions.has(dataSolutionName)) :
+                            searchType === 'solution' ?
+                                (matchingSolutions.has(name) || matchingSolutions.has(dataSolutionName)) :
+                                (relatedSolutions.has(name) || relatedSolutions.has(dataSolutionName));
+                        
+                        // For partner searches, show solutions that belong to the matching partner
+                        // For API searches, don't show other solutions from the same partner
+                        // For solution searches, don't show other solutions from the same partner
+                        // For other searches, show solutions from partners that have matching APIs
+                        const partnerHasMatchingApi = searchType === 'api' ?
+                            false : // Don't show other solutions from the same partner for API searches
+                            searchType === 'solution' ?
+                                false : // For solution searches, only show directly matching solutions
+                                searchType === 'partner' ?
+                                    ((partner && matchingPartners.has(partner)) || (dataPartnerName && matchingPartners.has(dataPartnerName))) : // For partner searches, use matchingPartners
+                                    ((partner && relatedPartners.has(partner)) || (dataPartnerName && relatedPartners.has(dataPartnerName))); // For other searches, use relatedPartners
+                        
+                        const isMatch = directMatch || partnerHasMatchingApi;
+                        
                         if (isMatch) {
                             item.style.display = 'flex';
                             item.style.visibility = 'visible';
@@ -1191,8 +1560,6 @@
                             item.style.height = 'auto';
                             item.style.margin = '';
                             item.style.padding = '';
-                            // Track this matching solution for API filtering
-                            matchingSolutions.add(name);
                         } else {
                             item.style.display = 'none';
                             item.style.visibility = 'hidden';
@@ -1203,31 +1570,35 @@
                             item.style.overflow = 'hidden';
                         }
                         
-                        console.log(`Solution "${nameElement.textContent}": ${isMatch ? 'SHOW' : 'HIDE'}`);
+                        console.log(`Solution "${nameElement.textContent}": ${isMatch ? 'SHOW' : 'HIDE'} (direct: ${directMatch}, partner: ${partnerHasMatchingApi})`);
                     }
                 });
 
-                // Filter API items - completely remove non-matching ones
+                // Show/hide API items based on matches
                 const apiItems = document.querySelectorAll('.api-item');
                 apiItems.forEach(item => {
                     const nameElement = item.querySelector('.api-title');
-                    const descriptionElement = item.querySelector('.api-meta');
                     
-                    if (nameElement && descriptionElement) {
+                    if (nameElement) {
                         const name = nameElement.textContent.toLowerCase();
-                        const description = descriptionElement.textContent.toLowerCase();
-                        
-                        // Get partner and solution names from data attributes
                         const partnerName = item.getAttribute('data-partner-name')?.toLowerCase() || '';
                         const solutionName = item.getAttribute('data-solution-name')?.toLowerCase() || '';
                         
-                        // Check if API matches search term directly OR if it's associated with a matching partner/solution
-                        const directMatch = name.includes(searchLower) || description.includes(searchLower);
-                        const partnerMatch = partnerName.includes(searchLower);
-                        const solutionMatch = solutionName && matchingSolutions.has(solutionName);
-                        const isMatch = directMatch || partnerMatch || solutionMatch;
+                        const directMatch = relatedApis.has(name);
+                        const partnerMatch = searchType === 'api' ? 
+                            (partnerName && apiSpecificPartners.has(partnerName)) :
+                            searchType === 'partner' ?
+                                (partnerName && matchingPartners.has(partnerName)) : // For partner searches, use matchingPartners
+                                (partnerName && relatedPartners.has(partnerName)); // For other searches, use relatedPartners
+                        const solutionMatch = searchType === 'api' ?
+                            (solutionName && apiSpecificSolutions.has(solutionName)) :
+                            (solutionName && relatedSolutions.has(solutionName));
                         
-                        // Completely remove non-matching items from layout
+                        // For API searches, only show the exact matching API, not other APIs from the same partners
+                        const isMatch = searchType === 'api' ? 
+                            directMatch : // Only show the exact API that matches the search
+                            (directMatch || partnerMatch || solutionMatch); // For other searches, show related APIs
+                        
                         if (isMatch) {
                             item.style.display = 'flex';
                             item.style.visibility = 'visible';
@@ -1245,7 +1616,7 @@
                             item.style.overflow = 'hidden';
                         }
                         
-                        console.log(`API "${nameElement.textContent}": ${isMatch ? 'SHOW' : 'HIDE'} (direct: ${directMatch}, solution: ${solutionMatch})`);
+                        console.log(`API "${nameElement.textContent}": ${isMatch ? 'SHOW' : 'HIDE'} (direct: ${directMatch}, partner: ${partnerMatch}, solution: ${solutionMatch})`);
                     }
                 });
 
@@ -1386,6 +1757,14 @@
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.trim();
                 performSearch(searchTerm);
+            });
+
+            // Search type selector event listener
+            searchTypeSelector.addEventListener('change', function() {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm.length >= 2) {
+                    performSearch(searchTerm);
+                }
             });
 
             // Clear search button
