@@ -541,25 +541,7 @@
         /* Column Separator Styles */
         .col-md-4:not(:last-child) {
             border-right: 2px dashed #e9ecef;
-            position: relative;
             padding-right: 1rem;
-        }
-
-        .col-md-4:not(:last-child)::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0.5rem;
-            width: 2px;
-            height: 100%;
-            background: repeating-linear-gradient(
-                to bottom,
-                #e9ecef 0px,
-                #e9ecef 4px,
-                transparent 4px,
-                transparent 8px
-            );
-            border-radius: 1px;
         }
 
         .col-md-4:last-child {
@@ -597,34 +579,131 @@
             color: #6c757d;
         }
 
-        /* Search Styles */
+        /* Carbon Design System Inspired Search Styles - Light Theme */
         .search-container {
             position: relative;
+            background: transparent;
+            border-radius: 0;
+            margin-bottom: 2rem;
+        }
+
+        .search-type-container, .search-input-container {
+            margin-bottom: 1rem;
+        }
+
+        /* Remove column separators from search components */
+        .search-container .col-md-4:not(:last-child) {
+            border-right: none;
+            padding-right: 0;
+        }
+
+        .search-container .col-md-4:not(:last-child)::after {
+            display: none;
+        }
+
+        .search-container .col-md-4:last-child {
+            padding-left: 0;
+        }
+
+        .search-container .form-label {
+            color: #161616;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .search-container .input-group {
             width: 100%;
             margin: 0;
+            border: none;
+            border-radius: 8px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .search-container .form-control {
+            border: none;
+            background: #ffffff;
+            color: #161616;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            border-radius: 8px;
         }
 
         .search-container .form-control:focus {
-            border-color: #dee2e6;
+            border: none;
             box-shadow: none;
+            background: #ffffff;
+            color: #161616;
         }
 
-        /* Search Type Selector Styling */
+        .search-container .form-control::placeholder {
+            color: #6c757d;
+        }
+
+        /* Search Type Selector Styling - Carbon Design Light Theme */
+        .search-type-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
         .search-type-selector {
-            border-right: none;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-        
-        .search-type-selector + .form-control {
-            border-left: none;
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
+            border: none;
+            background: #ffffff;
+            color: #161616;
+            padding: 0.75rem 1rem;
+            padding-right: 2.5rem;
+            font-size: 0.875rem;
+            border-radius: 8px;
+            width: 100%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.08);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
         }
 
+        .search-type-selector:focus {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.08);
+            background: #ffffff;
+            color: #161616;
+        }
+
+        .search-type-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            pointer-events: none;
+            font-size: 0.75rem;
+        }
+
+        /* Carbon Design Button Styles - Light Theme */
+        .search-container .btn {
+            border: none;
+            border-radius: 0;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            background: #f4f4f4;
+            color: #161616;
+            border-left: 1px solid #e0e0e0;
+        }
+
+        .search-container .btn:hover {
+            background: #e8e8e8;
+            color: #161616;
+        }
+
+        .search-container .btn:focus {
+            box-shadow: none;
+            background: #f4f4f4;
+            color: #161616;
+        }
+
+        /* Carbon Design System Search Results - Light Theme */
         .search-results {
             position: absolute;
             top: 100%;
@@ -634,21 +713,23 @@
             width: 100%;
             max-height: 400px;
             overflow-y: auto;
+            margin-top: 1px;
         }
 
         .search-results .card {
-            border: 1px solid #dee2e6;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            background-color: white;
-            margin-top: 5px;
+            border: 1px solid #e0e0e0;
+            border-radius: 0;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+            background-color: #ffffff;
+            margin-top: 0;
         }
 
         .search-result-item {
-            padding: 0.75rem;
-            border-bottom: 1px solid #f8f9fa;
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
             cursor: pointer;
             transition: background-color 0.2s ease;
-            background-color: white;
+            background-color: #ffffff;
         }
 
         .search-result-item:hover {
@@ -660,22 +741,25 @@
         }
 
         .search-result-type {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
             color: #6c757d;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
         }
 
         .search-result-title {
             font-weight: 600;
-            color: #495057;
-            margin-bottom: 0.25rem;
+            color: #161616;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
         }
 
         .search-result-meta {
             font-size: 0.75rem;
-            color: #6c757d;
+            color: #525252;
+            line-height: 1.4;
         }
 
         .search-result-icon {
@@ -820,28 +904,34 @@
             <div class="row mb-4">
                 <div class="col-12">
                     <div class="search-container">
-                        <div class="input-group">
-                            <span class="input-group-text">
-                                <i class="fas fa-search"></i>
-                            </span>
-                            <select class="form-select search-type-selector" id="searchTypeSelector" style="max-width: 120px;">
-                                <option value="all">All Types</option>
-                                <option value="partner">Partner</option>
-                                <option value="solution">Solution</option>
-                                <option value="api">API</option>
-                            </select>
-                            <input type="text" class="form-control" id="globalSearchInput" 
-                                   placeholder="Enter search term..." 
-                                   autocomplete="off">
-                            <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn">
-                                <i class="fas fa-times"></i>
-                            </button>
-                            <a href="/associations" class="btn btn-info" title="View all API associations">
-                                <i class="fas fa-project-diagram"></i>
-                            </a>
-                            <button class="btn btn-outline-primary" type="button" id="testSearchBtn">
-                                <i class="fas fa-search"></i> Test
-                            </button>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="search-type-container">
+                                    <label for="searchTypeSelector" class="form-label">Search Type</label>
+                                    <div class="search-type-wrapper">
+                                                                            <select class="form-select search-type-selector" id="searchTypeSelector">
+                                        <option value="">Select</option>
+                                        <option value="partner">Partner</option>
+                                        <option value="solution">Solution</option>
+                                        <option value="api">API</option>
+                                    </select>
+                                        <i class="fas fa-chevron-down search-type-icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="search-input-container">
+                                    <label for="globalSearchInput" class="form-label">Search Term</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="globalSearchInput" 
+                                               placeholder="Enter search term..." 
+                                               autocomplete="off">
+                                        <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="search-results mt-2" id="searchResults" style="display: none;">
                             <div class="card">
@@ -1589,10 +1679,14 @@
                             (partnerName && apiSpecificPartners.has(partnerName)) :
                             searchType === 'partner' ?
                                 (partnerName && matchingPartners.has(partnerName)) : // For partner searches, use matchingPartners
-                                (partnerName && relatedPartners.has(partnerName)); // For other searches, use relatedPartners
+                                searchType === 'solution' ?
+                                    false : // For solution searches, don't show APIs just because they belong to the same partner
+                                    (partnerName && relatedPartners.has(partnerName)); // For other searches, use relatedPartners
                         const solutionMatch = searchType === 'api' ?
                             (solutionName && apiSpecificSolutions.has(solutionName)) :
-                            (solutionName && relatedSolutions.has(solutionName));
+                            searchType === 'solution' ?
+                                (solutionName && matchingSolutions.has(solutionName)) : // For solution searches, use matchingSolutions
+                                (solutionName && relatedSolutions.has(solutionName));
                         
                         // For API searches, only show the exact matching API, not other APIs from the same partners
                         const isMatch = searchType === 'api' ? 

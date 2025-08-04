@@ -353,6 +353,7 @@ public class PartnersSolutionsDashboardController {
                         if (solutionName.contains(searchLower)) {
                             isAssociatedWithSearchedSolution = true;
                             matchingSolutions.add(solution.getName());
+                            // Only include the partner of the matching solution
                             if (solution.getAccount() != null && solution.getAccount().getPartner() != null) {
                                 matchingPartners.add(solution.getAccount().getPartner().getName());
                             }
@@ -367,7 +368,7 @@ public class PartnersSolutionsDashboardController {
                         List<String> existingPartners = (List<String>) existingApi.get("associatedPartners");
                         List<String> existingSolutions = (List<String>) existingApi.get("associatedSolutions");
                         
-                        // Merge partners
+                        // Merge partners (only from matching solutions)
                         for (String partner : matchingPartners) {
                             if (!existingPartners.contains(partner)) {
                                 existingPartners.add(partner);
